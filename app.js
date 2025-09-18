@@ -970,17 +970,19 @@ let clickedRoom = null;
 deleteRoomBtn.addEventListener("click", async () => {
   if (!clickedRoom) return;
 
-  const roomId = clickedRoom.dataset.id;   // ✅ μόνο το data-id (χωρίς #, χωρίς counter)
-  const sure = confirm("Delete room " + roomId + "?");
-  console.log("Deleting:", roomId);
+  const roomId = clickedRoom.dataset.id;   // ✅ πάντα dataset.id
+  const sure = confirm("Delete room: " + roomId + "?");
+  console.log("🗑 Προσπάθεια διαγραφής:", roomId);
 
   if (sure) {
     try {
+      // Σβήνουμε το δωμάτιο και τα μηνύματά του
       await remove(ref(db, `rooms/${roomId}`));
       await remove(ref(db, `messages/${roomId}`));
 
       showToast("🗑 Room deleted: " + roomId);
 
+      // Κάνε refresh στη λίστα και γύρνα στο general
       await renderRooms();
       switchRoom("general");
     } catch (e) {
@@ -988,6 +990,7 @@ deleteRoomBtn.addEventListener("click", async () => {
       showToast("Error deleting room");
     }
   }
+
   roomMenu.style.display = "none";
 });
 
