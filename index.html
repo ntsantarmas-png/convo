@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+
+<html lang="el">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>convo • Chat v012803</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="data:image/svg+xml,&lt;svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'&gt;&lt;text y='.9em' font-size='90'&gt;💬&lt;/text&gt;&lt;/svg&gt;" rel="icon"/>
+<link rel="stylesheet" href="styles.css">
+
+</head>
+<body>
+<!-- ===================== HEADER / TOPBAR ===================== -->
+<header class="topbar">
+<div class="brand"><span class="logo">💬</span><h1>convo</h1></div>
+<div class="top-actions"><span id="helloUser"></span>
+<div id="headerAvatar" class="header-avatar"></div>
+<button class="btn ghost" id="logoutBtn" title="Logout">Logout ↗</button></div>
+
+</header>
+
+<!-- Auth -->
+<!-- ===================== AUTH VIEW (Login / Register / Anonymous) ===================== -->
+<main class="auth" id="authView">
+<div class="auth-card">
+<div class="tabs"><button class="tab active" data-tab="login">Login</button><button class="tab" data-tab="register">Register</button><button class="tab" data-tab="anonymous">Anonymous</button></div>
+<div class="tab-panel active" id="tab-login">
+<form id="loginForm">
+<label>Email</label><input class="input" id="loginEmail" required="" type="email" value="ntsantarmas@gmail.com"/>
+<label>Password</label><input class="input" id="loginPassword" placeholder="••••••••" required="" type="password"/>
+<div class="row" style="margin-top:10px"><button class="btn primary" style="flex:1" type="submit">Login</button><button class="btn ghost" id="forgotLink" type="button">Forgot?</button></div>
+</form>
+</div>
+<div class="tab-panel" id="tab-register">
+<form id="registerForm">
+<label>Username</label><input class="input" id="regUsername" required="" type="text" value="MysteryMan"/>
+<label>Email</label><input class="input" id="regEmail" required="" type="email" value="ntsantarmas@gmail.com"/>
+<label>Password</label><input class="input" id="regPassword" minlength="6" placeholder="at least 6 chars" required="" type="password"/>
+<button class="btn primary" style="margin-top:10px;width:100%" type="submit">Create account</button>
+</form>
+</div>
+<div class="tab-panel" id="tab-anonymous">
+<form id="anonForm">
+<label>Pick a username</label><input class="input" id="anonUsername" required="" type="text" value="MysteryMan"/>
+<button class="btn" style="margin-top:10px;width:100%" type="submit">Enter anonymously</button>
+</form>
+<p class="muted small" style="margin-top:6px">You can upgrade to a full account later from your profile.</p>
+</div>
+</div>
+</main>
+<!-- App -->
+<!-- ===================== APP VIEW (Sidebar / Chat / Users) ===================== -->
+<main class="app hidden" id="appView">
+  <!-- ----- SIDEBAR: ROOMS LIST ----- -->
+  <aside class="sidebar">
+<div class="sidebar-header"><h2>Rooms</h2><button class="btn tiny" id="newRoomBtn">+ New</button></div>
+<nav class="rooms" id="roomsList"></nav>
+</aside>
+<!-- ----- MAIN CHAT SECTION ----- -->
+<section class="chat">
+  <div class="room-title">
+    <span id="roomTitle">#general</span>
+    <button id="clearChatBtn" class="btn danger tiny" style="margin-left:auto; display:none;">
+      🗑 Clear Chat
+    </button>
+  </div>
+
+  <!-- 🎵 YouTube Player μέσα στο room -->
+  <div id="youtubePlayer" class="youtube-player">
+  <button id="closePlayerBtn" class="close-player">✖</button>
+  <button id="expandPlayerBtn" class="expand-player">⤢</button>
+</div>
+
+  
+  <div class="messages" id="messages"></div>
+<form class="message-form" id="messageForm">
+  <div class="input-wrapper">
+    <button class="emoji-btn" id="emojiToggle" type="button">😊</button>
+    <textarea autocomplete="off" class="input" id="messageInput" placeholder="Type a message…" rows="1"></textarea>
+  </div>
+  <button class="btn primary" type="submit">Send</button>
+<div aria-hidden="true" class="emoji-panel" id="emojiPanel">
+<div class="emoji-header">
+<div class="emoji-tabs">
+<button class="emoji-tab" data-tab="gif" id="gifTabBtn" type="button">GIF</button>
+<button class="emoji-tab" data-tab="stickers" id="stickerTabBtn" type="button">Αυτοκόλλητα</button>
+<button class="emoji-tab active" data-tab="emoji" id="emojiTabBtn" type="button">Emoji</button>
+</div>
+<input class="input emoji-search" id="emojiSearch" placeholder="Βρες το τέλειο emoji" type="text"/><button class="btn" id="unifiedSearchBtn" type="button">Αναζήτηση</button>
+</div>
+
+
+<div class="emoji-body"><div class="emoji-grid" id="emojiGrid"></div></div><div class="emoji-body" id="gifBody"><div class="emoji-grid" id="gifGrid"></div></div><div class="emoji-body" id="stickerBody"><div class="emoji-grid" id="stickerGrid"></div></div>
+<div class="emoji-footer">Κλίκαρε ένα emoji για να το βάλεις στο μήνυμα</div>
+</div>
+</form>
+</section>
+<!-- ----- USERS LIST ----- -->
+<aside class="users">
+  <div class="profile-settings">
+    <label for="avatarUrl">Profile</label>
+    <input id="avatarUrl" class="input" type="text" placeholder="Avatar URL">
+    <button id="saveAvatarBtn" class="btn tiny">Αποθήκευση</button>
+  </div>
+  <hr>
+
+  <div id="usersList">
+    <h3 class="user-category">Admins</h3>
+    <ul id="adminsList" class="users-sublist"></ul>
+
+    <h3 class="user-category">Διαχειριστές</h3>
+    <ul id="modsList" class="users-sublist"></ul>
+
+    <h3 class="user-category">Vip</h3>
+    <ul id="vipList" class="users-sublist"></ul>
+
+    <h3 class="user-category">Users</h3>
+    <ul id="normalList" class="users-sublist"></ul>
+  </div>
+</aside>
+
+</main>
+<!-- Room Context Menu -->
+<!-- ===================== ROOM CONTEXT MENU ===================== -->
+<div id="roomContextMenu" class="context-menu" style="display:none">
+  <ul>
+    <li id="joinRoom">Join</li>
+    <li id="leaveRoom">Leave</li>
+    <li id="renameRoom">Rename</li>
+    <li id="deleteRoom">Delete</li>
+  </ul>
+</div>
+
+
+<!-- ===================== ROOM DIALOG ===================== -->
+<dialog id="roomDialog">
+<form id="roomForm" method="dialog">
+<h3>Create room</h3>
+<input class="input" id="roomNameInput" placeholder="room-name" required="" type="text"/>
+<menu><button class="btn" value="cancel">Cancel</button><button class="btn primary" id="roomCreateBtn" value="default">Create</button></menu>
+</form>
+</dialog>
+<!-- ===================== TOAST NOTIFICATIONS ===================== -->
+<div class="toast" id="toast"></div>
+<!-- ===================== APP SCRIPTS ===================== -->
+<script type="module" src="app.js"></script>
+<script>
+/* ===================== GIF MODAL / GIPHY LOGIC ===================== */
+(() => {
+  const GIPHY_KEY = "bCn5Jvx2ZOepneH6fMteNoX31hVfqX25";
+  const modal = document.getElementById('gifModal');
+  const backdrop = document.getElementById('gifModalBackdrop');
+  const openBtn = document.getElementById('gifBtn');
+  const closeBtn = document.getElementById('gifClose');
+  const searchInput = document.getElementById('gifSearchInput');
+  const searchBtn = document.getElementById('gifSearchBtn');
+  const results = document.getElementById('gifResults');
+  const messageInput = document.getElementById('messageInput');
+
+  function openModal() {
+    modal.style.display = 'block';
+    results.innerHTML = '';
+    // Load trending by default
+    fetchTrending();
+    setTimeout(() => searchInput && searchInput.focus(), 0);
+  }
+  function closeModal() { modal.style.display = 'none'; }
+
+  async function fetchTrending() {
+    try {
+      const url = `https://api.giphy.com/v1/gifs/trending?api_key=${GIPHY_KEY}&limit=24&rating=g`;
+      const res = await fetch(url);
+      const data = await res.json();
+      renderResults(data.data || []);
+    } catch (e) {
+      results.innerHTML = '<div style="padding:16px;">Failed to load trending GIFs.</div>';
+    }
+  }
+
+  async function searchGifs(q) {
+    try {
+      const url = `https://api.giphy.com/v1/gifs/search?api_key=${GIPHY_KEY}&q=${encodeURIComponent(q)}&limit=24&rating=g`;
+      const res = await fetch(url);
+      const data = await res.json();
+      renderResults(data.data || []);
+    } catch (e) {
+      results.innerHTML = '<div style="padding:16px;">Search failed.</div>';
+    }
+  }
+
+  function renderResults(items) {
+    if (!items.length) { results.innerHTML = '<div style="padding:16px;">No GIFs found.</div>'; return; }
+    const frag = document.createDocumentFragment();
+    items.forEach(g => {
+      const fixed = g.images && (g.images.fixed_width || g.images.preview_gif || g.images.original);
+      const url = fixed ? fixed.url : (g.images?.original?.url || g.url);
+      const item = document.createElement('div');
+      item.className = 'gif-item';
+      const img = document.createElement('img');
+      img.loading = 'lazy';
+      img.src = url;
+      item.appendChild(img);
+      item.addEventListener('click', () => {
+        // Strategy: if app supports image URLs, place URL into input and trigger send
+        // Prefer to send immediately if there is a sendMessage function available.
+        const gifUrl = url;
+        // Try to call existing send flow if present
+        let sent = false;
+        try {
+          if (typeof sendMessage === 'function') {
+            sendMessage(gifUrl, /*options*/{isGif:true});
+            sent = true;
+          }
+        } catch(e) {}
+
+        if (!sent) {
+          // Fallback: insert into input and simulate form submit
+          if (messageInput) messageInput.value = gifUrl;
+          const form = messageInput?.closest('form');
+          if (form) form.dispatchEvent(new Event('submit', {bubbles: true, cancelable: true}));
+        }
+        closeModal();
+      });
+      frag.appendChild(item);
+    });
+    results.innerHTML = '';
+    results.appendChild(frag);
+  }
+
+  openBtn && openBtn.addEventListener('click', openModal);
+  closeBtn && closeBtn.addEventListener('click', closeModal);
+  backdrop && backdrop.addEventListener('click', closeModal);
+  searchBtn && searchBtn.addEventListener('click', () => {
+    const q = (searchInput && searchInput.value || '').trim();
+    if (q) searchGifs(q); else fetchTrending();
+  });
+  searchInput && searchInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      const q = (searchInput.value || '').trim();
+      if (q) searchGifs(q); else fetchTrending();
+    }
+  });
+})();
+
+// Παίρνουμε τα στοιχεία
+const roomsList = document.getElementById("roomsList");
+const roomMenu = document.getElementById("roomContextMenu");
+
+let clickedRoom = null;
+const joinRoomBtn   = document.getElementById("joinRoom");
+const leaveRoomBtn  = document.getElementById("leaveRoom");
+const renameRoomBtn = document.getElementById("renameRoom");
+const deleteRoomBtn = document.getElementById("deleteRoom");
+
+
+// Δεξί κλικ πάνω σε room
+roomsList.addEventListener("contextmenu", (e) => {
+  const roomEl = e.target.closest(".room-item");
+  if (!roomEl) return;
+
+  e.preventDefault();
+  clickedRoom = roomEl;
+
+  console.log("Right click σε:", clickedRoom.textContent); // 👈 Debug μήνυμα
+
+  // Θέση μενού
+  roomMenu.style.top = e.pageY + "px";
+  roomMenu.style.left = e.pageX + "px";
+  roomMenu.style.display = "block";
+});
+
+// Κλείσιμο όταν κλικάρεις αλλού
+document.addEventListener("click", (e) => {
+  if (!roomMenu.contains(e.target)) {
+    roomMenu.style.display = "none";
+  }
+});
+
+
+
+</script>
+<!-- Context Menu για Users -->
+<!-- ===================== USER CONTEXT MENU ===================== -->
+<div id="userContextMenu" class="context-menu">
+  <ul>
+    <li id="ctxAddFriend">➕ Add Friend</li>
+    <li id="ctxRemoveFriend">❌ Remove Friend</li>
+    <li id="ctxBlock">🚫 Block</li>
+    <li id="ctxUnblock">✅ Unblock</li>
+  </ul>
+</div>
+<!-- Right-click Admin Menu -->
+<div id="msgMenu" class="context-menu">
+  <button id="deleteMsgBtn">🗑 Delete</button>
+</div>
+
+</body>
+
+</html>
