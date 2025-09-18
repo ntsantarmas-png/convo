@@ -109,18 +109,11 @@ forgotLink?.addEventListener('click', async ()=>{
 });
 
 logoutBtn?.addEventListener('click',()=>signOut(auth));
-// ===================== PRESENCE =====================
-const setupPresence=async(user)=>{
-  const statusRef=ref(db,`status/${user.uid}`);
-  const online={state:'online',last_changed:serverTimestamp(),displayName:user.displayName||'User'};
-  const offline={state:'offline',last_changed:serverTimestamp(),displayName:user.displayName||'User'};
-  onDisconnect(statusRef).set(offline).catch(()=>{}); 
-  await set(statusRef,online);
-};
+// ===================== RENDER ROOMS =====================
+const renderRooms = async () => {
+  roomsList.innerHTML = '';
 
-L = '';
-
-  // Βεβαιωνόμαστε ότι υπάρχουν τα default rooms
+  // Σιγουρεύουμε ότι υπάρχουν τα default rooms
   await Promise.all(defaultRooms.map(async r => {
     const snap = await get(child(ref(db), `rooms/${r}`));
     if (!snap.exists()) {
@@ -132,15 +125,14 @@ L = '';
   const snap = await get(child(ref(db), 'rooms'));
   const rooms = snap.exists() ? Object.keys(snap.val()).sort() : defaultRooms;
 
-  // Δημιουργία DOM για κάθε room
+  // Δημιουργία DOM
   rooms.forEach(r => {
     const div = document.createElement('div');
     div.className = 'room-item' + (r === currentRoom ? ' active' : '');
-    div.dataset.id = r;   // ✅ το καθαρό key
+    div.dataset.id = r;   // ✅ το σωστό key
 
     // όνομα room
     const nameSpan = document.createElement('span');
-    nameSpan.className = 'room-name';
     nameSpan.textContent = `#${r}`;
 
     // counter badge
@@ -148,7 +140,6 @@ L = '';
     countSpan.className = 'room-count';
     countSpan.textContent = "0"; // default
 
-    // βάζουμε name και counter στο div
     div.appendChild(nameSpan);
     div.appendChild(countSpan);
 
@@ -159,6 +150,7 @@ L = '';
     div.addEventListener('contextmenu', (e) => {
       e.preventDefault();
       clickedRoom = div;
+      console.log("🖱️ Right click σε roomId:", div.dataset.id); // ✅ εδώ βλέπεις το σωστό
       roomMenu.style.top = e.pageY + "px";
       roomMenu.style.left = e.pageX + "px";
       roomMenu.style.display = "block";
@@ -166,6 +158,10 @@ L = '';
 
     roomsList.appendChild(div);
   });
+
+  updateRoomCounts(); // counters
+};
+
 
   // Φρεσκάρουμε counters (αν το χρειαστείς αργότερα)
   updateRoomCounts();
