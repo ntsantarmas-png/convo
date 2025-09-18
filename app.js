@@ -982,29 +982,34 @@ roomsList.addEventListener("contextmenu", (e) => {
 
 // --- DELETE ROOM ---
 if (deleteRoomBtn) {
-  deleteRoomBtn.addEventListener("click", async () => {
-    if (!clickedRoom) return;
+deleteRoomBtn.addEventListener("click", async () => {
+  if (!clickedRoom) {
+    console.warn("⚠️ Δεν υπάρχει clickedRoom");
+    return;
+  }
 
-    const roomId = clickedRoom.dataset.id;
-    const sure = confirm("Delete room: " + roomId + "?");
-    console.log("🗑 Προσπάθεια διαγραφής:", roomId);
+  console.log("🔎 clickedRoom:", clickedRoom);
+  console.log("🔎 dataset.id:", clickedRoom.dataset.id);
+  console.log("🔎 innerText:", clickedRoom.innerText);
+  console.log("🔎 textContent:", clickedRoom.textContent);
 
-    if (sure) {
-      try {
-        await remove(ref(db, `rooms/${roomId}`));
-        await remove(ref(db, `messages/${roomId}`));
+  const roomId = clickedRoom.dataset.id;
+  const sure = confirm("Delete room: " + roomId + "?");
+  if (!sure) return;
 
-        showToast("🗑 Room deleted: " + roomId);
+  try {
+    console.log("🔥 Διαγράφω από Firebase:", "rooms/" + roomId, "και", "messages/" + roomId);
+    await remove(ref(db, "rooms/" + roomId));
+    await remove(ref(db, "messages/" + roomId));
 
-        await renderRooms();
-        switchRoom("general");
-      } catch (e) {
-        console.error("❌ delete room error", e);
-        showToast("Error deleting room");
-      }
-    }
-    roomMenu.style.display = "none";
-  });
+    showToast("🗑 Room deleted: " + roomId);
+    await renderRooms();
+    switchRoom("general");
+  } catch (err) {
+    console.error("❌ delete room error", err);
+  }
+  roomMenu.style.display = "none";
+});
 }
 
 // --- RENAME ROOM ---
