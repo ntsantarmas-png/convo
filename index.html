@@ -125,12 +125,14 @@
 </main>
 <!-- Room Context Menu -->
 <!-- ===================== ROOM CONTEXT MENU ===================== -->
-<ul id="roomContextMenu" class="context-menu" style="display:none; position:absolute; z-index:1000;">
-  <li id="joinRoom">Join</li>
-  <li id="leaveRoom">Leave</li>
-  <li id="renameRoom">Rename</li>
-  <li id="deleteRoom">Delete</li>
-</ul>
+<div id="roomContextMenu" class="context-menu" style="display:none">
+  <ul>
+    <li id="joinRoom">Join</li>
+    <li id="leaveRoom">Leave</li>
+    <li id="renameRoom">Rename</li>
+    <li id="deleteRoom">Delete</li>
+  </ul>
+</div>
 
 
 <!-- ===================== ROOM DIALOG ===================== -->
@@ -243,41 +245,6 @@
     }
   });
 })();
-
-// Παίρνουμε τα στοιχεία
-const roomsList = document.getElementById("roomsList");
-const roomMenu = document.getElementById("roomContextMenu");
-
-let clickedRoom = null;
-const joinRoomBtn   = document.getElementById("joinRoom");
-const leaveRoomBtn  = document.getElementById("leaveRoom");
-const renameRoomBtn = document.getElementById("renameRoom");
-const deleteRoomBtn = document.getElementById("deleteRoom");
-
-
-// Δεξί κλικ πάνω σε room
-roomsList.addEventListener("contextmenu", (e) => {
-  const roomEl = e.target.closest(".room-item");
-  if (!roomEl) return;
-
-  e.preventDefault();
-  clickedRoom = roomEl;
-
-  console.log("Right click σε:", clickedRoom.textContent); // 👈 Debug μήνυμα
-
-  // Θέση μενού
-  roomMenu.style.top = e.pageY + "px";
-  roomMenu.style.left = e.pageX + "px";
-  roomMenu.style.display = "block";
-});
-
-// Κλείσιμο όταν κλικάρεις αλλού
-document.addEventListener("click", (e) => {
-  if (!roomMenu.contains(e.target)) {
-    roomMenu.style.display = "none";
-  }
-});
-
 
 
 </script>

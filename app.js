@@ -1,6 +1,7 @@
 // ===================== FIREBASE IMPORTS & CONFIG =====================
 const GIPHY_KEY='bCn5Jvx2ZOepneH6fMteNoX31hVfqX25';
 
+
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { 
   getAuth, onAuthStateChanged, createUserWithEmailAndPassword, 
@@ -12,146 +13,222 @@ import {
   serverTimestamp, set, onValue, update, onDisconnect, get, child, remove 
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
-const firebaseConfig = {
-  apiKey:"AIzaSyDii_FqpCDTRvvxjJGTyJPIdZmxfwQcO3s",
-  authDomain:"convo-ae17e.firebaseapp.com",
-  databaseURL:"https://convo-ae17e-default-rtdb.europe-west1.firebasedatabase.app",
-  projectId:"convo-ae17e",
-  storageBucket:"convo-ae17e.firebasestorage.app",
-  messagingSenderId:"1074442682384",
-  appId:"1:1074442682384:web:9faa6a60b1b6848a968a95"
-};
-const app = initializeApp(firebaseConfig); 
-const auth = getAuth(app); 
-const db = getDatabase(app);
 
-// ===================== GLOBAL ELEMENT REFERENCES =====================
+  const firebaseConfig = {apiKey:"AIzaSyDii_FqpCDTRvvxjJGTyJPIdZmxfwQcO3s",authDomain:"convo-ae17e.firebaseapp.com",databaseURL:"https://convo-ae17e-default-rtdb.europe-west1.firebasedatabase.app",projectId:"convo-ae17e",storageBucket:"convo-ae17e.firebasestorage.app",messagingSenderId:"1074442682384",appId:"1:1074442682384:web:9faa6a60b1b6848a968a95"};
+  const app = initializeApp(firebaseConfig); const auth = getAuth(app); const db = getDatabase(app);
+
+  // ===================== GLOBAL ELEMENT REFERENCES =====================
 const $ = (id) => document.getElementById(id);
-const authView = $('authView'), appView = $('appView'), logoutBtn=$('logoutBtn'), helloUser=$('helloUser');
-const loginForm=$('loginForm'), registerForm=$('registerForm'), anonForm=$('anonForm'), forgotLink=$('forgotLink');
-const roomsList=$('roomsList'), newRoomBtn=$('newRoomBtn'), roomDialog=$('roomDialog'), roomForm=$('roomForm'), roomNameInput=$('roomNameInput');
-const roomTitle=$('roomTitle'), messagesEl=$('messages'), messageForm=$('messageForm'), messageInput=$('messageInput'), usersList=$('usersList');
-const emojiToggle=$('emojiToggle'), emojiPanel=$('emojiPanel'), emojiGrid=$('emojiGrid'), emojiSearch=$('emojiSearch');
-const tabs = document.querySelectorAll('.tab'); 
-const panels = document.querySelectorAll('.tab-panel'); 
-const toastEl=$('toast');
+  const authView = $('authView'), appView = $('appView'), logoutBtn=$('logoutBtn'), helloUser=$('helloUser');
+  const loginForm=$('loginForm'), registerForm=$('registerForm'), anonForm=$('anonForm'), forgotLink=$('forgotLink');
+  const roomsList=$('roomsList'), newRoomBtn=$('newRoomBtn'), roomDialog=$('roomDialog'), roomForm=$('roomForm'), roomNameInput=$('roomNameInput');
+  const roomTitle=$('roomTitle'), messagesEl=$('messages'), messageForm=$('messageForm'), messageInput=$('messageInput'), usersList=$('usersList');
+  const emojiToggle=$('emojiToggle'), emojiPanel=$('emojiPanel'), emojiGrid=$('emojiGrid'), emojiSearch=$('emojiSearch');
+  const tabs = document.querySelectorAll('.tab'); const panels = document.querySelectorAll('.tab-panel'); const toastEl=$('toast');
 
-let currentRoom='general', messagesUnsub=null, presenceUnsub=null;
-let currentUserRole = "user"; // default ρόλος
 
-// Helpers
-const showToast=(msg)=>{
-  toastEl.textContent=msg;
-  toastEl.classList.add('show');
-  setTimeout(()=>toastEl.classList.remove('show'),2500);
-};
-const switchTab=(name)=>{
-  tabs.forEach(t=>t.classList.toggle('active',t.dataset.tab===name)); 
-  panels.forEach(p=>p.classList.toggle('active',p.id===`tab-${name}`));
-};
-tabs.forEach(btn=>btn.addEventListener('click',()=>switchTab(btn.dataset.tab)));
 
+
+  let currentRoom='general', messagesUnsub=null, presenceUnsub=null;
+  let currentUserRole = "user"; // default ρόλος
+
+
+  const showToast=(msg)=>{toastEl.textContent=msg;toastEl.classList.add('show');setTimeout(()=>toastEl.classList.remove('show'),2500)};
+  const switchTab=(name)=>{tabs.forEach(t=>t.classList.toggle('active',t.dataset.tab===name)); panels.forEach(p=>p.classList.toggle('active',p.id===`tab-${name}`))};
+  tabs.forEach(btn=>btn.addEventListener('click',()=>switchTab(btn.dataset.tab)));
+
+  
 // ===================== AUTH (Register / Login / Anon / Forgot / Logout) =====================
-registerForm?.addEventListener('submit', async (e)=>{
-  e.preventDefault();
-  const username=$('regUsername').value.trim(); 
-  const email=$('regEmail').value.trim(); 
-  const pass=$('regPassword').value;
-  try{ 
-    const {user}=await createUserWithEmailAndPassword(auth,email,pass); 
-    await updateProfile(user,{displayName:username});
-    await update(ref(db,`users/${user.uid}`),{displayName:username,email,createdAt:Date.now()}); 
-    showToast('Account created. You are in!');
-  }catch(err){ 
-    console.error('register error',err); 
-    showToast(err.message); 
+// AUTH
+  registerForm?.addEventListener('submit', async (e)=>{
+    e.preventDefault();
+    const username=$('regUsername').value.trim(); const email=$('regEmail').value.trim(); const pass=$('regPassword').value;
+    try{ const {user}=await createUserWithEmailAndPassword(auth,email,pass); await updateProfile(user,{displayName:username});
+      await update(ref(db,`users/${user.uid}`),{displayName:username,email,createdAt:Date.now()}); showToast('Account created. You are in!');
+    }catch(err){ console.error('register error',err); showToast(err.message); }
+  });
+  loginForm?.addEventListener('submit', async (e)=>{
+    e.preventDefault();
+    const email=$('loginEmail').value.trim(); const pass=$('loginPassword').value;
+    try{ await signInWithEmailAndPassword(auth,email,pass); showToast('Welcome back!'); }
+    catch(err){ console.error('login error',err); showToast(err.message); }
+  });
+  anonForm?.addEventListener('submit', async (e)=>{
+    e.preventDefault();
+    const name=$('anonUsername').value.trim()||'Anon';
+    try{ const cred=await signInAnonymously(auth); await updateProfile(cred.user,{displayName:name});
+      await update(ref(db,`users/${cred.user.uid}`),{displayName:name,email:null,createdAt:Date.now(),anonymous:true}); showToast('Joined anonymously.');
+    }catch(err){ console.error('anon error',err); showToast(err.message); }
+  });
+  forgotLink?.addEventListener('click', async ()=>{
+    const email=$('loginEmail').value.trim(); if(!email){showToast('Enter your email first.');return;}
+    try{ await sendPasswordResetEmail(auth,email); showToast('Reset email sent.'); }catch(err){ console.error('reset error',err); showToast(err.message); }
+  });
+  logoutBtn?.addEventListener('click',()=>signOut(auth));
+
+  
+// ===================== PRESENCE =====================
+// Presence
+  const setupPresence=async(user)=>{
+    const statusRef=ref(db,`status/${user.uid}`);
+    const online={state:'online',last_changed:serverTimestamp(),displayName:user.displayName||'User'};
+    const offline={state:'offline',last_changed:serverTimestamp(),displayName:user.displayName||'User'};
+    onDisconnect(statusRef).set(offline).catch(()=>{}); await set(statusRef,online);
+  };
+
+  
+// ===================== ROOMS (Default / Create / Switch) =====================
+// Rooms
+const defaultRooms = ['general', 'tech', 'random'];
+
+const renderRooms = async () => {
+  roomsList.innerHTML = '';
+
+  // Σιγουρεύουμε ότι υπάρχουν τα default rooms
+  await Promise.all(defaultRooms.map(async r => {
+    const snap = await get(child(ref(db), `rooms/${r}`));
+    if (!snap.exists()) {
+      await set(ref(db, `rooms/${r}`), { createdAt: Date.now(), name: r });
+    }
+  }));
+
+  // Παίρνουμε όλα τα rooms
+  const snap = await get(child(ref(db), 'rooms'));
+  const rooms = snap.exists() ? Object.keys(snap.val()).sort() : defaultRooms;
+
+  // Δημιουργία DOM
+  rooms.forEach(r => {
+  const div = document.createElement('div');
+  div.className = 'room-item' + (r === currentRoom ? ' active' : '');
+  div.dataset.name = r;  // 👈 σημαντικό
+
+    // όνομα room
+    const nameSpan = document.createElement('span');
+    nameSpan.textContent = `#${r}`;
+
+    // counter badge
+    const countSpan = document.createElement('span');
+    countSpan.className = 'room-count';
+    countSpan.textContent = "0"; // default
+
+    // βάζουμε name και counter στο div
+    div.appendChild(nameSpan);
+    div.appendChild(countSpan);
+
+    div.addEventListener('click', () => switchRoom(r));
+    roomsList.appendChild(div);
+  });
+
+  updateRoomCounts(); // φρεσκάρει τους counters
+};
+const switchRoom = (room) => {
+  currentRoom = room;
+  roomTitle.textContent = `#${room}`;
+  document.querySelectorAll('.room-item').forEach(el =>
+    el.classList.toggle('active', el.textContent === `#${room}`)
+  );
+
+  if (typeof messagesUnsub === 'function') messagesUnsub();
+  messagesEl.innerHTML = '';
+
+  const roomRef = ref(db, `messages/${room}`);
+
+  // 📥 Νέα μηνύματα
+  messagesUnsub = onChildAdded(roomRef, (snap) => { 
+    const m = snap.val(); 
+    m.id = snap.key;   
+    appendMessage(m, auth.currentUser?.uid); 
+  });
+
+  // 🗑 Διαγραμμένα μηνύματα
+  onChildRemoved(roomRef, (snap) => {
+    const el = messagesEl.querySelector(`[data-id="${snap.key}"]`);
+    if (el) {
+      el.remove();  // 🔥 φεύγει από UI χωρίς F5
+    }
+  });
+};
+
+  // 🎵 Καθάρισε YouTube player όταν αλλάζεις δωμάτιο
+  const playerDiv = document.getElementById("youtubePlayer");
+  if (playerDiv) {
+    playerDiv.innerHTML = '<button id="closePlayerBtn" class="close-player">✖</button>';
+    playerDiv.classList.remove("active");
   }
-});
 
-loginForm?.addEventListener('submit', async (e)=>{
-  e.preventDefault();
-  const email=$('loginEmail').value.trim(); 
-  const pass=$('loginPassword').value;
-  try{ 
-    await signInWithEmailAndPassword(auth,email,pass); 
-    showToast('Welcome back!'); 
-  }
-  catch(err){ 
-    console.error('login error',err); 
-    showToast(err.message); 
-  }
-});
 
-anonForm?.addEventListener('submit', async (e)=>{
-  e.preventDefault();
-  const name=$('anonUsername').value.trim()||'Anon';
-  try{ 
-    const cred=await signInAnonymously(auth); 
-    await updateProfile(cred.user,{displayName:name});
-    await update(ref(db,`users/${cred.user.uid}`),{displayName:name,email:null,createdAt:Date.now(),anonymous:true}); 
-    showToast('Joined anonymously.');
-  }catch(err){ 
-    console.error('anon error',err); 
-    showToast(err.message); 
-  }
-});
-
-forgotLink?.addEventListener('click', async ()=>{
-  const email=$('loginEmail').value.trim(); 
-  if(!email){showToast('Enter your email first.');return;}
-  try{ 
-    await sendPasswordResetEmail(auth,email); 
-    showToast('Reset email sent.'); 
-  }catch(err){ 
-    console.error('reset error',err); 
-    showToast(err.message); 
-  }
-});
-
-logoutBtn?.addEventListener('click',()=>signOut(auth));
-// ===================== RENDER ROOMS (cleaned - kept later version) =====================
-
-// ===================== SWITCH ROOM (cleaned - kept later version) =====================
-
-// 🎵 Καθάρισε YouTube player όταν αλλάζεις δωμάτιο
-const playerDiv = document.getElementById("youtubePlayer");
-if (playerDiv) {
-  playerDiv.innerHTML = '<button id="closePlayerBtn" class="close-player">✖</button>';
-  playerDiv.classList.remove("active");
+  newRoomBtn?.addEventListener('click',()=>{ roomDialog.showModal(); roomNameInput.value=''; setTimeout(()=>roomNameInput.focus(),50); });
+  roomForm?.addEventListener('submit',async(e)=>{
+    e.preventDefault();
+    const name=roomNameInput.value.trim().toLowerCase().replace(new RegExp('\\s+','g'),'-').replace(new RegExp('[^a-z0-9_-]','g'),'');
+    if(!name) return roomDialog.close(); await set(ref(db,`rooms/${name}`),{createdAt:Date.now(),name}); roomDialog.close(); await renderRooms(); switchRoom(name);
+  });
+ 
+  // === Helper για να φέρνουμε το photoURL από users/$uid ===
+async function getUserPhotoURL(uid) {
+  const snap = await get(ref(db, "users/" + uid + "/photoURL"));
+  return snap.exists() ? snap.val() : null;
 }
 
-newRoomBtn?.addEventListener('click',()=>{
-  roomDialog.showModal(); 
-  roomNameInput.value=''; 
-  setTimeout(()=>roomNameInput.focus(),50); 
-});
 
-roomForm?.addEventListener('submit',async(e)=>{
-  e.preventDefault();
-  const name=roomNameInput.value.trim().toLowerCase()
-    .replace(new RegExp('\\s+','g'),'-')
-    .replace(new RegExp('[^a-z0-9_-]','g'),'');
-  if(!name) return roomDialog.close(); 
-  await set(ref(db,`rooms/${name}`),{createdAt:Date.now(),name}); 
-  roomDialog.close(); 
-  await renderRooms(); 
-  switchRoom(name);
-});
-// ===================== MESSAGES (Send / Append / Reactions) =====================
+// === YouTube Helpers ===
+function extractVideoId(url) {
+  const match = url.match(/(?:v=|youtu\.be\/)([\w-]{11})/);
+  return match ? match[1] : null;
+}
+
+
+function playYouTube(url) {
+  const videoId = extractVideoId(url);
+  if (!videoId) return;
+
+  const playerDiv = document.getElementById("youtubePlayer");
+
+  // Βάζουμε iframe + κουμπιά
+  playerDiv.innerHTML = `
+    <button id="closePlayerBtn" class="close-player">✖</button>
+    <button id="expandPlayerBtn" class="expand-player">⤢</button>
+    <iframe 
+      src="https://www.youtube.com/embed/${videoId}?autoplay=1"
+      frameborder="0"
+      allow="autoplay; encrypted-media"
+      allowfullscreen>
+    </iframe>
+  `;
+  playerDiv.classList.add("active"); // δείξε το panel
+
+  // ✖ close
+  document.getElementById("closePlayerBtn").addEventListener("click", () => {
+    playerDiv.innerHTML = `
+      <button id="closePlayerBtn" class="close-player">✖</button>
+      <button id="expandPlayerBtn" class="expand-player">⤢</button>
+    `;
+    playerDiv.classList.remove("active", "expanded");
+  });
+
+  // ⤢ expand
+  document.getElementById("expandPlayerBtn").addEventListener("click", () => {
+    playerDiv.classList.toggle("expanded");
+  });
+}
+
+
+// ===================== MESSAGES =====================
 messageForm?.addEventListener("submit", async (e) => {
   e.preventDefault();
   const user = auth.currentUser;
   if (!user) return;
 
-  const text = messageInput.value.trim();
-  if (!text) return;
+const text = messageInput.value.trim();
+if (!text) return;
 
-  // === YouTube check ===
-  if (text.includes("youtube.com") || text.includes("youtu.be")) {
-    playYouTube(text);   // ανοίγει το video πάνω από το chat
-    // προχωράμε κανονικά για να σταλεί και σαν μήνυμα
-  }
+// === YouTube check ===
+if (text.includes("youtube.com") || text.includes("youtu.be")) {
+  playYouTube(text);   // ανοίγει το video πάνω από το chat
+  // προχωράμε κανονικά για να σταλεί και σαν μήνυμα
+}
 
+  
   const isGif = /\.(gif)(\?|$)/i.test(text) || /giphy\.com\/media\//i.test(text);
   const photoURL = await getUserPhotoURL(user.uid);
 
@@ -188,34 +265,41 @@ messageInput.addEventListener("keydown", (e) => {
   }
 });
 
-// ===================== MESSAGE APPEND (UI Build) =====================
+
+
+ 
+// αυτή η function υπάρχει ήδη πιο κάτω, άστην ξεχωριστά
 const makeInitials = (name = '?') => (name.trim()[0] || '?').toUpperCase();
 
+  
 const appendMessage = (m, myUid) => {
   const row = document.createElement('div'); 
-  row.classList.add('message', 'msg-row');  
+  row.classList.add('message', 'msg-row');  // 👈 class="message msg-row"
   if (m.uid === myUid) row.classList.add('mine');
-  row.dataset.id = m.id;   // Firebase key
 
-  // === Avatar ===
-  const avatar = document.createElement('div');
-  let avatarClasses = 'avatar';
-  if (m.name === 'MysteryMan') avatarClasses += ' admin';
-  if (m.state === 'online') avatarClasses += ' online';
-  else avatarClasses += ' offline';
-  avatar.className = avatarClasses;
+  row.dataset.id = m.id;   // 👈 περνάμε το Firebase key
 
-  if (m.photoURL) {
-    const img = document.createElement('img');
-    img.src = m.photoURL;
-    img.alt = m.name || 'U';
-    img.style.width = '100%';
-    img.style.height = '100%';
-    img.style.borderRadius = '50%';
-    avatar.appendChild(img);
-  } else {
-    avatar.textContent = (m.name || 'U')[0].toUpperCase();
-  }
+
+
+// === Avatar ===
+const avatar = document.createElement('div');
+let avatarClasses = 'avatar';
+if (m.name === 'MysteryMan') avatarClasses += ' admin';
+if (m.state === 'online') avatarClasses += ' online';
+else avatarClasses += ' offline';
+avatar.className = avatarClasses;
+
+if (m.photoURL) {
+  const img = document.createElement('img');
+  img.src = m.photoURL;
+  img.alt = m.name || 'U';
+  img.style.width = '100%';
+  img.style.height = '100%';
+  img.style.borderRadius = '50%';
+  avatar.appendChild(img);
+} else {
+  avatar.textContent = (m.name || 'U')[0].toUpperCase();
+}
 
   // === Bubble ===
   const bubble = document.createElement('div'); 
@@ -226,7 +310,7 @@ const appendMessage = (m, myUid) => {
     bubble.classList.add('huge-emoji');
   }
 
-  // === Meta (όνομα + ώρα) ===
+  // Meta (όνομα + ώρα)
   const meta = document.createElement('div'); 
   meta.className = 'meta'; 
   const time = new Date(m.ts || Date.now()).toLocaleTimeString();
@@ -235,37 +319,45 @@ const appendMessage = (m, myUid) => {
     : `<strong>${escapeHtml(m.name)}</strong>`;
   meta.innerHTML = `${nameHtml} <span style="opacity:.6">(${time})</span>`;
 
-  // === Text, YouTube ή GIF ===
-  const text = document.createElement('div'); 
-  text.className = 'text'; 
-  (function() {
-    if (m.text && (m.text.includes("youtube.com") || m.text.includes("youtu.be"))) {
-      const videoId = extractVideoId(m.text);
-      if (videoId) {
-        text.innerHTML = `
-          <div class="yt-preview">
-            <img src="https://img.youtube.com/vi/${videoId}/hqdefault.jpg" alt="YouTube Thumbnail">
-            <span>▶ YouTube Video</span>
-          </div>
-        `;
-        text.querySelector('.yt-preview').addEventListener('click', () => playYouTube(m.text));
-        return;
-      }
-    }
-    const isGif = m.isGif || /\.(gif)(\?|$)/i.test(m.text) || /giphy\.com\/media\//i.test(m.text); 
-    if (isGif) {
-      const img = document.createElement('img'); 
-      img.src = m.text; 
-      img.alt = 'gif'; 
-      img.className = 'msg-gif'; 
-      text.appendChild(img);
-    } else { 
-      text.innerHTML = linkify(escapeHtml(m.text)); 
-    }
-  })();
+// Text, YouTube ή GIF
+const text = document.createElement('div'); 
+text.className = 'text'; 
 
-  bubble.appendChild(meta); 
-  bubble.appendChild(text);
+(function() {
+  // === YouTube check ===
+  if (m.text && (m.text.includes("youtube.com") || m.text.includes("youtu.be"))) {
+    const videoId = extractVideoId(m.text);
+    if (videoId) {
+      text.innerHTML = `
+        <div class="yt-preview">
+          <img src="https://img.youtube.com/vi/${videoId}/hqdefault.jpg" alt="YouTube Thumbnail">
+          <span>▶ YouTube Video</span>
+        </div>
+      `;
+      // κάνε το thumbnail clickable -> παίζει στο πάνω player
+      text.querySelector('.yt-preview').addEventListener('click', () => playYouTube(m.text));
+      return; // ✅ σταματάει εδώ
+    }
+  }
+
+  // === GIF check ===
+  const isGif = m.isGif || /\.(gif)(\?|$)/i.test(m.text) || /giphy\.com\/media\//i.test(m.text); 
+  if (isGif) {
+    const img = document.createElement('img'); 
+    img.src = m.text; 
+    img.alt = 'gif'; 
+    img.className = 'msg-gif'; 
+    text.appendChild(img);
+  } 
+  // === Default text ===
+  else { 
+    text.innerHTML = linkify(escapeHtml(m.text)); 
+  }
+})();
+
+bubble.appendChild(meta); 
+bubble.appendChild(text);
+
 
   // === Reactions (Firebase) ===
   const reactions = document.createElement('div');
@@ -311,7 +403,7 @@ const appendMessage = (m, myUid) => {
   messagesEl.appendChild(row); 
   messagesEl.scrollTop = messagesEl.scrollHeight;
 };
-// ===================== REACTIONS RENDER =====================
+
 function renderReactions(container, data, msgId) {
   container.querySelectorAll('.reaction').forEach(el => el.remove());
 
@@ -337,6 +429,7 @@ function renderReactions(container, data, msgId) {
 
       btn.onclick = () => toggleReaction(msgId, symbol, auth.currentUser?.uid);
 
+
       // 🎉 animation pop σε κάθε αλλαγή
       btn.classList.remove("pop");
       void btn.offsetWidth; // restart trick
@@ -347,7 +440,8 @@ function renderReactions(container, data, msgId) {
   });
 }
 
-// ===================== REACTIONS TOGGLE =====================
+
+
 function toggleReaction(msgId, symbol) {
   const user = auth.currentUser;
   if (!user) return;
@@ -361,8 +455,8 @@ function toggleReaction(msgId, symbol) {
   });
 }
 
-// ===================== ROOM COUNTS =====================
-function updateRoomCounts() {
+
+  function updateRoomCounts() {
   get(ref(db, 'status')).then(snap => {
     if (!snap.exists()) return;
     const data = snap.val();
@@ -378,6 +472,8 @@ function updateRoomCounts() {
 onValue(ref(db, 'status'), () => {
   updateRoomCounts();
 });
+
+
 // ===================== USERS LIST & ROLES =====================
 // Users online
 const watchPresence = () => {
@@ -424,41 +520,41 @@ const watchPresence = () => {
       // === Badge ===
       let badge = null;
 
-      // --- Admin: ΜΟΝΟ MysteryMan ---
-      if ((s.displayName || '') === 'MysteryMan') {
-        badge = document.createElement('span');
-        badge.className = 'badge admin';
-        badge.textContent = '🛡️ ADMIN';
-        name.innerHTML = `<strong style="color:#ffb703">${s.displayName}</strong>`;
-        li.classList.add("admin");
-        document.getElementById("adminsList").appendChild(li);
+     // --- Admin: ΜΟΝΟ MysteryMan ---
+if ((s.displayName || '') === 'MysteryMan') {
+  badge = document.createElement('span');
+  badge.className = 'badge admin';
+  badge.textContent = '🛡️ ADMIN';
+  name.innerHTML = `<strong style="color:#ffb703">${s.displayName}</strong>`;
+  li.classList.add("admin");
+  document.getElementById("adminsList").appendChild(li);
 
-      // --- Moderator ---
-      } else if (s.role === "mod") {
-        badge = document.createElement('span');
-        badge.className = 'badge mod';
-        badge.textContent = '🛠️ MOD';
-        name.innerHTML = `<span style="color:#06d6a0">${s.displayName}</span>`;
-        li.classList.add("mod");
-        document.getElementById("modsList").appendChild(li);
+// --- Moderator ---
+} else if (s.role === "mod") {
+  badge = document.createElement('span');
+  badge.className = 'badge mod';
+  badge.textContent = '🛠️ MOD';
+  name.innerHTML = `<span style="color:#06d6a0">${s.displayName}</span>`;
+  li.classList.add("mod");
+  document.getElementById("modsList").appendChild(li);
 
-      // --- VIP ---
-      } else if (s.role === "vip") {
-        badge = document.createElement('span');
-        badge.className = 'badge vip';
-        badge.textContent = '💎 VIP';
-        name.innerHTML = `<span style="color:#7209b7">${s.displayName}</span>`;
-        li.classList.add("vip");
-        document.getElementById("vipList").appendChild(li);
+// --- VIP ---
+} else if (s.role === "vip") {
+  badge = document.createElement('span');
+  badge.className = 'badge vip';
+  badge.textContent = '💎 VIP';
+  name.innerHTML = `<span style="color:#7209b7">${s.displayName}</span>`;
+  li.classList.add("vip");
+  document.getElementById("vipList").appendChild(li);
 
-      // --- Απλοί χρήστες ---
-      } else {
-        badge = document.createElement('span');
-        badge.className = 'badge user';
-        badge.textContent = '👤 USER';
-        li.classList.add("user");
-        document.getElementById("normalList").appendChild(li);
-      }
+// --- Απλοί χρήστες ---
+} else {
+  badge = document.createElement('span');
+  badge.className = 'badge user';
+  badge.textContent = '👤 USER';
+  li.classList.add("user");
+  document.getElementById("normalList").appendChild(li);
+}
 
       // === Append row ===
       li.appendChild(avatar);
@@ -468,6 +564,9 @@ const watchPresence = () => {
     });
   });
 };
+
+
+
 // ===================== AUTH STATE HANDLING =====================
 onAuthStateChanged(auth, async (user) => {
   if (user) {
@@ -489,29 +588,30 @@ onAuthStateChanged(auth, async (user) => {
     helloUser.textContent = `Hello, ${user.displayName || 'User'}!`;
 
     // === CLEAR CHAT BUTTON ===
-    const clearChatBtn = document.getElementById("clearChatBtn");
-    if (user.displayName === "MysteryMan") {
-      currentUserRole = "admin";   // 👈 Ορίζουμε ρόλο admin
-      clearChatBtn.style.display = "inline-block"; // δείξε το κουμπί μόνο στον admin
+const clearChatBtn = document.getElementById("clearChatBtn");
+if (user.displayName === "MysteryMan") {
+  currentUserRole = "admin";   // 👈 Ορίζουμε ρόλο admin
+  clearChatBtn.style.display = "inline-block"; // δείξε το κουμπί μόνο στον admin
 
-      clearChatBtn.addEventListener("click", async () => {
-        if (!confirm("⚠️ Να διαγραφούν όλα τα μηνύματα από αυτό το room;")) return;
-        try {
-          const room = document.getElementById("roomTitle").textContent.replace("#", "");
-          await remove(ref(db, "messages/" + room));
+  clearChatBtn.addEventListener("click", async () => {
+    if (!confirm("⚠️ Να διαγραφούν όλα τα μηνύματα από αυτό το room;")) return;
+    try {
+      const room = document.getElementById("roomTitle").textContent.replace("#", "");
+      await remove(ref(db, "messages/" + room));
 
-          // 🆕 καθάρισε και το UI αμέσως
-          document.getElementById("messages").innerHTML = "";
+      // 🆕 καθάρισε και το UI αμέσως
+      document.getElementById("messages").innerHTML = "";
 
-          console.log("🗑 Chat cleared for room:", room);
-        } catch (err) {
-          console.error("clearChat error:", err);
-        }
-      });
-    } else {
-      currentUserRole = "user";    // 👈 Ορίζουμε default ρόλο user
-      clearChatBtn.style.display = "none"; // κρύψε το κουμπί για μη-admin
+      console.log("🗑 Chat cleared for room:", room);
+    } catch (err) {
+      console.error("clearChat error:", err);
     }
+  });
+} else {
+  currentUserRole = "user";    // 👈 Ορίζουμε default ρόλο user
+  clearChatBtn.style.display = "none"; // κρύψε το κουμπί για μη-admin
+}
+
 
     // Header avatar από το database
     const headerAvatar = document.getElementById("headerAvatar");
@@ -540,41 +640,16 @@ onAuthStateChanged(auth, async (user) => {
   }
 });
 
-// ===================== UTILS =====================
-function escapeHtml(str=''){ 
-  return str.replaceAll('&','&amp;')
-            .replaceAll('<','&lt;')
-            .replaceAll('>','&gt;'); 
-}
-function linkify(text=''){ 
-  const urlRegex=new RegExp('https?:\\/\\/[^\\s]+','g'); 
-  return text.replace(urlRegex,'<a href=\"$&\" target=\"_blank\" rel=\"noopener noreferrer\">$&</a>'); 
-}
+  // Utils (safe RegExp)
+  function escapeHtml(str=''){ return str.replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;'); }
+  function linkify(text=''){ const urlRegex=new RegExp('https?:\\/\\/[^\\s]+','g'); return text.replace(urlRegex,'<a href=\"$&\" target=\"_blank\" rel=\"noopener noreferrer\">$&</a>'); }
+
+  
 // ===================== EMOJI / GIF / STICKERS PICKER =====================
 // Emoji Picker
-const EMOJIS=[["😀","grinning happy smile"],["😃","smile open"],["😄","smile grin"],["😁","grin"],["😆","laugh"],["😅","sweat laugh"],["🤣","rofl rolling floor laughing"],["😂","joy tears"],["🙂","slight smile"],["🙃","upside down"],["😉","wink"],["😊","blush"],["😇","innocent angel"],["🥰","in love hearts"],["😍","heart eyes"],["🤩","star struck"],["😘","kiss"],["😗","kiss"],["😙","kiss"],["😚","kiss"],["😋","yum"],["😛","tongue"],["😜","winking tongue"],["🤪","zany"],["😝","squint tongue"],["🤑","money"],["🤗","hug"],["🤭","oops"],["🤫","shush"],["🤔","thinking"],["🤐","zipper mouth"],["😐","neutral"],["😑","expressionless"],["😶","no mouth"],["😏","smirk"],["😒","unamused"],["🙄","eyeroll"],["😬","grimace"],["🤥","lying"],["😌","relieved"],["😔","pensive"],["😪","sleepy"],["🤤","drool"],["😴","sleeping"],["😷","mask"],["🤒","thermometer"],["🤕","head bandage"],["🤧","sneeze"],["🥵","hot"],["🥶","cold"],["🥴","woozy"],["😵","dizzy"],["🤯","mind blown"],["🤠","cowboy"],["🥳","party"],["😎","cool sunglasses"],["🤓","nerd"],["🫡","salute"],["👍","thumbs up like"],["👎","thumbs down"],["👏","clap"],["🙏","pray thanks"],["👌","ok"],["✌️","victory peace"],["🤝","handshake"],["💪","muscle"],["👀","eyes look"],["👋","wave"],["🔥","fire lit"],["✨","sparkles"],["❤️","heart love"],["🧡","heart orange"],["💛","heart yellow"],["💚","heart green"],["💙","heart blue"],["💜","heart purple"],["💯","100"],["💩","poop"],["🎉","tada party"],["🎂","cake birthday"],["🍕","pizza"],["🍔","burger"],["☕","coffee"]];
-
-function renderEmojiGrid(filter=""){ 
-  const frag=document.createDocumentFragment(); 
-  const normalized=filter.trim().toLowerCase(); 
-  const list=EMOJIS.filter(([e,k])=>!normalized||k.includes(normalized)); 
-  list.forEach(([emoji])=>{ 
-    const div=document.createElement('div'); 
-    div.className='emoji-item'; 
-    div.textContent=emoji; 
-    div.title=emoji; 
-    div.addEventListener('click',()=>{ 
-      messageInput.value+=emoji; 
-      messageInput.focus(); 
-    }); 
-    frag.appendChild(div); 
-  }); 
-  emojiGrid.innerHTML=''; 
-  emojiGrid.appendChild(frag); 
-}
-
-// ===================== EMOJI TRAIL =====================
-function launchEmojiTrail(panel) {
+  const EMOJIS=[["😀","grinning happy smile"],["😃","smile open"],["😄","smile grin"],["😁","grin"],["😆","laugh"],["😅","sweat laugh"],["🤣","rofl rolling floor laughing"],["😂","joy tears"],["🙂","slight smile"],["🙃","upside down"],["😉","wink"],["😊","blush"],["😇","innocent angel"],["🥰","in love hearts"],["😍","heart eyes"],["🤩","star struck"],["😘","kiss"],["😗","kiss"],["😙","kiss"],["😚","kiss"],["😋","yum"],["😛","tongue"],["😜","winking tongue"],["🤪","zany"],["😝","squint tongue"],["🤑","money"],["🤗","hug"],["🤭","oops"],["🤫","shush"],["🤔","thinking"],["🤐","zipper mouth"],["😐","neutral"],["😑","expressionless"],["😶","no mouth"],["😏","smirk"],["😒","unamused"],["🙄","eyeroll"],["😬","grimace"],["🤥","lying"],["😌","relieved"],["😔","pensive"],["😪","sleepy"],["🤤","drool"],["😴","sleeping"],["😷","mask"],["🤒","thermometer"],["🤕","head bandage"],["🤧","sneeze"],["🥵","hot"],["🥶","cold"],["🥴","woozy"],["😵","dizzy"],["🤯","mind blown"],["🤠","cowboy"],["🥳","party"],["😎","cool sunglasses"],["🤓","nerd"],["🫡","salute"],["👍","thumbs up like"],["👎","thumbs down"],["👏","clap"],["🙏","pray thanks"],["👌","ok"],["✌️","victory peace"],["🤝","handshake"],["💪","muscle"],["👀","eyes look"],["👋","wave"],["🔥","fire lit"],["✨","sparkles"],["❤️","heart love"],["🧡","heart orange"],["💛","heart yellow"],["💚","heart green"],["💙","heart blue"],["💜","heart purple"],["💯","100"],["💩","poop"],["🎉","tada party"],["🎂","cake birthday"],["🍕","pizza"],["🍔","burger"],["☕","coffee"]];
+  function renderEmojiGrid(filter=""){ const frag=document.createDocumentFragment(); const normalized=filter.trim().toLowerCase(); const list=EMOJIS.filter(([e,k])=>!normalized||k.includes(normalized)); list.forEach(([emoji])=>{ const div=document.createElement('div'); div.className='emoji-item'; div.textContent=emoji; div.title=emoji; div.addEventListener('click',()=>{ messageInput.value+=emoji; messageInput.focus(); }); frag.appendChild(div); }); emojiGrid.innerHTML=''; emojiGrid.appendChild(frag); }
+ function launchEmojiTrail(panel) {
   const EMOJIS = ["😀","😂","😍","😎","🎉","🔥"];
   for (let i = 0; i < 4; i++) {
     const span = document.createElement("span");
@@ -587,8 +662,7 @@ function launchEmojiTrail(panel) {
   }
 }
 
-// ===================== EMOJI PANEL TOGGLE =====================
-emojiToggle.addEventListener('click',()=>{ 
+  emojiToggle.addEventListener('click',()=>{ 
   emojiPanel.classList.toggle('show'); 
   if(emojiPanel.classList.contains('show')){
     renderEmojiGrid("");
@@ -598,13 +672,9 @@ emojiToggle.addEventListener('click',()=>{
   }
 });
 
-setEmojiActiveTab && setEmojiActiveTab('emoji');
-emojiSearch.addEventListener('input',(e)=>renderEmojiGrid(e.target.value));
-document.addEventListener('click',(e)=>{ 
-  if(!emojiPanel.contains(e.target) && e.target!==emojiToggle){ 
-    emojiPanel.classList.remove('show'); 
-  } 
-});
+  setEmojiActiveTab && setEmojiActiveTab('emoji');
+  emojiSearch.addEventListener('input',(e)=>renderEmojiGrid(e.target.value));
+  document.addEventListener('click',(e)=>{ if(!emojiPanel.contains(e.target) && e.target!==emojiToggle){ emojiPanel.classList.remove('show'); } });
 // Κλείσιμο με Esc
 document.addEventListener('keydown', (e) => {
   if (e.key === 'Escape' && emojiPanel.classList.contains('show')) {
@@ -612,7 +682,7 @@ document.addEventListener('keydown', (e) => {
     emojiPanel.setAttribute('aria-hidden', 'true');
   }
 });  
-// ===================== GIF TABS =====================
+// === GIF inside emoji panel ===
 const gifTabBtn=$('gifTabBtn'), emojiTabBtn=$('emojiTabBtn');
 const gifBody=$('gifBody'), gifGrid=$('gifGrid');
 
@@ -627,10 +697,10 @@ function setEmojiActiveTab(name){
   else if(name==='stickers'){ stickerBody.classList.add('active'); }
   else { document.querySelector('#emojiPanel .emoji-body:not(#gifBody):not(#stickerBody)').classList.add('active'); }
 }
-
-// ===================== GIF LOADING =====================
 async function loadTrendingGifs(){
+  // δείξε προσωρινό μήνυμα
   gifGrid.innerHTML = '<div style="padding:16px;text-align:center">Loading GIFs...</div>';
+
   try {
     const res = await fetch(`https://api.giphy.com/v1/gifs/trending?api_key=${GIPHY_KEY}&limit=60&rating=g`);
     const data = await res.json();
@@ -647,8 +717,6 @@ async function searchGifs(q){
     renderGifGrid(data.data||[]);
   }catch(e){ gifGrid.innerHTML='<div style="padding:16px">Search failed</div>'; }
 }
-
-// ===================== GIF RENDER =====================
 function renderGifGrid(items){
   if (!items.length) { 
     gifGrid.innerHTML = '<div style="padding:16px">No GIFs</div>'; 
@@ -695,16 +763,17 @@ function renderGifGrid(items){
 // Hook tabs
 gifTabBtn && gifTabBtn.addEventListener('click', ()=>{ setEmojiActiveTab('gif'); loadTrendingGifs(); });
 emojiTabBtn && emojiTabBtn.addEventListener('click', ()=>{ setEmojiActiveTab('emoji'); });
+// When opening the panel, default to Emoji but user can switch to GIF
 
-// ===================== GIF SEARCH BUTTON =====================
+// --- GIF search button wiring ---
 const gifSearchBtn = $('gifSearchBtn');
 if (gifSearchBtn) {
   gifSearchBtn.addEventListener('click', () => {
+    // Use the same input as emoji search
     const q = (emojiSearch && emojiSearch.value || '').trim();
     if (q) { searchGifs(q); } else { loadTrendingGifs(); }
   });
 }
-
 // On Enter in search box while GIF tab is active, run search
 if (emojiSearch) {
   emojiSearch.addEventListener('keydown', (e) => {
@@ -716,8 +785,7 @@ if (emojiSearch) {
     }
   });
 }
-
-// ===================== UNIFIED SEARCH (Emoji + GIF + Stickers) =====================
+// --- Unified search for Emoji + GIF + Stickers ---
 function doUnifiedSearch(){
   const q = (emojiSearch && emojiSearch.value || '').trim();
   const gifActive = gifBody && gifBody.classList.contains('active');
@@ -747,13 +815,15 @@ if (emojiSearch){
   });
 }
 
-// ===================== STICKERS =====================
+// === Stickers inside emoji panel ===
 const stickerTabBtn=$('stickerTabBtn');
 const stickerBody=$('stickerBody');
 const stickerGrid=$('stickerGrid');
 
 async function loadTrendingStickers(){
+  // δείξε προσωρινό μήνυμα
   stickerGrid.innerHTML = '<div style="padding:16px;text-align:center">Loading Stickers...</div>';
+
   try {
     const res = await fetch(`https://api.giphy.com/v1/stickers/trending?api_key=${GIPHY_KEY}&limit=60&rating=g`);
     const data = await res.json();
@@ -770,8 +840,6 @@ async function searchStickers(q){
     renderStickerGrid(data.data||[]);
   }catch(e){ stickerGrid.innerHTML='<div style="padding:16px">Search failed</div>'; }
 }
-
-// ===================== STICKERS RENDER =====================
 function renderStickerGrid(items){
   if (!items.length) { 
     stickerGrid.innerHTML = '<div style="padding:16px">No Stickers</div>'; 
@@ -817,9 +885,12 @@ function renderStickerGrid(items){
 
 // Hook sticker tab
 stickerTabBtn && stickerTabBtn.addEventListener('click', ()=>{ setEmojiActiveTab('stickers'); loadTrendingStickers(); });
+
 // ===================== USER CONTEXT MENU =====================
+// Context menu για users
 const userContextMenu = document.getElementById("userContextMenu");
 let contextTargetUser = null;
+
 
 // Δεξί κλικ σε user
 document.addEventListener("contextmenu", (e) => {
@@ -827,31 +898,36 @@ document.addEventListener("contextmenu", (e) => {
   if (li && li.parentElement.classList.contains("users-sublist")) {
     e.preventDefault();
     contextTargetUser = li;
-    userContextMenu.style.display = "block";
+   userContextMenu.style.display = "block";
 
-    // Υπολογισμός θέσης με βάση τα όρια της οθόνης
-    const menuWidth = userContextMenu.offsetWidth;
-    const menuHeight = userContextMenu.offsetHeight;
+// Υπολογισμός θέσης με βάση τα όρια της οθόνης
+const menuWidth = userContextMenu.offsetWidth;
+const menuHeight = userContextMenu.offsetHeight;
 
-    let posX = e.pageX;
-    let posY = e.pageY;
+let posX = e.pageX;
+let posY = e.pageY;
 
-    if (posX + menuWidth > window.innerWidth) {
-      posX = window.innerWidth - menuWidth - 10;
-    }
-    if (posY + menuHeight > window.innerHeight) {
-      posY = window.innerHeight - menuHeight - 10;
-    }
+// Αν πάει να βγει δεξιά → μετακινείται αριστερά
+if (posX + menuWidth > window.innerWidth) {
+  posX = window.innerWidth - menuWidth - 10;
+}
 
-    userContextMenu.style.left = `${posX}px`;
-    userContextMenu.style.top = `${posY}px`;
+// Αν πάει να βγει κάτω → μετακινείται πιο πάνω
+if (posY + menuHeight > window.innerHeight) {
+  posY = window.innerHeight - menuHeight - 10;
+}
+
+userContextMenu.style.left = `${posX}px`;
+userContextMenu.style.top = `${posY}px`;
 
   } else {
     userContextMenu.style.display = "none";
   }
 });
 
-// ===================== USER MENU HANDLERS =====================
+
+// Κλείσιμο όταν κλικάρεις αλλού
+// Handlers για τα menu items
 document.getElementById("ctxAddFriend").addEventListener("click", () => {
   if (!contextTargetUser) return;
   const username = contextTargetUser.querySelector("span")?.textContent;
@@ -877,6 +953,7 @@ document.getElementById("ctxUnblock").addEventListener("click", () => {
 });
 
 // ===================== ROOM CONTEXT MENU =====================
+// ⚠️ Το roomsList έχει δηλωθεί ήδη πιο πάνω, οπότε εδώ ΔΕΝ το ξαναδηλώνουμε
 const roomMenu      = document.getElementById("roomContextMenu");
 const joinRoomBtn   = document.getElementById("joinRoom");
 const leaveRoomBtn  = document.getElementById("leaveRoom");
@@ -885,161 +962,138 @@ const deleteRoomBtn = document.getElementById("deleteRoom");
 
 let clickedRoom = null;
 
-// δεξί κλικ -> εμφάνιση context menu
+// Δεξί κλικ πάνω σε room -> εμφάνιση context menu
 roomsList.addEventListener("contextmenu", (e) => {
   const roomEl = e.target.closest(".room-item");
   if (!roomEl) return;
 
   e.preventDefault();
   clickedRoom = roomEl;
-  console.log("🖱️ Right click σε roomId:", clickedRoom.dataset.id);
 
+  // Υπολογισμός θέσης με βάση το click
   roomMenu.style.top = e.pageY + "px";
   roomMenu.style.left = e.pageX + "px";
   roomMenu.style.display = "block";
 });
 
-// --- DELETE ROOM ---
-if (deleteRoomBtn) {
-deleteRoomBtn.addEventListener("click", async () => {
-  if (!clickedRoom) {
-    console.warn("⚠️ Δεν υπάρχει clickedRoom");
-    return;
+// Κλείσιμο context menu με click έξω ή ESC
+document.addEventListener("click", (e) => {
+  if (roomMenu && roomMenu.style.display === "block" && !roomMenu.contains(e.target)) {
+    roomMenu.style.display = "none";
   }
-
-  console.log("🔎 clickedRoom:", clickedRoom);
-  console.log("🔎 dataset.id:", clickedRoom.dataset.id);
-  console.log("🔎 innerText:", clickedRoom.innerText);
-  console.log("🔎 textContent:", clickedRoom.textContent);
-
-  const roomId = clickedRoom.dataset.id;
-  const sure = confirm("Delete room: " + roomId + "?");
-  if (!sure) return;
-
-  try {
-    console.log("🔥 Διαγράφω από Firebase:", "rooms/" + roomId, "και", "messages/" + roomId);
-    await remove(ref(db, "rooms/" + roomId));
-    await remove(ref(db, "messages/" + roomId));
-
-    showToast("🗑 Room deleted: " + roomId);
-    await renderRooms();
-    switchRoom("general");
-  } catch (err) {
-    console.error("❌ delete room error", err);
+});
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape" && roomMenu.style.display === "block") {
+    roomMenu.style.display = "none";
   }
+});
+
+// ===================== ROOM ACTIONS =====================
+
+// 🗑 DELETE ROOM
+deleteRoomBtn.addEventListener("click", () => {
+  if (!clickedRoom) return;
+  const roomName = clickedRoom.dataset.name;  // <--- ΠΡΕΠΕΙ να υπάρχει data-name στο HTML
+  if (!roomName) return;
+
+  console.log("🗑 Προσπάθεια διαγραφής:", roomName);
+
+  remove(ref(db, "rooms/" + roomName))
+    .then(() => {
+      console.log("✅ Room deleted:", roomName);
+      clickedRoom.remove(); // φεύγει και από UI
+    })
+    .catch((err) => console.error("❌ Delete error:", err));
+
   roomMenu.style.display = "none";
 });
-}
 
-// --- RENAME ROOM ---
-if (renameRoomBtn) {
-  renameRoomBtn.addEventListener("click", async () => {
-    if (!clickedRoom) return;
+// ✏️ RENAME ROOM
+renameRoomBtn.addEventListener("click", async () => {
+  if (!clickedRoom) return;
+  const oldName = clickedRoom.dataset.name;
+  if (!oldName) return;
 
-    const oldName = clickedRoom.dataset.id;
-    const newName = prompt("New name for room:", oldName);
+  const newName = prompt("Νέο όνομα δωματίου:", oldName);
+  if (!newName || newName === oldName) return;
 
-    if (newName && newName !== oldName) {
-      try {
-        const oldRef = ref(db, `rooms/${oldName}`);
-        const newRef = ref(db, `rooms/${newName}`);
+  const oldRef = ref(db, "rooms/" + oldName);
+  const newRef = ref(db, "rooms/" + newName);
 
-        // Αντιγραφή δεδομένων room
-        const snap = await get(oldRef);
-        if (snap.exists()) {
-          await set(newRef, { ...snap.val(), name: newName });
-          await remove(oldRef);
-        }
+  try {
+    const snap = await get(oldRef);
+    if (snap.exists()) {
+      await set(newRef, snap.val());   // copy data
+      await remove(oldRef);            // delete old
+      console.log(`✅ Room renamed: ${oldName} → ${newName}`);
 
-        // Αντιγραφή μηνυμάτων
-        const oldMsgs = await get(ref(db, `messages/${oldName}`));
-        if (oldMsgs.exists()) {
-          await set(ref(db, `messages/${newName}`), oldMsgs.val());
-          await remove(ref(db, `messages/${oldName}`));
-        }
-
-        showToast(`✏️ Room renamed: ${oldName} → ${newName}`);
-        await renderRooms();
-        switchRoom(newName);
-      } catch (e) {
-        console.error("❌ rename room error", e);
-        showToast("Error renaming room");
-      }
+      // update UI
+      clickedRoom.dataset.name = newName;
+      clickedRoom.textContent = "#" + newName;
     }
-    roomMenu.style.display = "none";
-  });
-}
+  } catch (err) {
+    console.error("❌ Rename error:", err);
+  }
 
-// --- JOIN ROOM (demo) ---
-if (joinRoomBtn) {
-  joinRoomBtn.addEventListener("click", () => {
-    if (!clickedRoom) return;
-    showToast("JOIN room: " + clickedRoom.dataset.id);
-    roomMenu.style.display = "none";
-  });
-}
+  roomMenu.style.display = "none";
+});
 
-// --- LEAVE ROOM (demo) ---
-if (leaveRoomBtn) {
-  leaveRoomBtn.addEventListener("click", () => {
-    if (!clickedRoom) return;
-    showToast("LEAVE room: " + clickedRoom.dataset.id);
-    roomMenu.style.display = "none";
-  });
-}
 
-// --- ΚΛΕΙΣΙΜΟ MENU ---
+// JOIN (απλό demo για τώρα)
+joinRoomBtn.addEventListener("click", () => {
+  if (!clickedRoom) return;
+  showToast("JOIN room: " + clickedRoom.textContent);
+  roomMenu.style.display = "none";
+});
+
+// LEAVE (απλό demo για τώρα)
+leaveRoomBtn.addEventListener("click", () => {
+  if (!clickedRoom) return;
+  showToast("LEAVE room: " + clickedRoom.textContent);
+  roomMenu.style.display = "none";
+});
+
+
+// ===================== ROOM MENU CLOSE HANDLERS =====================
 document.addEventListener("click", (e) => {
   if (roomMenu && roomMenu.style.display === "block" && !roomMenu.contains(e.target)) {
     roomMenu.style.display = "none";
   }
 });
+
 document.addEventListener("keydown", (e) => {
   if (e.key === "Escape" && roomMenu && roomMenu.style.display === "block") {
     roomMenu.style.display = "none";
   }
 });
 
-// ===================== SWITCH ROOM FIX =====================
-const switchRoom = (room) => {
-  currentRoom = room;
-  roomTitle.textContent = `#${room}`;
-  document.querySelectorAll('.room-item').forEach(el =>
-    el.classList.toggle('active', el.dataset.id === room) // ✅ dataset.id
-  );
-
-  if (typeof messagesUnsub === 'function') messagesUnsub();
-  messagesEl.innerHTML = '';
-
-  const roomRef = ref(db, `messages/${room}`);
-
-  // 📥 Νέα μηνύματα
-  messagesUnsub = onChildAdded(roomRef, (snap) => {
-    const m = snap.val();
-    m.id = snap.key;
-    appendMessage(m, auth.currentUser?.uid);
-  });
-
-  // 🗑 Διαγραμμένα μηνύματα
-  onChildRemoved(roomRef, (snap) => {
-    const el = messagesEl.querySelector(`[data-id="${snap.key}"]`);
-    if (el) el.remove();
-  });
-};
-
-
-// --- ΚΛΕΙΣΙΜΟ MENU ---
+// ===================== USER MENU CLOSE HANDLERS =====================
 document.addEventListener("click", (e) => {
-  if (roomMenu && roomMenu.style.display === "block" && !roomMenu.contains(e.target)) {
-    roomMenu.style.display = "none";
+  if (userContextMenu && userContextMenu.style.display === "block" && !userContextMenu.contains(e.target)) {
+    userContextMenu.style.display = "none";
   }
+});
+
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape" && userContextMenu && userContextMenu.style.display === "block") {
+    userContextMenu.style.display = "none";
+  }
+});
+// ===================== REACTIONS MENU CLOSE HANDLERS =====================
+document.addEventListener("click", (e) => {
+  document.querySelectorAll(".reaction-menu").forEach(menu => {
+    if (!menu.parentElement.contains(e.target)) {
+      menu.style.display = "none";
+    }
+  });
 });
 document.addEventListener("keydown", (e) => {
-  if (e.key === "Escape" && roomMenu && roomMenu.style.display === "block") {
-    roomMenu.style.display = "none";
+  if (e.key === "Escape") {
+    document.querySelectorAll(".reaction-menu").forEach(menu => {
+      menu.style.display = "none";
+    });
   }
 });
-
 // ===================== ADMIN DELETE (Right-Click on Message) =====================
 const msgMenu = document.getElementById("msgMenu");
 const deleteMsgBtn = document.getElementById("deleteMsgBtn");
@@ -1077,12 +1131,14 @@ deleteMsgBtn.addEventListener("click", () => {
   if (msgId) {
     // 🔥 Σβήσε από Firebase
     remove(ref(db, `messages/${currentRoom}/${msgId}`));
+
   }
 
   msgMenu.style.display = "none";
   targetMessage = null;
 });
-// ===================== AVATAR SAVE =====================
+
+// === Avatar Save ===
 const avatarInput = document.getElementById("avatarUrl");
 const saveAvatarBtn = document.getElementById("saveAvatarBtn");
 
