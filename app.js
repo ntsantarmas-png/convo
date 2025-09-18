@@ -109,90 +109,9 @@ forgotLink?.addEventListener('click', async ()=>{
 });
 
 logoutBtn?.addEventListener('click',()=>signOut(auth));
-// ===================== RENDER ROOMS =====================
-const renderRooms = async () => {
-  roomsList.innerHTML = '';
+// ===================== RENDER ROOMS (cleaned - kept later version) =====================
 
-  // Σιγουρεύουμε ότι υπάρχουν τα default rooms
-  await Promise.all(defaultRooms.map(async r => {
-    const snap = await get(child(ref(db), `rooms/${r}`));
-    if (!snap.exists()) {
-      await set(ref(db, `rooms/${r}`), { createdAt: Date.now(), name: r });
-    }
-  }));
-
-  // Παίρνουμε όλα τα rooms
-  const snap = await get(child(ref(db), 'rooms'));
-  const rooms = snap.exists() ? Object.keys(snap.val()).sort() : defaultRooms;
-
-  // Δημιουργία DOM
-  rooms.forEach(r => {
-    const div = document.createElement('div');
-    div.className = 'room-item' + (r === currentRoom ? ' active' : '');
-    div.dataset.id = r;   // ✅ το σωστό key
-
-    // όνομα room
-    const nameSpan = document.createElement('span');
-    nameSpan.textContent = `#${r}`;
-
-    // counter badge
-    const countSpan = document.createElement('span');
-    countSpan.className = 'room-count';
-    countSpan.textContent = "0"; // default
-
-    div.appendChild(nameSpan);
-    div.appendChild(countSpan);
-
-    // click -> αλλαγή δωματίου
-    div.addEventListener('click', () => switchRoom(r));
-
-    // δεξί κλικ -> context menu
-    div.addEventListener('contextmenu', (e) => {
-      e.preventDefault();
-      clickedRoom = div;
-      console.log("🖱️ Right click σε roomId:", div.dataset.id); // ✅ εδώ βλέπεις το σωστό
-      roomMenu.style.top = e.pageY + "px";
-      roomMenu.style.left = e.pageX + "px";
-      roomMenu.style.display = "block";
-    });
-
-    roomsList.appendChild(div);
-  });
-
-  updateRoomCounts(); // counters
-};
-
-
-  // Φρεσκάρουμε counters (αν το χρειαστείς αργότερα)
-  updateRoomCounts();
-};
-const switchRoom = (room) => {
-  currentRoom = room;
-  roomTitle.textContent = `#${room}`;
-  document.querySelectorAll('.room-item').forEach(el =>
-    el.classList.toggle('active', el.textContent === `#${room}`)
-  );
-
-  if (typeof messagesUnsub === 'function') messagesUnsub();
-  messagesEl.innerHTML = '';
-
-  const roomRef = ref(db, `messages/${room}`);
-
-  // 📥 Νέα μηνύματα
-  messagesUnsub = onChildAdded(roomRef, (snap) => { 
-    const m = snap.val(); 
-    m.id = snap.key;   
-    appendMessage(m, auth.currentUser?.uid); 
-  });
-
-  // 🗑 Διαγραμμένα μηνύματα
-  onChildRemoved(roomRef, (snap) => {
-    const el = messagesEl.querySelector(`[data-id="${snap.key}"]`);
-    if (el) {
-      el.remove();  // 🔥 φεύγει από UI χωρίς F5
-    }
-  });
-};
+// ===================== SWITCH ROOM (cleaned - kept later version) =====================
 
 // 🎵 Καθάρισε YouTube player όταν αλλάζεις δωμάτιο
 const playerDiv = document.getElementById("youtubePlayer");
