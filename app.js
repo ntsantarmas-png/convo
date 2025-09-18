@@ -974,19 +974,17 @@ let clickedRoom = null;
 deleteRoomBtn.addEventListener("click", async () => {
   if (!clickedRoom) return;
 
-  const roomId = clickedRoom.dataset.id;   // ✅ μόνο dataset.id
+  const roomId = clickedRoom.dataset.id;   // ✅ μόνο το data-id (χωρίς #, χωρίς counter)
   const sure = confirm("Delete room " + roomId + "?");
-  console.log("🗑 Deleting room:", roomId);
+  console.log("Deleting:", roomId);
 
   if (sure) {
     try {
-      // σβήνουμε room + messages
       await remove(ref(db, `rooms/${roomId}`));
       await remove(ref(db, `messages/${roomId}`));
 
       showToast("🗑 Room deleted: " + roomId);
 
-      // ανανέωση λίστας + γύρισμα στο general
       await renderRooms();
       switchRoom("general");
     } catch (e) {
@@ -1000,7 +998,8 @@ deleteRoomBtn.addEventListener("click", async () => {
 // ===================== ROOM RENAME =====================
 renameRoomBtn.addEventListener("click", async () => {
   if (!clickedRoom) return;
-  const oldName = clickedRoom.dataset.id;   // ✅ μόνο dataset.id
+
+  const oldName = clickedRoom.dataset.id;   // ✅ μόνο το data-id
   const newName = prompt("New name for room:", oldName);
 
   if (newName && newName !== oldName) {
@@ -1008,12 +1007,14 @@ renameRoomBtn.addEventListener("click", async () => {
       const oldRef = ref(db, `rooms/${oldName}`);
       const newRef = ref(db, `rooms/${newName}`);
 
+      // Αντιγραφή δεδομένων room
       const snap = await get(oldRef);
       if (snap.exists()) {
         await set(newRef, { ...snap.val(), name: newName });
         await remove(oldRef);
       }
 
+      // Αντιγραφή μηνυμάτων
       const oldMsgs = await get(ref(db, `messages/${oldName}`));
       if (oldMsgs.exists()) {
         await set(ref(db, `messages/${newName}`), oldMsgs.val());
