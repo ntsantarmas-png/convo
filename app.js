@@ -953,21 +953,31 @@ document.getElementById("ctxUnblock").addEventListener("click", () => {
 });
 
 // ===================== ROOM CONTEXT MENU =====================
+const roomMenu      = document.getElementById("roomContextMenu");
+const joinRoomBtn   = document.getElementById("joinRoom");
+const leaveRoomBtn  = document.getElementById("leaveRoom");
+const renameRoomBtn = document.getElementById("renameRoom");
+const deleteRoomBtn = document.getElementById("deleteRoom");
 
-// DELETE
+let clickedRoom = null;
+
+// ===================== ROOM DELETE =====================
 deleteRoomBtn.addEventListener("click", async () => {
   if (!clickedRoom) return;
 
-  const roomId = clickedRoom.dataset.id;   // ✅ dataset.id
+  const roomId = clickedRoom.dataset.id;   // ✅ μόνο dataset.id
   const sure = confirm("Delete room " + roomId + "?");
+  console.log("🗑 Deleting room:", roomId);
 
   if (sure) {
     try {
+      // σβήνουμε room + messages
       await remove(ref(db, `rooms/${roomId}`));
       await remove(ref(db, `messages/${roomId}`));
 
       showToast("🗑 Room deleted: " + roomId);
 
+      // ανανέωση λίστας + γύρισμα στο general
       await renderRooms();
       switchRoom("general");
     } catch (e) {
@@ -978,10 +988,10 @@ deleteRoomBtn.addEventListener("click", async () => {
   roomMenu.style.display = "none";
 });
 
-// RENAME
+// ===================== ROOM RENAME =====================
 renameRoomBtn.addEventListener("click", async () => {
   if (!clickedRoom) return;
-  const oldName = clickedRoom.dataset.id;   // ✅ όχι textContent
+  const oldName = clickedRoom.dataset.id;   // ✅ μόνο dataset.id
   const newName = prompt("New name for room:", oldName);
 
   if (newName && newName !== oldName) {
@@ -1012,17 +1022,17 @@ renameRoomBtn.addEventListener("click", async () => {
   roomMenu.style.display = "none";
 });
 
-// JOIN
+// ===================== ROOM JOIN =====================
 joinRoomBtn.addEventListener("click", () => {
   if (!clickedRoom) return;
-  showToast("JOIN room: " + clickedRoom.dataset.id);  // ✅
+  showToast("JOIN room: " + clickedRoom.dataset.id);  // ✅ μόνο dataset.id
   roomMenu.style.display = "none";
 });
 
-// LEAVE
+// ===================== ROOM LEAVE =====================
 leaveRoomBtn.addEventListener("click", () => {
   if (!clickedRoom) return;
-  showToast("LEAVE room: " + clickedRoom.dataset.id); // ✅
+  showToast("LEAVE room: " + clickedRoom.dataset.id); // ✅ μόνο dataset.id
   roomMenu.style.display = "none";
 });
 
@@ -1031,7 +1041,7 @@ const switchRoom = (room) => {
   currentRoom = room;
   roomTitle.textContent = `#${room}`;
   document.querySelectorAll('.room-item').forEach(el =>
-    el.classList.toggle('active', el.dataset.id === room) // ✅ fix
+    el.classList.toggle('active', el.dataset.id === room) // ✅ dataset.id
   );
 
   if (typeof messagesUnsub === 'function') messagesUnsub();
