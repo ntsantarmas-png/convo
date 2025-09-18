@@ -960,13 +960,29 @@ const deleteRoomBtn = document.getElementById("deleteRoom");
 
 let clickedRoom = null;
 
-// ===================== ROOM DELETE =====================
+// --- ΑΝΟΙΓΜΑ CONTEXT MENU ΜΕ ΔΕΞΙ ΚΛΙΚ ---
+roomsList.addEventListener("contextmenu", (e) => {
+  const roomEl = e.target.closest(".room-item");
+  if (!roomEl) return;
+
+  e.preventDefault();
+  clickedRoom = roomEl;
+
+  const roomId = roomEl.dataset.id;   // ✅ Παίρνουμε καθαρό id (χωρίς #, χωρίς extra νούμερα)
+  console.log("Right click σε:", roomId);
+
+  // Θέση menu
+  roomMenu.style.top = e.pageY + "px";
+  roomMenu.style.left = e.pageX + "px";
+  roomMenu.style.display = "block";
+});
+
+// --- DELETE ROOM ---
 deleteRoomBtn.addEventListener("click", async () => {
   if (!clickedRoom) return;
 
-  const roomId = clickedRoom.dataset.id;   // ✅ πάντα dataset.id
+  const roomId = clickedRoom.dataset.id;
   const sure = confirm("Delete room " + roomId + "?");
-  console.log("Deleting:", roomId);
 
   if (sure) {
     try {
@@ -985,10 +1001,11 @@ deleteRoomBtn.addEventListener("click", async () => {
   roomMenu.style.display = "none";
 });
 
-// ===================== ROOM RENAME =====================
+// --- RENAME ROOM ---
 renameRoomBtn.addEventListener("click", async () => {
   if (!clickedRoom) return;
-  const oldName = clickedRoom.dataset.id;   // ✅ όχι textContent
+
+  const oldName = clickedRoom.dataset.id;
   const newName = prompt("New name for room:", oldName);
 
   if (newName && newName !== oldName) {
@@ -1019,32 +1036,32 @@ renameRoomBtn.addEventListener("click", async () => {
   roomMenu.style.display = "none";
 });
 
-// ===================== ROOM JOIN (demo) =====================
+// --- JOIN (demo) ---
 joinRoomBtn.addEventListener("click", () => {
   if (!clickedRoom) return;
-  showToast("JOIN room: " + clickedRoom.dataset.id);  // ✅
+  showToast("JOIN room: " + clickedRoom.dataset.id);
   roomMenu.style.display = "none";
 });
 
-// ===================== ROOM LEAVE (demo) =====================
+// --- LEAVE (demo) ---
 leaveRoomBtn.addEventListener("click", () => {
   if (!clickedRoom) return;
-  showToast("LEAVE room: " + clickedRoom.dataset.id); // ✅
+  showToast("LEAVE room: " + clickedRoom.dataset.id);
   roomMenu.style.display = "none";
 });
 
-// ===================== ROOM MENU CLOSE HANDLERS =====================
+// --- ΚΛΕΙΣΙΜΟ MENU ---
 document.addEventListener("click", (e) => {
   if (roomMenu && roomMenu.style.display === "block" && !roomMenu.contains(e.target)) {
     roomMenu.style.display = "none";
   }
 });
-
 document.addEventListener("keydown", (e) => {
   if (e.key === "Escape" && roomMenu && roomMenu.style.display === "block") {
     roomMenu.style.display = "none";
   }
 });
+
 // ===================== ADMIN DELETE (Right-Click on Message) =====================
 const msgMenu = document.getElementById("msgMenu");
 const deleteMsgBtn = document.getElementById("deleteMsgBtn");
