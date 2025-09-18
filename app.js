@@ -965,7 +965,8 @@ deleteRoomBtn.addEventListener("click", async () => {
 
   const roomId = clickedRoom.dataset.id;   // 🔑 Παίρνουμε το σωστό key
   const sure = confirm("Delete room " + roomId + "?");
-
+console.log("Deleting:", roomId);
+  
   if (sure) {
     try {
       // Σβήνουμε το δωμάτιο
