@@ -965,6 +965,7 @@ const renameRoomBtn = document.getElementById("renameRoom");
 const deleteRoomBtn = document.getElementById("deleteRoom");
 
 let clickedRoom = null;
+console.log("deleteRoomBtn is:", deleteRoomBtn);
 
 // ===================== ROOM DELETE =====================
 deleteRoomBtn.addEventListener("click", async () => {
