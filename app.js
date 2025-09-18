@@ -118,13 +118,9 @@ const setupPresence=async(user)=>{
   await set(statusRef,online);
 };
 
-// ===================== ROOMS (Default / Create / Switch) =====================
-const defaultRooms = ['general', 'tech', 'random'];
+L = '';
 
-const renderRooms = async () => {
-  roomsList.innerHTML = '';
-
-  // Σιγουρεύουμε ότι υπάρχουν τα default rooms
+  // Βεβαιωνόμαστε ότι υπάρχουν τα default rooms
   await Promise.all(defaultRooms.map(async r => {
     const snap = await get(child(ref(db), `rooms/${r}`));
     if (!snap.exists()) {
@@ -136,14 +132,15 @@ const renderRooms = async () => {
   const snap = await get(child(ref(db), 'rooms'));
   const rooms = snap.exists() ? Object.keys(snap.val()).sort() : defaultRooms;
 
-  // Δημιουργία DOM
+  // Δημιουργία DOM για κάθε room
   rooms.forEach(r => {
     const div = document.createElement('div');
     div.className = 'room-item' + (r === currentRoom ? ' active' : '');
-    div.dataset.id = r;
+    div.dataset.id = r;   // ✅ το καθαρό key
 
     // όνομα room
     const nameSpan = document.createElement('span');
+    nameSpan.className = 'room-name';
     nameSpan.textContent = `#${r}`;
 
     // counter badge
@@ -151,16 +148,28 @@ const renderRooms = async () => {
     countSpan.className = 'room-count';
     countSpan.textContent = "0"; // default
 
+    // βάζουμε name και counter στο div
     div.appendChild(nameSpan);
     div.appendChild(countSpan);
 
+    // click -> αλλαγή δωματίου
     div.addEventListener('click', () => switchRoom(r));
+
+    // δεξί κλικ -> context menu
+    div.addEventListener('contextmenu', (e) => {
+      e.preventDefault();
+      clickedRoom = div;
+      roomMenu.style.top = e.pageY + "px";
+      roomMenu.style.left = e.pageX + "px";
+      roomMenu.style.display = "block";
+    });
+
     roomsList.appendChild(div);
   });
 
-  updateRoomCounts(); // φρεσκάρει τους counters
+  // Φρεσκάρουμε counters (αν το χρειαστείς αργότερα)
+  updateRoomCounts();
 };
-
 const switchRoom = (room) => {
   currentRoom = room;
   roomTitle.textContent = `#${room}`;
