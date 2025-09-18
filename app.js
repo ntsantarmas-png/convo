@@ -951,37 +951,14 @@ document.getElementById("ctxUnblock").addEventListener("click", () => {
   const username = contextTargetUser.querySelector("span")?.textContent;
   alert(`Unblock: ${username}`);
 });
+
 // ===================== ROOM CONTEXT MENU =====================
-const roomMenu      = document.getElementById("roomContextMenu");
-const joinRoomBtn   = document.getElementById("joinRoom");
-const leaveRoomBtn  = document.getElementById("leaveRoom");
-const renameRoomBtn = document.getElementById("renameRoom");
-const deleteRoomBtn = document.getElementById("deleteRoom");
 
-let clickedRoom = null;
-
-// --- ΑΝΟΙΓΜΑ CONTEXT MENU ΜΕ ΔΕΞΙ ΚΛΙΚ ---
-roomsList.addEventListener("contextmenu", (e) => {
-  const roomEl = e.target.closest(".room-item");
-  if (!roomEl) return;
-
-  e.preventDefault();
-  clickedRoom = roomEl;
-
-  const roomId = roomEl.dataset.id;   // ✅ Παίρνουμε καθαρό id (χωρίς #, χωρίς extra νούμερα)
-  console.log("Right click σε:", roomId);
-
-  // Θέση menu
-  roomMenu.style.top = e.pageY + "px";
-  roomMenu.style.left = e.pageX + "px";
-  roomMenu.style.display = "block";
-});
-
-// --- DELETE ROOM ---
+// DELETE
 deleteRoomBtn.addEventListener("click", async () => {
   if (!clickedRoom) return;
 
-  const roomId = clickedRoom.dataset.id;
+  const roomId = clickedRoom.dataset.id;   // ✅ dataset.id
   const sure = confirm("Delete room " + roomId + "?");
 
   if (sure) {
@@ -1001,11 +978,10 @@ deleteRoomBtn.addEventListener("click", async () => {
   roomMenu.style.display = "none";
 });
 
-// --- RENAME ROOM ---
+// RENAME
 renameRoomBtn.addEventListener("click", async () => {
   if (!clickedRoom) return;
-
-  const oldName = clickedRoom.dataset.id;
+  const oldName = clickedRoom.dataset.id;   // ✅ όχι textContent
   const newName = prompt("New name for room:", oldName);
 
   if (newName && newName !== oldName) {
@@ -1036,19 +1012,47 @@ renameRoomBtn.addEventListener("click", async () => {
   roomMenu.style.display = "none";
 });
 
-// --- JOIN (demo) ---
+// JOIN
 joinRoomBtn.addEventListener("click", () => {
   if (!clickedRoom) return;
-  showToast("JOIN room: " + clickedRoom.dataset.id);
+  showToast("JOIN room: " + clickedRoom.dataset.id);  // ✅
   roomMenu.style.display = "none";
 });
 
-// --- LEAVE (demo) ---
+// LEAVE
 leaveRoomBtn.addEventListener("click", () => {
   if (!clickedRoom) return;
-  showToast("LEAVE room: " + clickedRoom.dataset.id);
+  showToast("LEAVE room: " + clickedRoom.dataset.id); // ✅
   roomMenu.style.display = "none";
 });
+
+// ===================== SWITCH ROOM FIX =====================
+const switchRoom = (room) => {
+  currentRoom = room;
+  roomTitle.textContent = `#${room}`;
+  document.querySelectorAll('.room-item').forEach(el =>
+    el.classList.toggle('active', el.dataset.id === room) // ✅ fix
+  );
+
+  if (typeof messagesUnsub === 'function') messagesUnsub();
+  messagesEl.innerHTML = '';
+
+  const roomRef = ref(db, `messages/${room}`);
+
+  // 📥 Νέα μηνύματα
+  messagesUnsub = onChildAdded(roomRef, (snap) => {
+    const m = snap.val();
+    m.id = snap.key;
+    appendMessage(m, auth.currentUser?.uid);
+  });
+
+  // 🗑 Διαγραμμένα μηνύματα
+  onChildRemoved(roomRef, (snap) => {
+    const el = messagesEl.querySelector(`[data-id="${snap.key}"]`);
+    if (el) el.remove();
+  });
+};
+
 
 // --- ΚΛΕΙΣΙΜΟ MENU ---
 document.addEventListener("click", (e) => {
