@@ -953,30 +953,29 @@ document.getElementById("ctxUnblock").addEventListener("click", () => {
 });
 
 // ===================== ROOM CONTEXT MENU =====================
-// ====== Room Context Menu actions ======
+const roomMenu      = document.getElementById("roomContextMenu");
 const joinRoomBtn   = document.getElementById("joinRoom");
 const leaveRoomBtn  = document.getElementById("leaveRoom");
 const renameRoomBtn = document.getElementById("renameRoom");
 const deleteRoomBtn = document.getElementById("deleteRoom");
 
+let clickedRoom = null;
+
 // DELETE
 deleteRoomBtn.addEventListener("click", async () => {
   if (!clickedRoom) return;
 
-  const roomId = clickedRoom.dataset.id;   // 🔑 Παίρνουμε το σωστό key
+  const roomId = clickedRoom.dataset.id;   // ✅ πάντα dataset.id
   const sure = confirm("Delete room " + roomId + "?");
-console.log("Deleting:", roomId);
-  
+  console.log("Deleting:", roomId);
+
   if (sure) {
     try {
-      // Σβήνουμε το δωμάτιο
       await remove(ref(db, `rooms/${roomId}`));
-      // Σβήνουμε και τα μηνύματα του δωματίου
       await remove(ref(db, `messages/${roomId}`));
 
-      showToast("Room deleted: " + roomId);
+      showToast("🗑 Room deleted: " + roomId);
 
-      // Refresh λίστα + γύρισμα στο general
       await renderRooms();
       switchRoom("general");
     } catch (e) {
@@ -990,7 +989,7 @@ console.log("Deleting:", roomId);
 // RENAME
 renameRoomBtn.addEventListener("click", async () => {
   if (!clickedRoom) return;
-  const oldName = clickedRoom.textContent.replace("#", "");
+  const oldName = clickedRoom.dataset.id;   // ✅ όχι textContent
   const newName = prompt("New name for room:", oldName);
 
   if (newName && newName !== oldName) {
@@ -1010,31 +1009,30 @@ renameRoomBtn.addEventListener("click", async () => {
         await remove(ref(db, `messages/${oldName}`));
       }
 
-      showToast(`Room renamed: ${oldName} → ${newName}`);
+      showToast(`✏️ Room renamed: ${oldName} → ${newName}`);
       await renderRooms();
       switchRoom(newName);
     } catch (e) {
-      console.error("rename room error", e);
+      console.error("❌ rename room error", e);
       showToast("Error renaming room");
     }
   }
   roomMenu.style.display = "none";
 });
 
-// JOIN (απλό demo για τώρα)
+// JOIN (demo)
 joinRoomBtn.addEventListener("click", () => {
   if (!clickedRoom) return;
-  showToast("JOIN room: " + clickedRoom.textContent);
+  showToast("JOIN room: " + clickedRoom.dataset.id);  // ✅
   roomMenu.style.display = "none";
 });
 
-// LEAVE (απλό demo για τώρα)
+// LEAVE (demo)
 leaveRoomBtn.addEventListener("click", () => {
   if (!clickedRoom) return;
-  showToast("LEAVE room: " + clickedRoom.textContent);
+  showToast("LEAVE room: " + clickedRoom.dataset.id); // ✅
   roomMenu.style.display = "none";
 });
-
 
 // ===================== ROOM MENU CLOSE HANDLERS =====================
 document.addEventListener("click", (e) => {
@@ -1048,7 +1046,6 @@ document.addEventListener("keydown", (e) => {
     roomMenu.style.display = "none";
   }
 });
-
 // ===================== USER MENU CLOSE HANDLERS =====================
 document.addEventListener("click", (e) => {
   if (userContextMenu && userContextMenu.style.display === "block" && !userContextMenu.contains(e.target)) {
