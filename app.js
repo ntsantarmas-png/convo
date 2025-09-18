@@ -100,6 +100,7 @@ const renderRooms = async () => {
   rooms.forEach(r => {
     const div = document.createElement('div');
     div.className = 'room-item' + (r === currentRoom ? ' active' : '');
+div.dataset.id = r;
 
     // όνομα room
     const nameSpan = document.createElement('span');
@@ -961,19 +962,24 @@ const deleteRoomBtn = document.getElementById("deleteRoom");
 // DELETE
 deleteRoomBtn.addEventListener("click", async () => {
   if (!clickedRoom) return;
-  const roomName = clickedRoom.textContent.replace("#", "");
-  const sure = confirm("Delete room " + roomName + "?");
+
+  const roomId = clickedRoom.dataset.id;   // 🔑 Παίρνουμε το σωστό key
+  const sure = confirm("Delete room " + roomId + "?");
 
   if (sure) {
     try {
-      await remove(ref(db, `rooms/${roomName}`));
-      await remove(ref(db, `messages/${roomName}`));
-      showToast("Room deleted: " + roomName);
+      // Σβήνουμε το δωμάτιο
+      await remove(ref(db, `rooms/${roomId}`));
+      // Σβήνουμε και τα μηνύματα του δωματίου
+      await remove(ref(db, `messages/${roomId}`));
 
+      showToast("Room deleted: " + roomId);
+
+      // Refresh λίστα + γύρισμα στο general
       await renderRooms();
       switchRoom("general");
     } catch (e) {
-      console.error("delete room error", e);
+      console.error("❌ delete room error", e);
       showToast("Error deleting room");
     }
   }
