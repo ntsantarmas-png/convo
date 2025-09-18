@@ -965,85 +965,115 @@ const renameRoomBtn = document.getElementById("renameRoom");
 const deleteRoomBtn = document.getElementById("deleteRoom");
 
 let clickedRoom = null;
-console.log("deleteRoomBtn is:", deleteRoomBtn);
 
-// ===================== ROOM DELETE =====================
-deleteRoomBtn.addEventListener("click", async () => {
-  if (!clickedRoom) return;
+// δεξί κλικ -> εμφάνιση context menu
+roomsList.addEventListener("contextmenu", (e) => {
+  const roomEl = e.target.closest(".room-item");
+  if (!roomEl) return;
 
-  const roomId = clickedRoom.dataset.id;   // ✅ πάντα dataset.id
-  const sure = confirm("Delete room: " + roomId + "?");
-  console.log("🗑 Προσπάθεια διαγραφής:", roomId);
+  e.preventDefault();
+  clickedRoom = roomEl;
+  console.log("🖱️ Right click σε roomId:", clickedRoom.dataset.id);
 
-  if (sure) {
-    try {
-      // Σβήνουμε το δωμάτιο και τα μηνύματά του
-      await remove(ref(db, `rooms/${roomId}`));
-      await remove(ref(db, `messages/${roomId}`));
-
-      showToast("🗑 Room deleted: " + roomId);
-
-      // Κάνε refresh στη λίστα και γύρνα στο general
-      await renderRooms();
-      switchRoom("general");
-    } catch (e) {
-      console.error("❌ delete room error", e);
-      showToast("Error deleting room");
-    }
-  }
-
-  roomMenu.style.display = "none";
+  roomMenu.style.top = e.pageY + "px";
+  roomMenu.style.left = e.pageX + "px";
+  roomMenu.style.display = "block";
 });
 
-// ===================== ROOM RENAME =====================
-renameRoomBtn.addEventListener("click", async () => {
-  if (!clickedRoom) return;
+// --- DELETE ROOM ---
+if (deleteRoomBtn) {
+  deleteRoomBtn.addEventListener("click", async () => {
+    if (!clickedRoom) return;
 
-  const oldName = clickedRoom.dataset.id;   // ✅ μόνο το data-id
-  const newName = prompt("New name for room:", oldName);
+    const roomId = clickedRoom.dataset.id;
+    const sure = confirm("Delete room: " + roomId + "?");
+    console.log("🗑 Προσπάθεια διαγραφής:", roomId);
 
-  if (newName && newName !== oldName) {
-    try {
-      const oldRef = ref(db, `rooms/${oldName}`);
-      const newRef = ref(db, `rooms/${newName}`);
+    if (sure) {
+      try {
+        await remove(ref(db, `rooms/${roomId}`));
+        await remove(ref(db, `messages/${roomId}`));
 
-      // Αντιγραφή δεδομένων room
-      const snap = await get(oldRef);
-      if (snap.exists()) {
-        await set(newRef, { ...snap.val(), name: newName });
-        await remove(oldRef);
+        showToast("🗑 Room deleted: " + roomId);
+
+        await renderRooms();
+        switchRoom("general");
+      } catch (e) {
+        console.error("❌ delete room error", e);
+        showToast("Error deleting room");
       }
-
-      // Αντιγραφή μηνυμάτων
-      const oldMsgs = await get(ref(db, `messages/${oldName}`));
-      if (oldMsgs.exists()) {
-        await set(ref(db, `messages/${newName}`), oldMsgs.val());
-        await remove(ref(db, `messages/${oldName}`));
-      }
-
-      showToast(`✏️ Room renamed: ${oldName} → ${newName}`);
-      await renderRooms();
-      switchRoom(newName);
-    } catch (e) {
-      console.error("❌ rename room error", e);
-      showToast("Error renaming room");
     }
+    roomMenu.style.display = "none";
+  });
+}
+
+// --- RENAME ROOM ---
+if (renameRoomBtn) {
+  renameRoomBtn.addEventListener("click", async () => {
+    if (!clickedRoom) return;
+
+    const oldName = clickedRoom.dataset.id;
+    const newName = prompt("New name for room:", oldName);
+
+    if (newName && newName !== oldName) {
+      try {
+        const oldRef = ref(db, `rooms/${oldName}`);
+        const newRef = ref(db, `rooms/${newName}`);
+
+        // Αντιγραφή δεδομένων room
+        const snap = await get(oldRef);
+        if (snap.exists()) {
+          await set(newRef, { ...snap.val(), name: newName });
+          await remove(oldRef);
+        }
+
+        // Αντιγραφή μηνυμάτων
+        const oldMsgs = await get(ref(db, `messages/${oldName}`));
+        if (oldMsgs.exists()) {
+          await set(ref(db, `messages/${newName}`), oldMsgs.val());
+          await remove(ref(db, `messages/${oldName}`));
+        }
+
+        showToast(`✏️ Room renamed: ${oldName} → ${newName}`);
+        await renderRooms();
+        switchRoom(newName);
+      } catch (e) {
+        console.error("❌ rename room error", e);
+        showToast("Error renaming room");
+      }
+    }
+    roomMenu.style.display = "none";
+  });
+}
+
+// --- JOIN ROOM (demo) ---
+if (joinRoomBtn) {
+  joinRoomBtn.addEventListener("click", () => {
+    if (!clickedRoom) return;
+    showToast("JOIN room: " + clickedRoom.dataset.id);
+    roomMenu.style.display = "none";
+  });
+}
+
+// --- LEAVE ROOM (demo) ---
+if (leaveRoomBtn) {
+  leaveRoomBtn.addEventListener("click", () => {
+    if (!clickedRoom) return;
+    showToast("LEAVE room: " + clickedRoom.dataset.id);
+    roomMenu.style.display = "none";
+  });
+}
+
+// --- ΚΛΕΙΣΙΜΟ MENU ---
+document.addEventListener("click", (e) => {
+  if (roomMenu && roomMenu.style.display === "block" && !roomMenu.contains(e.target)) {
+    roomMenu.style.display = "none";
   }
-  roomMenu.style.display = "none";
 });
-
-// ===================== ROOM JOIN =====================
-joinRoomBtn.addEventListener("click", () => {
-  if (!clickedRoom) return;
-  showToast("JOIN room: " + clickedRoom.dataset.id);  // ✅ μόνο dataset.id
-  roomMenu.style.display = "none";
-});
-
-// ===================== ROOM LEAVE =====================
-leaveRoomBtn.addEventListener("click", () => {
-  if (!clickedRoom) return;
-  showToast("LEAVE room: " + clickedRoom.dataset.id); // ✅ μόνο dataset.id
-  roomMenu.style.display = "none";
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape" && roomMenu && roomMenu.style.display === "block") {
+    roomMenu.style.display = "none";
+  }
 });
 
 // ===================== SWITCH ROOM FIX =====================
