@@ -120,6 +120,7 @@ const renderRooms = async () => {
   });
 
   updateRoomCounts(); // φρεσκάρει τους counters
+};
 const switchRoom = (room) => {
   currentRoom = room;
   roomTitle.textContent = `#${room}`;
