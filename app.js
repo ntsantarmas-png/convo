@@ -139,22 +139,21 @@ const renderRooms = async () => {
   const roomRef = ref(db, `messages/${room}`);
   // εδώ φορτώνεις τα μηνύματα…
 };
+// 📥 Νέα μηνύματα
+messagesUnsub = onChildAdded(roomRef, (snap) => {
+  const m = snap.val();
+  m.id = snap.key;
+  appendMessage(m, auth.currentUser?.uid);
+});
 
-  // 📥 Νέα μηνύματα
-  messagesUnsub = onChildAdded(roomRef, (snap) => { 
-    const m = snap.val(); 
-    m.id = snap.key;   
-    appendMessage(m, auth.currentUser?.uid); 
-  });
+// 🗑 Διαγραμμένα μηνύματα
+onChildRemoved(roomRef, (snap) => {
+  const el = messagesEl.querySelector(`[data-id="${snap.key}"]`);
+  if (el) {
+    el.remove(); // 🔥 φεύγει από UI χωρίς F5
+  }
+});
 
-  // 🗑 Διαγραμμένα μηνύματα
-  onChildRemoved(roomRef, (snap) => {
-    const el = messagesEl.querySelector(`[data-id="${snap.key}"]`);
-    if (el) {
-      el.remove();  // 🔥 φεύγει από UI χωρίς F5
-    }
-  });
-};
 
   // 🎵 Καθάρισε YouTube player όταν αλλάζεις δωμάτιο
   const playerDiv = document.getElementById("youtubePlayer");
