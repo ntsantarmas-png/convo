@@ -653,19 +653,21 @@ label {
 }
 
 /* ===================== USER ROLES / AVATARS ===================== */
+/* ===================== USER CATEGORY HEADERS ===================== */
 .user-category {
-  margin: 16px 0 6px;
+  margin: 12px 0 6px;
   padding: 4px 10px;
-  font-size: 12px;
-  font-weight: 700;
+  font-size: 11px;
+  font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 1px;
+  letter-spacing: 0.5px;
   border-radius: 6px;
   text-align: center;
-  color: #fff;
-  background: linear-gradient(90deg, #023047, #219ebc);
-  box-shadow: 0 0 6px rgba(33, 158, 188, 0.8), 0 0 12px rgba(33, 158, 188, 0.5);
+  color: var(--muted);
+  background: rgba(255,255,255,0.05); /* πιο flat, όχι έντονο gradient */
+  border: 1px solid rgba(255,255,255,0.08);
 }
+
 
 .avatar {
   position: relative;
