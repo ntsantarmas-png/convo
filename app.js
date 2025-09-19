@@ -120,18 +120,25 @@ const renderRooms = async () => {
   });
 
   updateRoomCounts(); // φρεσκάρει τους counters
-};
-const switchRoom = (room) => {
+};const switchRoom = (room) => {
   currentRoom = room;
   roomTitle.textContent = `#${room}`;
   document.querySelectorAll('.room-item').forEach(el =>
     el.classList.toggle('active', el.textContent === `#${room}`)
   );
 
+  // ενημέρωση τρέχοντος room στη βάση
+  if (auth.currentUser) {
+    const userRef = ref(db, `users/${auth.currentUser.uid}`);
+    update(userRef, { currentRoom: room });
+  }
+
   if (typeof messagesUnsub === 'function') messagesUnsub();
   messagesEl.innerHTML = '';
 
   const roomRef = ref(db, `messages/${room}`);
+  // εδώ φορτώνεις τα μηνύματα…
+};
 
   // 📥 Νέα μηνύματα
   messagesUnsub = onChildAdded(roomRef, (snap) => { 
