@@ -154,7 +154,7 @@ const renderRooms = async () => {
       el.remove();  // 🔥 φεύγει από UI χωρίς F5
     }
   });
-};
+
 
   // 🎵 Καθάρισε YouTube player όταν αλλάζεις δωμάτιο
   const playerDiv = document.getElementById("youtubePlayer");
