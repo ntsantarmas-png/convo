@@ -664,9 +664,10 @@ label {
   border-radius: 6px;
   text-align: center;
   color: var(--muted);
-  background: rgba(255,255,255,0.05); /* πιο flat, όχι έντονο gradient */
+  background: rgba(255,255,255,0.05);
   border: 1px solid rgba(255,255,255,0.08);
 }
+
 
 
 .avatar {
