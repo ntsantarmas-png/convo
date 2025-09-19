@@ -55,10 +55,15 @@
 <!-- ===================== APP VIEW (Sidebar / Chat / Users) ===================== -->
 <main class="app hidden" id="appView">
   <!-- ----- SIDEBAR: ROOMS LIST ----- -->
+
   <aside class="sidebar">
-<div class="sidebar-header"><h2>Rooms</h2><button class="btn tiny" id="newRoomBtn">+ New</button></div>
-<nav class="rooms" id="roomsList"></nav>
-</aside>
+    <div class="rooms-header">
+      <span>Rooms</span>
+      <button id="newRoomBtn">+ New</button>
+    </div>
+    <nav class="rooms" id="roomsList"></nav>
+  </aside>
+
 <!-- ----- MAIN CHAT SECTION ----- -->
 <section class="chat">
   <div class="room-title">
