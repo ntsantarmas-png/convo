@@ -120,11 +120,11 @@ const renderRooms = async () => {
   });
 
   updateRoomCounts(); // φρεσκάρει τους counters
-};const switchRoom = (room) => {
+const switchRoom = (room) => {
   currentRoom = room;
   roomTitle.textContent = `#${room}`;
   document.querySelectorAll('.room-item').forEach(el =>
-    el.classList.toggle('active', el.textContent === `#${room}`)
+    el.classList.toggle('active', el.dataset.name === room)
   );
 
   // ενημέρωση τρέχοντος room στη βάση
@@ -137,23 +137,21 @@ const renderRooms = async () => {
   messagesEl.innerHTML = '';
 
   const roomRef = ref(db, `messages/${room}`);
-  // εδώ φορτώνεις τα μηνύματα…
-};
-// 📥 Νέα μηνύματα
-messagesUnsub = onChildAdded(roomRef, (snap) => {
-  const m = snap.val();
-  m.id = snap.key;
-  appendMessage(m, auth.currentUser?.uid);
-});
 
-// 🗑 Διαγραμμένα μηνύματα
-onChildRemoved(roomRef, (snap) => {
-  const el = messagesEl.querySelector(`[data-id="${snap.key}"]`);
-  if (el) {
-    el.remove(); // 🔥 φεύγει από UI χωρίς F5
-  }
-});
+  // 📥 Νέα μηνύματα
+  messagesUnsub = onChildAdded(roomRef, (snap) => { 
+    const m = snap.val(); 
+    m.id = snap.key;   
+    appendMessage(m, auth.currentUser?.uid); 
+  });
 
+  // 🗑 Διαγραμμένα μηνύματα
+  onChildRemoved(roomRef, (snap) => {
+    const el = messagesEl.querySelector(`[data-id="${snap.key}"]`);
+    if (el) {
+      el.remove();  // 🔥 φεύγει από UI χωρίς F5
+    }
+  });
 
   // 🎵 Καθάρισε YouTube player όταν αλλάζεις δωμάτιο
   const playerDiv = document.getElementById("youtubePlayer");
@@ -161,6 +159,7 @@ onChildRemoved(roomRef, (snap) => {
     playerDiv.innerHTML = '<button id="closePlayerBtn" class="close-player">✖</button>';
     playerDiv.classList.remove("active");
   }
+};
 
 
   newRoomBtn?.addEventListener('click',()=>{ roomDialog.showModal(); roomNameInput.value=''; setTimeout(()=>roomNameInput.focus(),50); });
