@@ -482,6 +482,32 @@ label {
   overflow: auto;
   height: calc(100% - 52px);
 }
+/* ===================== ROOMS HEADER ===================== */
+.rooms-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 4px 10px;
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--muted);
+}
+
+.rooms-header button {
+  font-size: 12px;
+  padding: 3px 8px;
+  border-radius: 6px;
+  background: var(--accent);
+  border: none;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.rooms-header button:hover {
+  background: var(--accent-2);
+}
 
 
 /* ===================== ROOM ITEM ===================== */
