@@ -127,7 +127,6 @@ const switchRoom = (room) => {
     el.classList.toggle('active', el.dataset.name === room)
   );
 
-  // ενημέρωση τρέχοντος room στη βάση
   if (auth.currentUser) {
     const userRef = ref(db, `users/${auth.currentUser.uid}`);
     update(userRef, { currentRoom: room });
@@ -136,20 +135,21 @@ const switchRoom = (room) => {
   if (typeof messagesUnsub === 'function') messagesUnsub();
   messagesEl.innerHTML = '';
 
+  // 👉 ΟΡΙΖΕΙΣ roomRef ΕΔΩ
   const roomRef = ref(db, `messages/${room}`);
 
   // 📥 Νέα μηνύματα
-  messagesUnsub = onChildAdded(roomRef, (snap) => { 
-    const m = snap.val(); 
-    m.id = snap.key;   
-    appendMessage(m, auth.currentUser?.uid); 
+  messagesUnsub = onChildAdded(roomRef, (snap) => {
+    const m = snap.val();
+    m.id = snap.key;
+    appendMessage(m, auth.currentUser?.uid);
   });
 
   // 🗑 Διαγραμμένα μηνύματα
   onChildRemoved(roomRef, (snap) => {
     const el = messagesEl.querySelector(`[data-id="${snap.key}"]`);
     if (el) {
-      el.remove();  // 🔥 φεύγει από UI χωρίς F5
+      el.remove();
     }
   });
 
