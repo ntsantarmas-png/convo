@@ -1194,4 +1194,4 @@ const usersPanel = document.querySelector(".users");
 if (usersPanel) {
   const observer = new MutationObserver(() => removeStrayDotsDeep(usersPanel));
   observer.observe(usersPanel, { childList: true, subtree: true });
-}
+};
