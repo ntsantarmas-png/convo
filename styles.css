@@ -486,14 +486,23 @@ label {
 
 /* ===================== ROOM ITEM ===================== */
 .room-item {
-  padding: 10px 12px;
-  border-radius: 14px;
-  background: rgba(255,255,255,.04);
-  border: 1px solid rgba(255,255,255,.08);
+  padding: 6px 10px; /* πιο slim */
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
   cursor: pointer;
+  font-size: 14px;
+  transition: background 0.2s;
 }
+
+.room-item:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
 .room-item.active {
-  outline: 2px solid var(--accent);
+  background: rgba(255, 255, 255, 0.12);
+  border-color: var(--accent);
+  font-weight: 600;
 }
 
 /* ===================== CHAT ===================== */
