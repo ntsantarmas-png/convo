@@ -482,22 +482,22 @@ label {
   overflow: auto;
   height: calc(100% - 52px);
 }
-/* ===================== ROOMS HEADER ===================== */
+/* ===================== ROOMS HEADER POLISH ===================== */
 .rooms-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 4px 10px;
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  color: var(--muted);
+  color: var(--muted); /* πιο απαλό αντί για καθαρό λευκό */
 }
 
 .rooms-header button {
-  font-size: 12px;
-  padding: 3px 8px;
+  font-size: 11px;
+  padding: 2px 8px;
   border-radius: 6px;
   background: var(--accent);
   border: none;
