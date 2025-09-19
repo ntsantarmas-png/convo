@@ -749,57 +749,6 @@ label {
 .user-category:first-of-type {
   margin-top: 16px;
 }
-
-.badge {
-  font-size: 10px;
-  font-weight: bold;
-  padding: 2px 6px;
-  border-radius: 10px;
-  background: #333;
-  color: #fff;
-  margin-left: auto;
-}
-
-/* Χρώματα για ρόλους */
-.admin strong { color: #ffb703 !important; }
-.mod span { color: #06d6a0 !important; }
-.vip span { color: #7209b7 !important; }
-
-.badge {
-  font-size: 10px;
-  font-weight: bold;
-  padding: 2px 6px;
-  border-radius: 10px;
-  margin-left: auto;
-  text-transform: uppercase;
-}
-
-/* Admin badge */
-.badge.admin {
-  background: linear-gradient(90deg, #ffb703, #fb8500);
-  color: #000;
-  box-shadow: 0 0 6px rgba(251, 133, 0, 0.7);
-}
-
-/* Mod badge */
-.badge.mod {
-  background: linear-gradient(90deg, #06d6a0, #118ab2);
-  color: #fff;
-  box-shadow: 0 0 6px rgba(6, 214, 160, 0.7);
-}
-
-/* VIP badge */
-.badge.vip {
-  background: linear-gradient(90deg, #7209b7, #4361ee);
-  color: #fff;
-  box-shadow: 0 0 6px rgba(114, 9, 183, 0.7);
-}
-
-/* User badge (default) */
-.badge.user {
-  background: #555;
-  color: #fff;
-}
 .avatar {
   position: relative;
   width: 32px;
@@ -864,8 +813,47 @@ label {
 }
 
 /* ===================== BADGES ===================== */
-.badge{font-size:10px;padding:2px 6px;border-radius:999px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.18);margin-left:auto}.badge.admin{background:linear-gradient(90deg,#ff8a00,#ff3d54);border:none;color:white}
-  .status-dot{width:8px;height:8px;border-radius:50%;background:var(--danger)}.status-dot.online{background:var(--success)}
+/* ===================== USER BADGES POLISH ===================== */
+.badge {
+  font-size: 10px;
+  font-weight: 600;
+  padding: 2px 6px;
+  border-radius: 8px;
+  margin-left: auto;
+  text-transform: uppercase;
+  background: rgba(255,255,255,.12);
+  border: 1px solid rgba(255,255,255,.18);
+  color: var(--text);
+}
+
+/* Admin badge */
+.badge.admin {
+  background: linear-gradient(90deg, #ffb703, #fb8500);
+  color: #000;
+  box-shadow: 0 0 6px rgba(251,133,0,0.6);
+}
+
+/* Mod badge */
+.badge.mod {
+  background: linear-gradient(90deg, #06d6a0, #118ab2);
+  color: #fff;
+  box-shadow: 0 0 6px rgba(6,214,160,0.6);
+}
+
+/* VIP badge */
+.badge.vip {
+  background: linear-gradient(90deg, #7209b7, #4361ee);
+  color: #fff;
+  box-shadow: 0 0 6px rgba(114,9,183,0.6);
+}
+
+/* User badge */
+.badge.user {
+  background: rgba(255,255,255,.15);
+  color: var(--text);
+}
+
+
 
 /* ===================== CONTEXT MENUS ===================== */
 .context-menu {
@@ -981,49 +969,7 @@ html, body {
 }
 
 /* ==== BADGES ==== */
-.badge {
-  display: inline-block;
-  padding: 2px 8px;
-  margin-left: 6px;
-  border-radius: 8px;
-  font-size: 11px;
-  font-weight: bold;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.25);
-}
 
-/* Admin badge */
-.badge.admin {
-  background: #ffb703;
-  color: #000;
-  text-shadow: 0 0 4px rgba(255, 183, 3, 0.7);
-  box-shadow: 0 0 8px rgba(255, 183, 3, 0.5);
-}
-
-/* Moderator badge */
-.badge.mod {
-  background: #06d6a0;
-  color: #000;
-  text-shadow: 0 0 4px rgba(6, 214, 160, 0.7);
-  box-shadow: 0 0 8px rgba(6, 214, 160, 0.5);
-}
-
-/* VIP badge */
-.badge.vip {
-  background: #7209b7;
-  color: #fff;
-  text-shadow: 0 0 4px rgba(114, 9, 183, 0.8);
-  box-shadow: 0 0 8px rgba(114, 9, 183, 0.6);
-}
-
-/* User badge (default) */
-.badge.user {
-  background: #8d99ae;
-  color: #fff;
-  text-shadow: 0 0 4px rgba(141, 153, 174, 0.7);
-  box-shadow: 0 0 8px rgba(141, 153, 174, 0.5);
-}
 #messageInput {
   resize: none;
   overflow-y: hidden;   /* κρύβει το scrollbar */
