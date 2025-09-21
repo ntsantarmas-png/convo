@@ -258,12 +258,9 @@ if (text.includes("youtube.com") || text.includes("youtu.be")) {
   emojiPanel?.classList.remove("show");
 });
 
-// ===================== AUTO-GROW TEXTAREA =====================
-messageInput.addEventListener("input", () => {
-  messageInput.style.height = "auto";
-  messageInput.style.height = messageInput.scrollHeight + "px";
-});
 
+
+// ===================== ENTER / SHIFT+ENTER =====================
 messageInput.addEventListener("keydown", (e) => {
   if (e.key === "Enter" && !e.shiftKey) {
     e.preventDefault(); 
@@ -271,24 +268,28 @@ messageInput.addEventListener("keydown", (e) => {
   }
 });
 
+
+// ===================== AUTO-GROW + TYPING =====================
 const typingRef = ref(db, `typing/${currentRoom}/${auth.currentUser.uid}`);
 let typingTimeout;
 
 messageInput.addEventListener("input", () => {
-  // Μόλις αρχίσει να γράφει
+  // Auto-grow textarea
+  messageInput.style.height = "auto";
+  messageInput.style.height = messageInput.scrollHeight + "px";
+
+  // Typing indicator
   set(typingRef, {
     uid: auth.currentUser.uid,
     name: auth.currentUser.displayName || "Anonymous",
     typing: true
   });
 
-  // Reset timeout – αν σταματήσει 2s σβήνει
   clearTimeout(typingTimeout);
   typingTimeout = setTimeout(() => {
     set(typingRef, { typing: false });
   }, 2000);
 });
-
 
  
 // αυτή η function υπάρχει ήδη πιο κάτω, άστην ξεχωριστά
