@@ -271,6 +271,23 @@ messageInput.addEventListener("keydown", (e) => {
   }
 });
 
+const typingRef = ref(db, `typing/${currentRoom}/${auth.currentUser.uid}`);
+let typingTimeout;
+
+messageInput.addEventListener("input", () => {
+  // Μόλις αρχίσει να γράφει
+  set(typingRef, {
+    uid: auth.currentUser.uid,
+    name: auth.currentUser.displayName || "Anonymous",
+    typing: true
+  });
+
+  // Reset timeout – αν σταματήσει 2s σβήνει
+  clearTimeout(typingTimeout);
+  typingTimeout = setTimeout(() => {
+    set(typingRef, { typing: false });
+  }, 2000);
+});
 
 
  
