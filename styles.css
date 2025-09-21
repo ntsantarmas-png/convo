@@ -1389,3 +1389,19 @@ dialog{background:var(--panel-solid);color:var(--text);border:1px solid rgba(255
 #usersList {
   margin-top: -13px; /* ανάσα κάτω από το κουμπί Αποθήκευση */
 }
+
+/* ===================== LAYOUT FIX (Mobile Scroll) ===================== */
+body, html {
+  height: 100%;
+}
+
+.chat {
+  flex: 1;
+  min-height: 0; /* πολύ σημαντικό για flexbox */
+}
+
+.messages {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+}
