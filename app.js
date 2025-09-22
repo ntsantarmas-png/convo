@@ -282,6 +282,8 @@ messageInput.addEventListener("input", () => {
 
 
   // Typing indicator
+  console.log("✍️ Writing typing at:", typingRef.toString());
+
   set(typingRef, {
     uid: auth.currentUser.uid,
     name: auth.currentUser.displayName || "Anonymous",
