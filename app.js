@@ -280,6 +280,11 @@ messageInput.addEventListener("input", () => {
   messageInput.style.height = "auto";
   messageInput.style.height = messageInput.scrollHeight + "px";
 
+  // 🔎 DEBUG LOGS
+  console.log("DEBUG Typing — currentUser:", auth.currentUser);
+  console.log("DEBUG Typing — UID:", auth.currentUser?.uid);
+  console.log("DEBUG Typing — typingRef:", typingRef.toString());
+
   // Typing indicator
   set(typingRef, {
     uid: auth.currentUser.uid,
@@ -292,8 +297,6 @@ messageInput.addEventListener("input", () => {
     set(typingRef, { typing: false });
   }, 2000);
 });
-
-
  
 // αυτή η function υπάρχει ήδη πιο κάτω, άστην ξεχωριστά
 const makeInitials = (name = '?') => (name.trim()[0] || '?').toUpperCase();
