@@ -280,10 +280,6 @@ messageInput.addEventListener("input", () => {
   messageInput.style.height = "auto";
   messageInput.style.height = messageInput.scrollHeight + "px";
 
-  // 🔎 DEBUG LOGS
-  console.log("DEBUG Typing — currentUser:", auth.currentUser);
-  console.log("DEBUG Typing — UID:", auth.currentUser?.uid);
-  console.log("DEBUG Typing — typingRef:", typingRef.toString());
 
   // Typing indicator
   set(typingRef, {
