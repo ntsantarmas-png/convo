@@ -1389,38 +1389,9 @@ dialog{background:var(--panel-solid);color:var(--text);border:1px solid rgba(255
 #usersList {
   margin-top: -13px; /* ανάσα κάτω από το κουμπί Αποθήκευση */
 }
-
-/* ===================== TYPING INDICATOR ===================== */
-
-.message-form {
-  display: flex;
-  flex-direction: column;
-  gap: 4px; /* κρατάμε μικρό κενό για το typing */
-}
-
-.input-wrapper {
-  display: flex;
-  align-items: center;
-  background: var(--panel-2);
-  border-radius: 20px;
-  padding: 4px 8px;
-}
-
-.input-wrapper textarea {
-  flex: 1;
-  border: none;
-  outline: none;
-  resize: none;
-  background: transparent;
-  color: var(--text);
-  padding: 6px 8px;
-  font-size: 14px;
-}
-
 .typing-indicator {
   font-size: 13px;
   color: var(--muted, #aaa);
-  margin-left: 36px; /* μπαίνει λίγο πιο μέσα για να ευθυγραμμιστεί με το κείμενο */
-  min-height: 16px;
-  line-height: 16px;
+  margin: 4px 0 0 8px;
+  height: 18px; /* κρατάει χώρο ακόμα κι αν είναι κενό */
 }
