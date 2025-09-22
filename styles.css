@@ -1389,9 +1389,12 @@ dialog{background:var(--panel-solid);color:var(--text);border:1px solid rgba(255
 #usersList {
   margin-top: -13px; /* ανάσα κάτω από το κουμπί Αποθήκευση */
 }
+
+/* ===================== TYPING INDICATOR ===================== */
 .typing-indicator {
   font-size: 13px;
   color: var(--muted, #aaa);
   margin: 4px 0 0 8px;
   height: 18px; /* κρατάει χώρο ακόμα κι αν είναι κενό */
 }
+
