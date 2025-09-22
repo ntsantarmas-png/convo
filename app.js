@@ -121,6 +121,8 @@ const renderRooms = async () => {
 
   updateRoomCounts(); // φρεσκάρει τους counters
 };
+
+// ===================== SWITCH ROOM =====================
 const switchRoom = (room) => {
   currentRoom = room;
   roomTitle.textContent = `#${room}`;
@@ -128,15 +130,17 @@ const switchRoom = (room) => {
     el.classList.toggle('active', el.dataset.name === room)
   );
 
+  // Αποθήκευση του currentRoom στον χρήστη
   if (auth.currentUser) {
     const userRef = ref(db, `users/${auth.currentUser.uid}`);
     update(userRef, { currentRoom: room });
   }
 
+  // Σταμάτημα παλιών listeners
   if (typeof messagesUnsub === 'function') messagesUnsub();
   messagesEl.innerHTML = '';
 
-  // 👉 ΟΡΙΖΕΙΣ roomRef ΕΔΩ
+  // 👉 Ορισμός roomRef
   const roomRef = ref(db, `messages/${room}`);
 
   // 📥 Νέα μηνύματα
@@ -160,6 +164,11 @@ const switchRoom = (room) => {
     playerDiv.innerHTML = '<button id="closePlayerBtn" class="close-player">✖</button>';
     playerDiv.classList.remove("active");
   }
+
+  // 📝 Παρακολούθηση typing στο τρέχον room
+  watchTyping(room);
+
+  console.log("👉 Switched to room:", room);
 };
 
 
@@ -295,6 +304,24 @@ messageInput.addEventListener("input", () => {
     set(typingRef, { typing: false });
   }, 2000);
 });
+// ===================== WATCH TYPING =====================
+function watchTyping(room) {
+  const typingRef = ref(db, `typing/${room}`);
+  onValue(typingRef, (snap) => {
+    const data = snap.val() || {};
+    const typingUsers = Object.values(data).filter(u => u.typing);
+
+    if (typingUsers.length > 0) {
+      const names = typingUsers.map(u => u.name || "User").join(", ");
+      document.getElementById("typingIndicator").textContent =
+        names + (typingUsers.length > 1 ? " are typing..." : " is typing...");
+    } else {
+      document.getElementById("typingIndicator").textContent = "";
+    }
+  });
+}
+
+
  
 // αυτή η function υπάρχει ήδη πιο κάτω, άστην ξεχωριστά
 const makeInitials = (name = '?') => (name.trim()[0] || '?').toUpperCase();
