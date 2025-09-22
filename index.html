@@ -79,16 +79,20 @@
   <button id="expandPlayerBtn" class="expand-player">⤢</button>
 </div>
 
-  <div class="messages" id="messages"></div>
+<div class="messages" id="messages"></div>
 
+<!-- Μπάρα μηνύματος -->
 <form class="message-form" id="messageForm">
   <div class="input-wrapper">
     <button class="emoji-btn" id="emojiToggle" type="button">😊</button>
     <textarea autocomplete="off" class="input" id="messageInput" placeholder="Type a message…" rows="1"></textarea>
     <button class="btn primary" type="submit">Send</button>
   </div>
-  <div id="typingIndicator" class="typing-indicator"></div>
 </form>
+
+<!-- Typing indicator: ΠΑΝΤΑ έξω από το form -->
+<div id="typingIndicator" class="typing-indicator"></div>
+
 
 
   <!-- Emoji Panel -->
