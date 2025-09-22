@@ -612,10 +612,22 @@ onAuthStateChanged(auth, async (user) => {
       }
     }
 
+    // ✅ Αποθήκευση user profile στη Realtime Database
+    set(ref(db, "users/" + user.uid), {
+      uid: user.uid,
+      name: user.displayName || "Anonymous",
+      photo: user.photoURL || null,
+      status: "online"
+    });
+
     // Εμφάνιση της εφαρμογής μετά το login
     authView.classList.add('hidden');
     appView.classList.remove('hidden');
     helloUser.textContent = `Hello, ${user.displayName || 'User'}!`;
+  } else {
+    console.log("❌ Logged out");
+  }
+});
 
     // === CLEAR CHAT BUTTON ===
 const clearChatBtn = document.getElementById("clearChatBtn");
