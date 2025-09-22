@@ -270,10 +270,13 @@ messageInput.addEventListener("keydown", (e) => {
 
 
 // ===================== AUTO-GROW + TYPING =====================
-const typingRef = ref(db, `typing/${currentRoom}/${auth.currentUser.uid}`);
 let typingTimeout;
 
 messageInput.addEventListener("input", () => {
+  if (!auth.currentUser) return; // 👈 ασφάλεια αν δεν υπάρχει user ακόμα
+
+  const typingRef = ref(db, `typing/${currentRoom}/${auth.currentUser.uid}`);
+
   // Auto-grow textarea
   messageInput.style.height = "auto";
   messageInput.style.height = messageInput.scrollHeight + "px";
