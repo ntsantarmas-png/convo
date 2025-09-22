@@ -608,13 +608,14 @@ onAuthStateChanged(auth, async (user) => {
       }
     }
 
-    // ✅ Αποθήκευση user profile στη Realtime Database
-    set(ref(db, "users/" + user.uid), {
-      uid: user.uid,
-      name: user.displayName || "Anonymous",
-      photo: user.photoURL || null,
-      status: "online"
-    });
+    // ✅ Αποθήκευση / ενημέρωση user profile χωρίς να σβήνει άλλα πεδία
+update(ref(db, "users/" + user.uid), {
+  uid: user.uid,
+  name: user.displayName || "Anonymous",
+  photo: user.photoURL || null,
+  status: "online"
+});
+
 
     // Εμφάνιση της εφαρμογής μετά το login
     authView.classList.add('hidden');
