@@ -268,7 +268,6 @@ messageInput.addEventListener("keydown", (e) => {
   }
 });
 
-
 // ===================== AUTO-GROW + TYPING =====================
 let typingTimeout;
 
@@ -293,6 +292,7 @@ messageInput.addEventListener("input", () => {
     set(typingRef, { typing: false });
   }, 2000);
 });
+
 
  
 // αυτή η function υπάρχει ήδη πιο κάτω, άστην ξεχωριστά
