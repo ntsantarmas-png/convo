@@ -1391,10 +1391,21 @@ dialog{background:var(--panel-solid);color:var(--text);border:1px solid rgba(255
 }
 
 /* ===================== TYPING INDICATOR ===================== */
+
+.message-form {
+  display: flex;
+  flex-direction: column; /* στοιβάζει input πάνω, indicator κάτω */
+}
+
+.input-wrapper {
+  display: flex;
+  align-items: center;
+}
+
 .typing-indicator {
   font-size: 13px;
   color: var(--muted, #aaa);
-  margin: 2px 0 4px 40px;  /* λίγο κενό από την input bar, ευθυγραμμισμένο με το κείμενο */
-  height: 16px;
+  margin: 2px 0 0 40px; /* μικρό κενό πάνω, ευθυγράμμιση με το κείμενο */
+  min-height: 16px;     /* κρατάει πάντα χώρο */
   line-height: 16px;
 }
