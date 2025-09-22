@@ -80,8 +80,6 @@
 </div>
 
   
-<div class="messages" id="messages"></div>
-
 <form class="message-form" id="messageForm">
   <div class="input-wrapper">
     <button class="emoji-btn" id="emojiToggle" type="button">😊</button>
@@ -89,9 +87,10 @@
     <button class="btn primary" type="submit">Send</button>
   </div>
 
-  <!-- 📝 Typing Indicator μπαίνει εδώ -->
+  <!-- 📝 Typing Indicator κάτω από την μπάρα -->
   <div id="typingIndicator" class="typing-indicator"></div>
 
+  <!-- Emoji Panel -->
   <div aria-hidden="true" class="emoji-panel" id="emojiPanel">
     <div class="emoji-header">
       <div class="emoji-tabs">
@@ -102,15 +101,9 @@
       <input class="input emoji-search" id="emojiSearch" placeholder="Βρες το τέλειο emoji" type="text"/>
       <button class="btn" id="unifiedSearchBtn" type="button">Αναζήτηση</button>
     </div>
-    <div class="emoji-body">
-      <div class="emoji-grid" id="emojiGrid"></div>
-    </div>
-    <div class="emoji-body" id="gifBody">
-      <div class="emoji-grid" id="gifGrid"></div>
-    </div>
-    <div class="emoji-body" id="stickerBody">
-      <div class="emoji-grid" id="stickerGrid"></div>
-    </div>
+    <div class="emoji-body"><div class="emoji-grid" id="emojiGrid"></div></div>
+    <div class="emoji-body" id="gifBody"><div class="emoji-grid" id="gifGrid"></div></div>
+    <div class="emoji-body" id="stickerBody"><div class="emoji-grid" id="stickerGrid"></div></div>
     <div class="emoji-footer">Κλίκαρε ένα emoji για να το βάλεις στο μήνυμα</div>
   </div>
 </form>
