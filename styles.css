@@ -1394,7 +1394,7 @@ dialog{background:var(--panel-solid);color:var(--text);border:1px solid rgba(255
 .typing-indicator {
   font-size: 13px;
   color: var(--muted, #aaa);
-  margin: 4px 12px;
-  min-height: 18px; /* κρατάει χώρο */
+  margin: 2px 0 0 40px; /* λίγο πάνω από το input και αριστερά */
+  height: 16px;         /* πιο μικρό ύψος */
+  line-height: 16px;
 }
-
