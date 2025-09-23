@@ -370,6 +370,16 @@ label {
 .muted {
   color: var(--muted);
 }
+/* ===================== AUTH FORMS INPUTS ===================== */
+.input:not(#messageInput) {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,.12);
+  background: rgba(8,12,30,.85);
+  color: var(--text);
+  outline: none;
+}
 
 
 /* ===================== APP LAYOUT (Sidebar / Chat / Users) ===================== */
