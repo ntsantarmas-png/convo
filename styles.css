@@ -1365,3 +1365,14 @@ dialog{background:var(--panel-solid);color:var(--text);border:1px solid rgba(255
     flex: 1;
   }
 }
+/* Μόνο για mobile κουμπιά */
+.mobile-only {
+  display: none;
+}
+
+@media (max-width: 600px) {
+  .mobile-only {
+    display: inline-block;
+    margin: 0 4px;
+  }
+}
