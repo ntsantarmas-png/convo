@@ -929,12 +929,6 @@ html, body {
 
 /* ==== BADGES ==== */
 
-#messageInput {
-  resize: none;
-  overflow-y: hidden;   /* κρύβει το scrollbar */
-  min-height: 36px;     /* αρχικό ύψος */
-  max-height: 120px;    /* όριο για πολλά enters */
-}
 
 /* Reaction pop animation */
 @keyframes reaction-pop {
