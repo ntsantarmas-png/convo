@@ -594,50 +594,50 @@ li.appendChild(nameWrapper);
 
 
 // ===================== AUTH STATE HANDLING =====================
-// Αν δεν υπάρχει avatar, δώσε ένα σταθερό από pravatar
-if (!user.photoURL) {
-  const avatarId = Math.abs(hashCode(user.uid)) % 70 + 1; // pravatar έχει ~70 images
-  const stableAvatar = `https://i.pravatar.cc/150?img=${avatarId}`;
+onAuthStateChanged(auth, async (user) => {
+  if (user) {
+    // Αν δεν υπάρχει avatar, δώσε ένα σταθερό από pravatar
+    if (!user.photoURL) {
+      const avatarId = Math.abs(hashCode(user.uid)) % 70 + 1; // pravatar έχει ~70 images
+      const stableAvatar = `https://i.pravatar.cc/150?img=${avatarId}`;
 
-  try {
-    await updateProfile(user, { photoURL: stableAvatar });
-    console.log("✅ Avatar set for user:", stableAvatar);
-  } catch (err) {
-    console.error("❌ Avatar update failed:", err);
-  }
-}
-
+      try {
+        await updateProfile(user, { photoURL: stableAvatar });
+        console.log("✅ Avatar set for user:", stableAvatar);
+      } catch (err) {
+        console.error("❌ Avatar update failed:", err);
+      }
+    }
 
     // Εμφάνιση της εφαρμογής μετά το login
-    authView.classList.add('hidden');
-    appView.classList.remove('hidden');
-    helloUser.textContent = `Hello, ${user.displayName || 'User'}!`;
+    authView.classList.add("hidden");
+    appView.classList.remove("hidden");
+    helloUser.textContent = `Hello, ${user.displayName || "User"}!`;
 
     // === CLEAR CHAT BUTTON ===
-const clearChatBtn = document.getElementById("clearChatBtn");
-if (user.displayName === "MysteryMan") {
-  currentUserRole = "admin";   // 👈 Ορίζουμε ρόλο admin
-  clearChatBtn.style.display = "inline-block"; // δείξε το κουμπί μόνο στον admin
+    const clearChatBtn = document.getElementById("clearChatBtn");
+    if (user.displayName === "MysteryMan") {
+      currentUserRole = "admin";   // 👈 Ορίζουμε ρόλο admin
+      clearChatBtn.style.display = "inline-block"; // δείξε το κουμπί μόνο στον admin
 
-  clearChatBtn.addEventListener("click", async () => {
-    if (!confirm("⚠️ Να διαγραφούν όλα τα μηνύματα από αυτό το room;")) return;
-    try {
-      const room = document.getElementById("roomTitle").textContent.replace("#", "");
-      await remove(ref(db, "messages/" + room));
+      clearChatBtn.addEventListener("click", async () => {
+        if (!confirm("⚠️ Να διαγραφούν όλα τα μηνύματα από αυτό το room;")) return;
+        try {
+          const room = document.getElementById("roomTitle").textContent.replace("#", "");
+          await remove(ref(db, "messages/" + room));
 
-      // 🆕 καθάρισε και το UI αμέσως
-      document.getElementById("messages").innerHTML = "";
+          // 🆕 καθάρισε και το UI αμέσως
+          document.getElementById("messages").innerHTML = "";
 
-      console.log("🗑 Chat cleared for room:", room);
-    } catch (err) {
-      console.error("clearChat error:", err);
+          console.log("🗑 Chat cleared for room:", room);
+        } catch (err) {
+          console.error("clearChat error:", err);
+        }
+      });
+    } else {
+      currentUserRole = "user";    // 👈 Ορίζουμε default ρόλο user
+      clearChatBtn.style.display = "none"; // κρύψε το κουμπί για μη-admin
     }
-  });
-} else {
-  currentUserRole = "user";    // 👈 Ορίζουμε default ρόλο user
-  clearChatBtn.style.display = "none"; // κρύψε το κουμπί για μη-admin
-}
-
 
     // Header avatar από το database
     const headerAvatar = document.getElementById("headerAvatar");
@@ -658,9 +658,9 @@ if (user.displayName === "MysteryMan") {
 
   } else {
     // Αν δεν υπάρχει user → δείξε την οθόνη login
-    appView.classList.add('hidden');
-    authView.classList.remove('hidden');
-    helloUser.textContent = '';
+    appView.classList.add("hidden");
+    authView.classList.remove("hidden");
+    helloUser.textContent = "";
     if (messagesUnsub) messagesUnsub();
     if (presenceUnsub) presenceUnsub();
   }
@@ -1173,7 +1173,7 @@ deleteMsgBtn.addEventListener("click", () => {
   targetMessage = null;
 });
 
-// === Avatar Save ===
+// === // ===================== AVATAR SAVE =====================
 const avatarInput = document.getElementById("avatarUrl");
 const saveAvatarBtn = document.getElementById("saveAvatarBtn");
 
@@ -1189,19 +1189,21 @@ if (saveAvatarBtn) {
     }
 
     try {
-      // Αποθήκευση σε users + status
+      // 1. Αποθήκευση σε users + status
       const updates = {};
       updates["users/" + uid + "/photoURL"] = url;
       updates["status/" + uid + "/photoURL"] = url;
 
       await update(ref(db), updates);
 
-      // Ενημέρωση Firebase Auth user
+      // 2. Ενημέρωση στο Firebase Auth
       await updateProfile(auth.currentUser, { photoURL: url });
 
-      showToast("✅ Avatar ενημερώθηκε!");
+      // 3. Καθαρισμός input + επιβεβαίωση
       avatarInput.value = "";
+      showToast("✅ Avatar ενημερώθηκε!");
       console.log("✅ Avatar updated everywhere:", url);
+
     } catch (err) {
       console.error("❌ Error updating avatar:", err);
       showToast("Σφάλμα: " + err.message, true);
