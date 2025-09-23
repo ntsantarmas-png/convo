@@ -546,29 +546,32 @@ label {
 
 /* ===================== MESSAGE INPUT FORM ===================== */
 .message-form {
-  display:flex;
-  gap:10px;
-  padding:14px;
-  border-top:1px solid rgba(255,255,255,.08);
-  background:var(--panel);
-  align-items:center;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px;
+  border-top: 1px solid rgba(255,255,255,.08);
+  background: var(--panel);
+  overflow-x: hidden; /* κόβει ό,τι περισσεύει δεξιά */
 }
-.message-form .input {
-  flex:1;
-  border-radius:999px;
-}
+
+/* Emoji button */
 .emoji-btn {
-  width:40px;
-  height:40px;
-  border-radius:50%;
-  display:grid;
-  place-items:center;
-  background:rgba(255,255,255,.08);
-  border:1px solid rgba(255,255,255,.12);
-  cursor:pointer;
+  flex: 0 0 40px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: rgba(255,255,255,.08);
+  border: 1px solid rgba(255,255,255,.12);
+  cursor: pointer;
 }
-.message-form {
-  overflow-x: hidden;   /* κόβει ό,τι περισσεύει δεξιά */
+
+/* Input wrapper παίρνει όλο τον χώρο */
+.input-wrapper {
+  flex: 1;
+  display: flex;
 }
 
 /* ===================== MESSAGE INPUT ===================== */
@@ -581,21 +584,32 @@ label {
   color: var(--text, #eaeaea);
   font-size: 15px;
   line-height: 1.4;
-  padding: 8px;
-  max-height: 120px; /* για να μην μεγαλώνει άπειρα */
+  padding: 8px 10px;
+  border-radius: 999px;
+
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 100%;
+
+  max-height: 120px;
   overflow-y: auto;
 
-  /* ✅ Fix για να μην βγαίνει scroll δεξιά */
   white-space: pre-wrap;
   overflow-wrap: break-word;
   word-break: break-word;
 }
-#messageInput {
-  box-sizing: border-box;
-  width: 100%;          /* αναγκαστικά να πιάνει μόνο το container */
-  max-width: 100%;      /* να μην ξεχειλώνει */
-}
 
+/* Send button */
+.send-btn {
+  flex: 0 0 auto;
+  padding: 0 16px;
+  height: 40px;
+  border-radius: 999px;
+  background: var(--accent);
+  border: none;
+  color: #fff;
+  cursor: pointer;
+}
 /* ===================== EMOJI / GIF / STICKERS PANEL ===================== */
 .emoji-panel {position:absolute;bottom:68px;left:22%; /* ή 16px */width:500px;max-width:96vw;background:#11162f;color:var(--text);border:1px solid rgba(255,255,255,.12);border-radius:14px;box-shadow:var(--shadow);display:none;flex-direction:column;z-index:50}.emoji-panel.show{display:flex}
   .emoji-header{display:flex;gap:8px;padding:8px;border-bottom:1px solid rgba(255,255,255,.08);align-items:center}.emoji-tabs{display:flex;gap:6px}.emoji-tab{padding:6px 10px;border-radius:10px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.06);color:var(--muted);cursor:pointer;font-weight:600}.emoji-tab.active{background:linear-gradient(90deg,rgba(110,168,255,.25),rgba(139,107,255,.25));color:var(--text)}.emoji-search{flex:1}
