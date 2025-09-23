@@ -1251,3 +1251,26 @@ dialog{background:var(--panel-solid);color:var(--text);border:1px solid rgba(255
   border-radius: 50%;
 }
 
+/* ===================== TYPING INDICATOR ===================== */
+.typing-indicator {
+  font-size: 11px;
+  color: var(--muted);
+  margin-left: 36px; /* για να μην κολλάει στο avatar */
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.typing-indicator::after {
+  content: '...';
+  display: inline-block;
+  overflow: hidden;
+  animation: dots 1.5s steps(3, end) infinite;
+}
+
+@keyframes dots {
+  0%   { content: ''; }
+  33%  { content: '.'; }
+  66%  { content: '..'; }
+  100% { content: '...'; }
+}
