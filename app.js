@@ -578,6 +578,18 @@ if (s.typing) {
   typingEl.textContent = '✍️ typing…';
   li.appendChild(typingEl);
 }
+      // === Username wrapper ===
+const nameWrapper = document.createElement('div');
+nameWrapper.className = 'name-wrapper';
+
+nameWrapper.appendChild(name);
+if (s.typing) {
+  const typingEl = document.createElement('div');
+  typingEl.className = 'typing-indicator';
+  typingEl.textContent = '✍️ typing…';
+  nameWrapper.appendChild(typingEl);
+}
+
 
       // === Append row ===
       li.appendChild(avatar);
