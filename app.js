@@ -594,19 +594,19 @@ li.appendChild(nameWrapper);
 
 
 // ===================== AUTH STATE HANDLING =====================
-onAuthStateChanged(auth, async (user) => {
-  if (user) {
-    // Αν δεν υπάρχει avatar, δώσε ένα τυχαίο
-    if (!user.photoURL) {
-      try {
-        await updateProfile(user, {
-          photoURL: "https://i.pravatar.cc/150?img=3"
-        });
-        console.log("✅ Avatar set for user:", user.displayName, user.photoURL);
-      } catch (err) {
-        console.error("updateProfile error", err);
-      }
-    }
+// Αν δεν υπάρχει avatar, δώσε ένα σταθερό από pravatar
+if (!user.photoURL) {
+  const avatarId = Math.abs(hashCode(user.uid)) % 70 + 1; // pravatar έχει ~70 images
+  const stableAvatar = `https://i.pravatar.cc/150?img=${avatarId}`;
+
+  try {
+    await updateProfile(user, { photoURL: stableAvatar });
+    console.log("✅ Avatar set for user:", stableAvatar);
+  } catch (err) {
+    console.error("❌ Avatar update failed:", err);
+  }
+}
+
 
     // Εμφάνιση της εφαρμογής μετά το login
     authView.classList.add('hidden');
@@ -665,6 +665,15 @@ if (user.displayName === "MysteryMan") {
     if (presenceUnsub) presenceUnsub();
   }
 });
+// Helper για να δίνει σταθερό id από string
+function hashCode(str) {
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    hash = str.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  return hash;
+}
+
 
   // Utils (safe RegExp)
   function escapeHtml(str=''){ return str.replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;'); }
