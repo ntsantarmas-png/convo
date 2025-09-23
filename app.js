@@ -529,14 +529,14 @@ const watchPresence = () => {
       const dot = document.createElement('span');
       dot.className = 'status-dot ' + (s.state === 'online' ? 'online' : 'offline');
 
-      // === Username ===
-      const name = document.createElement('span');
-      name.textContent = s.displayName || 'User';
+// === Username ===
+const name = document.createElement('span');
+name.textContent = s.displayName || 'User';
 
-      // === Badge ===
-      let badge = null;
+// === Badge ===
+let badge = null;
 
-     // --- Admin: ΜΟΝΟ MysteryMan ---
+// --- Admin: ΜΟΝΟ MysteryMan ---
 if ((s.displayName || '') === 'MysteryMan') {
   badge = document.createElement('span');
   badge.className = 'badge admin';
@@ -545,8 +545,8 @@ if ((s.displayName || '') === 'MysteryMan') {
   li.classList.add("admin");
   document.getElementById("adminsList").appendChild(li);
 
-// --- Moderator ---
 } else if (s.role === "mod") {
+  // --- Moderator ---
   badge = document.createElement('span');
   badge.className = 'badge mod';
   badge.textContent = '🛠️ MOD';
@@ -554,8 +554,8 @@ if ((s.displayName || '') === 'MysteryMan') {
   li.classList.add("mod");
   document.getElementById("modsList").appendChild(li);
 
-// --- VIP ---
 } else if (s.role === "vip") {
+  // --- VIP ---
   badge = document.createElement('span');
   badge.className = 'badge vip';
   badge.textContent = '💎 VIP';
@@ -563,26 +563,22 @@ if ((s.displayName || '') === 'MysteryMan') {
   li.classList.add("vip");
   document.getElementById("vipList").appendChild(li);
 
-// --- Απλοί χρήστες ---
 } else {
+  // --- Απλοί χρήστες ---
   badge = document.createElement('span');
   badge.className = 'badge user';
   badge.textContent = '👤 USER';
   li.classList.add("user");
   document.getElementById("normalList").appendChild(li);
 }
-// === Typing indicator ===
-if (s.typing) {
-  const typingEl = document.createElement('div');
-  typingEl.className = 'typing-indicator';
-  typingEl.textContent = '✍️ typing…';
-  li.appendChild(typingEl);
-}
-      // === Username wrapper ===
+
+// === Name + typing wrapper ===
 const nameWrapper = document.createElement('div');
 nameWrapper.className = 'name-wrapper';
-
 nameWrapper.appendChild(name);
+if (badge) nameWrapper.appendChild(badge);
+
+// === Typing indicator ===
 if (s.typing) {
   const typingEl = document.createElement('div');
   typingEl.className = 'typing-indicator';
@@ -590,16 +586,14 @@ if (s.typing) {
   nameWrapper.appendChild(typingEl);
 }
 
+// === Append row ===
+li.appendChild(avatar);
+li.appendChild(dot);
+li.appendChild(nameWrapper);
 
-      // === Append row ===
-      li.appendChild(avatar);
-      li.appendChild(dot);
-      li.appendChild(name);
-      if (badge) li.appendChild(badge);
     });
   });
 };
-
 
 
 // ===================== AUTH STATE HANDLING =====================
