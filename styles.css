@@ -553,21 +553,62 @@ label {
   .emoji-body{max-height:200px;overflow:auto;padding:10px}.emoji-grid{display:grid;grid-template-columns:repeat(8,1fr);gap:8px}.emoji-item{font-size:22px;line-height:1;cursor:pointer;display:grid;place-items:center;padding:6px;border-radius:8px}.emoji-item:hover{background:rgba(255,255,255,.08)}
   .emoji-footer{padding:8px;border-top:1px solid rgba(255,255,255,.08);font-size:12px;color:var(--muted)}.disabled{opacity:.4;pointer-events:none}
 
-/* ===================== USERS LIST POLISH ===================== */
-.users-list li {
+/* ===================== USER LIST POLISH ===================== */
+.users-sublist li {
   display: flex;
   align-items: center;
   gap: 8px;
   padding: 6px 8px;
-  border: 1px solid rgba(255,255,255,.06);
-  background: rgba(255,255,255,.03);
+  margin: 2px 0;
   border-radius: 8px;
-  font-size: 14px; /* nicknames */
   transition: background 0.2s;
 }
 
-.users-list li:hover {
-  background: rgba(255,255,255,.06);
+.users-sublist li:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+/* Avatar μέσα στη λίστα */
+.users-sublist .avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  overflow: hidden;
+  flex-shrink: 0;
+  position: relative;
+  border: 2px solid transparent;
+}
+
+/* Dot που κάθεται πάνω στο avatar */
+.users-sublist li .status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-left: -12px;   /* φέρνει το dot πάνω στο avatar */
+  border: 2px solid var(--panel);
+}
+
+/* Name block (όνομα + badge + typing) */
+.name-block {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+}
+
+.name-block span {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* Typing κάτω από το όνομα */
+.typing-indicator {
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 2px;
+  margin-left: 2px;
+  display: inline-flex;
+  align-items: center;
 }
 
 
