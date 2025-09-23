@@ -570,8 +570,8 @@ label {
 
 /* Avatar μέσα στη λίστα */
 .users-sublist .avatar {
-  width: 32px;
-  height: 32px;
+  width: 28px;
+  height: 28px;
   border-radius: 50%;
   overflow: hidden;
   flex-shrink: 0;
@@ -679,7 +679,7 @@ label {
 .users-sublist li {
   display: flex;
   align-items: center;
-  padding: 4px 4px;
+  padding: 4px 6px;
   margin: 2px 0;
   border-radius: 6px;
   transition: background 0.2s;
