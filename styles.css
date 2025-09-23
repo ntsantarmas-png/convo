@@ -1332,77 +1332,39 @@ dialog{background:var(--panel-solid);color:var(--text);border:1px solid rgba(255
   75%  { content: '...'; }
   100% { content: ''; }
 }
-/* ===================== RESPONSIVE MOBILE ===================== */
+/* ===================== RESPONSIVE CHAT FIX (MOBILE) ===================== */
 @media (max-width: 600px) {
-  .rooms, .users {
-    position: fixed;
-    top: 0;
-    bottom: 0;
-    width: 70%;
-    max-width: 260px;
-    background: var(--panel, #1f1f23);
-    z-index: 1000;
-    transform: translateX(-100%); /* rooms hidden by default */
-    transition: transform 0.3s ease;
-    box-shadow: 0 0 20px rgba(0,0,0,0.6);
+  body {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
   }
 
-  .users {
-    right: 0;
-    left: auto;
-    transform: translateX(100%); /* users hidden by default */
-  }
-
-  .rooms.active {
-    transform: translateX(0); /* slide in */
-  }
-  .users.active {
-    transform: translateX(0); /* slide in */
-  }
-
-  /* Κρύψε τα panels όταν είναι mobile */
-  .chat {
+  .app {
+    display: flex;
+    flex-direction: column;
     flex: 1;
+    height: 100vh;
+    overflow: hidden; /* να μην ξεχειλώνει */
   }
-}
-/* Μόνο για mobile κουμπιά */
-.mobile-only {
-  display: none;
-}
 
-@media (max-width: 600px) {
-  .mobile-only {
-    display: inline-block;
-    margin: 0 4px;
+  .chat {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    height: 100%;
   }
-}
-/* ===================== MOBILE TOGGLE BUTTONS ===================== */
-.mobile-only {
-  display: none; /* default: κρυμμένα σε desktop */
-}
 
-@media (max-width: 600px) {
-  .mobile-only {
-    display: inline-block;
+  .messages {
+    flex: 1;
+    overflow-y: auto; /* scroll για τα μηνύματα */
+    padding: 8px;
+  }
+
+  .message-form {
+    flex-shrink: 0;
+    padding: 8px;
     background: var(--panel-2, #2a2d3a);
-    color: var(--text, #eaeaea);
-    border: none;
-    border-radius: 8px;
-    padding: 4px 10px;
-    font-size: 14px;
-    cursor: pointer;
-    margin-right: 6px;
-    box-shadow: 0 2px 6px rgba(0,0,0,.3);
-    transition: background 0.2s, transform 0.2s;
-  }
-
-  .mobile-only:hover {
-    background: var(--accent, #6ea8ff);
-    color: #fff;
-    transform: translateY(-2px);
-  }
-
-  .mobile-only:active {
-    transform: scale(0.95);
+    border-top: 1px solid rgba(255,255,255,0.1);
   }
 }
