@@ -71,24 +71,22 @@ const $ = (id) => document.getElementById(id);
 async function setupPresence(user) {
   const statusRef = ref(db, "status/" + user.uid);
 
-  const online = {
-    state: "online",
-    last_changed: serverTimestamp(),
-    displayName: user.displayName || "User",
-    photoURL: user.photoURL || null
-  };
-
-  const offline = {
+  // Τι θα αποθηκευτεί όταν φύγει (disconnect)
+  onDisconnect(statusRef).set({
     state: "offline",
     last_changed: serverTimestamp(),
     displayName: user.displayName || "User",
     photoURL: user.photoURL || null
-  };
+  });
 
-  onDisconnect(statusRef).set(offline).catch(() => {});
-  await set(statusRef, online);
+  // Τι αποθηκεύουμε όταν είναι online
+  await set(statusRef, {
+    state: "online",
+    last_changed: serverTimestamp(),
+    displayName: user.displayName || "User",
+    photoURL: user.photoURL || null
+  });
 }
-
   
 // ===================== ROOMS (Default / Create / Switch) =====================
 // Rooms
