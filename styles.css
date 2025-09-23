@@ -545,8 +545,48 @@ label {
 }
 
 /* ===================== MESSAGE INPUT FORM ===================== */
-.message-form{display:flex;gap:10px;padding:14px;border-top:1px solid rgba(255,255,255,.08);background:var(--panel);align-items:center}.message-form .input{flex:1;border-radius:999px}
-  .emoji-btn{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);cursor:pointer}
+.message-form {
+  display:flex;
+  gap:10px;
+  padding:14px;
+  border-top:1px solid rgba(255,255,255,.08);
+  background:var(--panel);
+  align-items:center;
+}
+.message-form .input {
+  flex:1;
+  border-radius:999px;
+}
+.emoji-btn {
+  width:40px;
+  height:40px;
+  border-radius:50%;
+  display:grid;
+  place-items:center;
+  background:rgba(255,255,255,.08);
+  border:1px solid rgba(255,255,255,.12);
+  cursor:pointer;
+}
+
+/* ===================== MESSAGE INPUT ===================== */
+#messageInput {
+  flex: 1;
+  resize: none;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: var(--text, #eaeaea);
+  font-size: 15px;
+  line-height: 1.4;
+  padding: 8px;
+  max-height: 120px; /* για να μην μεγαλώνει άπειρα */
+  overflow-y: auto;
+
+  /* ✅ Fix για να μην βγαίνει scroll δεξιά */
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
 
 /* ===================== EMOJI / GIF / STICKERS PANEL ===================== */
 .emoji-panel {position:absolute;bottom:68px;left:22%; /* ή 16px */width:500px;max-width:96vw;background:#11162f;color:var(--text);border:1px solid rgba(255,255,255,.12);border-radius:14px;box-shadow:var(--shadow);display:none;flex-direction:column;z-index:50}.emoji-panel.show{display:flex}
