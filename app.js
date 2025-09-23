@@ -555,6 +555,13 @@ if ((s.displayName || '') === 'MysteryMan') {
   li.classList.add("user");
   document.getElementById("normalList").appendChild(li);
 }
+// === Typing indicator ===
+if (s.typing) {
+  const typingEl = document.createElement('div');
+  typingEl.className = 'typing-indicator';
+  typingEl.textContent = '✍️ typing…';
+  li.appendChild(typingEl);
+}
 
       // === Append row ===
       li.appendChild(avatar);
