@@ -261,7 +261,6 @@ messageInput.addEventListener("keydown", (e) => {
 });
 
 // ===================== AUTO-GROW + TYPING =====================
-const typingRef = ref(db, `status/${auth.currentUser.uid}`);
 let typingTimeout;
 
 messageInput.addEventListener("input", () => {
