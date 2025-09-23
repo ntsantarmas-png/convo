@@ -1332,3 +1332,36 @@ dialog{background:var(--panel-solid);color:var(--text);border:1px solid rgba(255
   75%  { content: '...'; }
   100% { content: ''; }
 }
+/* ===================== RESPONSIVE MOBILE ===================== */
+@media (max-width: 600px) {
+  .rooms, .users {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    width: 70%;
+    max-width: 260px;
+    background: var(--panel, #1f1f23);
+    z-index: 1000;
+    transform: translateX(-100%); /* rooms hidden by default */
+    transition: transform 0.3s ease;
+    box-shadow: 0 0 20px rgba(0,0,0,0.6);
+  }
+
+  .users {
+    right: 0;
+    left: auto;
+    transform: translateX(100%); /* users hidden by default */
+  }
+
+  .rooms.active {
+    transform: translateX(0); /* slide in */
+  }
+  .users.active {
+    transform: translateX(0); /* slide in */
+  }
+
+  /* Κρύψε τα panels όταν είναι mobile */
+  .chat {
+    flex: 1;
+  }
+}
