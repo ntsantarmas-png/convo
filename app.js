@@ -252,23 +252,35 @@ if (text.includes("youtube.com") || text.includes("youtu.be")) {
   emojiPanel?.classList.remove("show");
 });
 
-// ===================== AUTO-GROW TEXTAREA =====================
+// ===================== ENTER / SHIFT+ENTER =====================
+messageInput.addEventListener("keydown", (e) => {
+  if (e.key === "Enter" && !e.shiftKey) {
+    e.preventDefault(); 
+    messageForm.requestSubmit(); // αποστολή με Enter
+  }
+});
+
+// ===================== AUTO-GROW + TYPING =====================
+const typingRef = ref(db, `status/${auth.currentUser.uid}`);
+let typingTimeout;
+
 messageInput.addEventListener("input", () => {
+  // Auto-grow textarea
   messageInput.style.height = "auto";
   messageInput.style.height = messageInput.scrollHeight + "px";
 
- // Typing indicator
-update(ref(db, "status/" + auth.currentUser.uid), {
-  typing: true
-});
-
-clearTimeout(typingTimeout);
-typingTimeout = setTimeout(() => {
+  // Typing indicator
   update(ref(db, "status/" + auth.currentUser.uid), {
-    typing: false
+    typing: true
   });
-}, 2000);
 
+  clearTimeout(typingTimeout);
+  typingTimeout = setTimeout(() => {
+    update(ref(db, "status/" + auth.currentUser.uid), {
+      typing: false
+    });
+  }, 2000);
+});
 
 
 
