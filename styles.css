@@ -552,7 +552,8 @@ label {
   padding: 14px;
   border-top: 1px solid rgba(255,255,255,.08);
   background: var(--panel);
-  overflow-x: hidden; /* κόβει ό,τι περισσεύει δεξιά */
+  overflow-x: hidden;
+  margin: 0; /* σιγουριά να μην σπρώχνει */
 }
 
 /* Input wrapper */
@@ -590,12 +591,13 @@ label {
   color: var(--text, #eaeaea);
   font-size: 15px;
   line-height: 1.4;
-  padding: 8px 12px 8px 42px; /* ➝ extra αριστερά για το emoji */
+  padding: 8px 12px 8px 42px; /* extra αριστερά για το emoji */
   border-radius: 999px;
 
   box-sizing: border-box;
   width: 100%;
   max-width: 100%;
+  flex-shrink: 1; /* να μικραίνει αντί να σπρώχνει */
 
   min-height: 36px;
   max-height: 120px;
@@ -612,6 +614,7 @@ label {
   padding: 0 16px;
   height: 40px;
   border-radius: 999px;
+  white-space: nowrap; /* να μη σπάει */
 }
 /* ===================== EMOJI / GIF / STICKERS PANEL ===================== */
 .emoji-panel {position:absolute;bottom:68px;left:22%; /* ή 16px */width:500px;max-width:96vw;background:#11162f;color:var(--text);border:1px solid rgba(255,255,255,.12);border-radius:14px;box-shadow:var(--shadow);display:none;flex-direction:column;z-index:50}.emoji-panel.show{display:flex}
