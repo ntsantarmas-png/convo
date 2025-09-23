@@ -511,7 +511,11 @@ label {
   border-radius: 18px;
   box-shadow: var(--shadow);
   position: relative;
+
+  max-width: 100%;       /* ✅ δεν αφήνει να ξεχειλώσει */
+  overflow-wrap: anywhere;
 }
+
 .mine .bubble {
   background: linear-gradient(90deg, rgba(110,168,255,.25), rgba(139,107,255,.25));
 }
