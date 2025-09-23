@@ -342,7 +342,8 @@ label {
   color: var(--muted);
   margin: 10px 0 6px;
 }
-.input {
+/* Global input style – αλλά ΟΧΙ για το #messageInput */
+.input:not(#messageInput) {
   width: 100%;
   padding: 12px 14px;
   border-radius: 14px;
@@ -351,6 +352,7 @@ label {
   color: var(--text);
   outline: none;
 }
+
 .row {
   display: flex;
   gap: 10px;
