@@ -565,9 +565,6 @@ if ((s.displayName || '') === 'MysteryMan') {
 
 } else {
   // --- Απλοί χρήστες ---
-  badge = document.createElement('span');
-  badge.className = 'badge user';
-  badge.textContent = '👤 USER';
   li.classList.add("user");
   document.getElementById("normalList").appendChild(li);
 }
