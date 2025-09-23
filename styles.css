@@ -567,6 +567,9 @@ label {
   border:1px solid rgba(255,255,255,.12);
   cursor:pointer;
 }
+.message-form {
+  overflow-x: hidden;   /* κόβει ό,τι περισσεύει δεξιά */
+}
 
 /* ===================== MESSAGE INPUT ===================== */
 #messageInput {
@@ -586,6 +589,11 @@ label {
   white-space: pre-wrap;
   overflow-wrap: break-word;
   word-break: break-word;
+}
+#messageInput {
+  box-sizing: border-box;
+  width: 100%;          /* αναγκαστικά να πιάνει μόνο το container */
+  max-width: 100%;      /* να μην ξεχειλώνει */
 }
 
 /* ===================== EMOJI / GIF / STICKERS PANEL ===================== */
