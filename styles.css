@@ -98,57 +98,6 @@ body {
   font-size: 12px;
 }
 #clearChatBtn {
-  background: linear-gradient(90deg, #ff6b6b, #ff8787);
-  border: none;
-  color: #fff;
-  font-weight: 600;
-  padding: 6px 14px;
-  border-radius: 12px;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  box-shadow: 0 3px 12px rgba(255, 0, 0, 0.3);
-  transition: background 0.2s, transform 0.15s;
-}
-#clearChatBtn:hover {
-  background: linear-gradient(90deg, #ff8787, #ff6b6b);
-  transform: translateY(-2px);
-}
-#clearChatBtn:active {
-  transform: translateY(0);
-}
-#clearChatBtn {
-  background: linear-gradient(90deg, #ff4d4d, #ff6b6b);
-  border: none;
-  color: #fff;
-  font-weight: 600;
-  padding: 6px 14px;
-  border-radius: 12px;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  margin-left: auto;
-  cursor: pointer;
-  text-shadow: 0 0 6px rgba(255, 100, 100, 0.9);
-  box-shadow: 0 0 8px rgba(255, 80, 80, 0.8),
-              0 0 15px rgba(255, 60, 60, 0.7);
-  transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
-}
-
-#clearChatBtn:hover {
-  background: linear-gradient(90deg, #ff6b6b, #ff4d4d);
-  transform: translateY(-2px) scale(1.03);
-  box-shadow: 0 0 10px rgba(255, 100, 100, 1),
-              0 0 20px rgba(255, 60, 60, 0.9),
-              0 0 30px rgba(255, 0, 0, 0.8);
-}
-
-#clearChatBtn:active {
-  transform: scale(0.97);
-  box-shadow: 0 0 6px rgba(255, 100, 100, 0.7),
-              0 0 12px rgba(255, 60, 60, 0.6);
-}
-#clearChatBtn {
   background: linear-gradient(90deg, #ff4d4d, #ff6b6b);
   border: none;
   color: #fff;
