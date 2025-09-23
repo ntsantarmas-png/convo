@@ -542,9 +542,12 @@ label {
 .bubble .text {
   font-size: 14px;
   line-height: 1.55;
-  word-wrap: break-word;
-  white-space: pre-wrap;   /* κρατάει τα Enter όπως τα γράφεις */
+
+  white-space: pre-wrap;       /* κρατάει τα Enter */
+  overflow-wrap: anywhere;     /* 🔑 σπάει μεγάλες λέξεις */
+  word-break: break-word;      /* backup για παλιά browsers */
 }
+
 
 /* ===================== MESSAGE INPUT FORM ===================== */
 .message-form {
