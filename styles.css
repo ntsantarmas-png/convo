@@ -555,23 +555,28 @@ label {
   overflow-x: hidden; /* κόβει ό,τι περισσεύει δεξιά */
 }
 
-/* Emoji button */
-.emoji-btn {
-  flex: 0 0 40px;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  display: grid;
-  place-items: center;
-  background: rgba(255,255,255,.08);
-  border: 1px solid rgba(255,255,255,.12);
-  cursor: pointer;
-}
-
-/* Input wrapper παίρνει όλο τον χώρο */
+/* Input wrapper (κρατάει το input + emoji) */
 .input-wrapper {
+  position: relative;
   flex: 1;
   display: flex;
+}
+
+/* Emoji button μέσα στο input */
+.input-wrapper .emoji-btn {
+  position: absolute;
+  left: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 20px;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 /* ===================== MESSAGE INPUT ===================== */
@@ -580,17 +585,18 @@ label {
   resize: none;
   border: none;
   outline: none;
-  background: transparent;
+  background: rgba(255,255,255,.06);
   color: var(--text, #eaeaea);
   font-size: 15px;
   line-height: 1.4;
-  padding: 8px 10px;
+  padding: 8px 10px 8px 40px; /* extra αριστερά για το emoji */
   border-radius: 999px;
 
   box-sizing: border-box;
   width: 100%;
   max-width: 100%;
 
+  min-height: 36px;
   max-height: 120px;
   overflow-y: auto;
 
