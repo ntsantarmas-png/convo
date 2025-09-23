@@ -1250,28 +1250,30 @@ if (usersPanel) {
 const toggleRoomsBtn = document.getElementById("toggleRooms");
 const toggleUsersBtn = document.getElementById("toggleUsers");
 const roomsPanel = document.querySelector(".rooms");
-const usersPanel = document.querySelector(".users");
+// ❌ δεν ξαναδηλώνουμε usersPanel γιατί υπάρχει ήδη
 
 if (toggleRoomsBtn && roomsPanel) {
   toggleRoomsBtn.addEventListener("click", () => {
     roomsPanel.classList.toggle("active");
-    usersPanel.classList.remove("active"); // κλείσε users αν είναι ανοιχτό
+    usersPanel?.classList.remove("active"); // κλείσε users αν είναι ανοιχτό
   });
 }
 
 if (toggleUsersBtn && usersPanel) {
   toggleUsersBtn.addEventListener("click", () => {
     usersPanel.classList.toggle("active");
-    roomsPanel.classList.remove("active"); // κλείσε rooms αν είναι ανοιχτό
+    roomsPanel?.classList.remove("active"); // κλείσε rooms αν είναι ανοιχτό
   });
 }
 
 // Κλείσιμο με click έξω
 document.addEventListener("click", (e) => {
-  if (roomsPanel && roomsPanel.classList.contains("active") && !roomsPanel.contains(e.target) && e.target !== toggleRoomsBtn) {
+  if (roomsPanel && roomsPanel.classList.contains("active") && 
+      !roomsPanel.contains(e.target) && e.target !== toggleRoomsBtn) {
     roomsPanel.classList.remove("active");
   }
-  if (usersPanel && usersPanel.classList.contains("active") && !usersPanel.contains(e.target) && e.target !== toggleUsersBtn) {
+  if (usersPanel && usersPanel.classList.contains("active") && 
+      !usersPanel.contains(e.target) && e.target !== toggleUsersBtn) {
     usersPanel.classList.remove("active");
   }
 });
