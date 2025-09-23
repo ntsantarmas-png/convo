@@ -66,12 +66,17 @@
 
 <!-- ----- MAIN CHAT SECTION ----- -->
 <section class="chat">
-  <div class="room-title">
-    <span id="roomTitle">#general</span>
-    <button id="clearChatBtn" class="btn danger tiny" style="margin-left:auto; display:none;">
-      🗑 Clear Chat
-    </button>
-  </div>
+ <div class="room-title">
+  <!-- Mobile toggle buttons -->
+  <button id="toggleRooms" class="btn tiny mobile-only">☰ Rooms</button>
+  <span id="roomTitle">#general</span>
+  <button id="toggleUsers" class="btn tiny mobile-only">👥 Users</button>
+
+  <!-- Μόνο για admin -->
+  <button id="clearChatBtn" class="btn danger tiny" style="margin-left:auto; display:none;">
+    🗑 Clear Chat
+  </button>
+</div>
 
   <!-- 🎵 YouTube Player μέσα στο room -->
   <div id="youtubePlayer" class="youtube-player">
