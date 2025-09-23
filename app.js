@@ -1178,7 +1178,7 @@ const avatarInput = document.getElementById("avatarUrl");
 const saveAvatarBtn = document.getElementById("saveAvatarBtn");
 
 if (saveAvatarBtn) {
-  saveAvatarBtn.addEventListener("click", () => {
+  saveAvatarBtn.addEventListener("click", async () => {
     const url = avatarInput.value.trim();
     if (!url) return;
 
@@ -1188,20 +1188,27 @@ if (saveAvatarBtn) {
       return;
     }
 
-    // Αποθηκεύουμε και στους δύο κόμβους: users + status
-    const updates = {};
-    updates["users/" + uid + "/photoURL"] = url;
-    updates["status/" + uid + "/photoURL"] = url;
+    try {
+      // Αποθήκευση σε users + status
+      const updates = {};
+      updates["users/" + uid + "/photoURL"] = url;
+      updates["status/" + uid + "/photoURL"] = url;
 
-    update(ref(db), updates).then(() => {
+      await update(ref(db), updates);
+
+      // Ενημέρωση Firebase Auth user
+      await updateProfile(auth.currentUser, { photoURL: url });
+
       showToast("✅ Avatar ενημερώθηκε!");
       avatarInput.value = "";
-    }).catch(err => {
-      console.error(err);
-      showToast("Σφάλμα: " + err.message);
-    });
+      console.log("✅ Avatar updated everywhere:", url);
+    } catch (err) {
+      console.error("❌ Error updating avatar:", err);
+      showToast("Σφάλμα: " + err.message, true);
+    }
   });
 }
+
 // ===================== CLEANUP STRAY DOT (deep scan) =====================
 function removeStrayDotsDeep(el = document) {
   el.querySelectorAll(".users").forEach(usersEl => {
