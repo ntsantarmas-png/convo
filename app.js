@@ -68,13 +68,26 @@ const $ = (id) => document.getElementById(id);
 
   
 // ===================== PRESENCE =====================
-// Presence
-  const setupPresence=async(user)=>{
-    const statusRef=ref(db,`status/${user.uid}`);
-    const online={state:'online',last_changed:serverTimestamp(),displayName:user.displayName||'User'};
-    const offline={state:'offline',last_changed:serverTimestamp(),displayName:user.displayName||'User'};
-    onDisconnect(statusRef).set(offline).catch(()=>{}); await set(statusRef,online);
+async function setupPresence(user) {
+  const statusRef = ref(db, "status/" + user.uid);
+
+  const online = {
+    state: "online",
+    last_changed: serverTimestamp(),
+    displayName: user.displayName || "User",
+    photoURL: user.photoURL || null
   };
+
+  const offline = {
+    state: "offline",
+    last_changed: serverTimestamp(),
+    displayName: user.displayName || "User",
+    photoURL: user.photoURL || null
+  };
+
+  onDisconnect(statusRef).set(offline).catch(() => {});
+  await set(statusRef, online);
+}
 
   
 // ===================== ROOMS (Default / Create / Switch) =====================
