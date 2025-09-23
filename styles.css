@@ -485,11 +485,6 @@ label {
   flex-direction: column;
   gap: 10px;
 }
-#messageInput {
-  white-space: pre-wrap;   /* τα κείμενα σπάνε σε γραμμές */
-  overflow-wrap: break-word; /* αν μια λέξη είναι πολύ μεγάλη, σπάει */
-  word-break: break-word;    /* ασφαλιστική δικλείδα */
-}
 
 /* ===================== CHAT MESSAGES ===================== */
 .msg-row {
