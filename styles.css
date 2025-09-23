@@ -1302,17 +1302,6 @@ dialog{background:var(--panel-solid);color:var(--text);border:1px solid rgba(255
   flex: 1;
 }
 
-.input-wrapper .emoji-btn {
-  position: absolute;
-  left: 8px;
-  top: 50%;
-  transform: translateY(-50%);
-  background: none;
-  border: none;
-  cursor: pointer;
-  font-size: 20px;
-}
-
 .input-wrapper .input {
   width: 100%;
   padding-left: 45px;
