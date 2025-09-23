@@ -402,9 +402,10 @@ label {
 /* ===================== ROOMS LIST ===================== */
 .rooms {
   margin-top: 12px;
+  padding: 10px;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 6px; /* πιο μαζεμένη λίστα */
   overflow: auto;
   height: calc(100% - 52px);
 }
@@ -438,25 +439,32 @@ label {
 
 /* ===================== ROOM ITEM ===================== */
 .room-item {
-  padding: 6px 10px; /* πιο slim */
-  border-radius: 8px;
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* σπρώχνει το counter δεξιά */
+  padding: 8px 12px;
+  border-radius: 10px;
+  background: var(--panel);
+  color: #fff;
   cursor: pointer;
-  font-size: 14px;
-  transition: background 0.2s;
+  transition: background 0.2s, transform 0.1s;
 }
 
 .room-item:hover {
-  background: rgba(255, 255, 255, 0.08);
+  background: #333a;
+  transform: translateX(2px);
 }
 
-.room-item.active {
-  background: rgba(255, 255, 255, 0.12);
-  border-color: var(--accent);
+.room-count {
+  font-size: 11px;
   font-weight: 600;
+  background: linear-gradient(90deg, var(--accent), var(--accent-2));
+  color: #fff;
+  padding: 2px 6px;
+  border-radius: 12px;
+  box-shadow: 0 0 4px rgba(110, 168, 255, 0.4);
+  line-height: 1;
 }
-
 /* ===================== CHAT ===================== */
 .chat {
   display: flex;
@@ -562,23 +570,8 @@ label {
   background: rgba(255,255,255,.06);
 }
 
-/* Slim avatar */
-.avatar {
-  position: relative;
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  overflow: hidden;
-  flex-shrink: 0;
-}
-.avatar img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  border-radius: 50%;
-}
 
-/* ===================== USER ROLES / AVATARS ===================== */
+
 /* ===================== USER CATEGORY HEADERS ===================== */
 .user-category {
   margin: 12px 0 6px;
@@ -596,15 +589,7 @@ label {
 
 
 
-.avatar {
-  position: relative;
-}
-.avatar img {
-  width: 100%;
-  height: 100%;
-  border-radius: 50%;
-  object-fit: cover;
-}
+
 
 .avatar.admin::after {
   content: "🛡️";
@@ -678,20 +663,6 @@ label {
 .user-category:first-of-type {
   margin-top: 16px;
 }
-.avatar {
-  position: relative;
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: bold;
-  background: #444;
-  color: #fff;
-  margin-right: 8px;
-  border: 2px solid transparent; /* default */
-}
 
 /* Online = πράσινο ring */
 .avatar.online {
@@ -711,12 +682,6 @@ label {
   list-style: none;
   padding-left: 0;
   margin-left: 0;
-}
-.rooms {
-  padding: 10px;
-  display: flex;
-  flex-direction: column;
-  gap: 6px; /* Απόσταση ανάμεσα στα rooms */
 }
 
 .rooms .room {
@@ -787,60 +752,29 @@ label {
 /* ===================== CONTEXT MENUS ===================== */
 .context-menu {
   position: absolute;
-  background: #222;
-  border: 1px solid #444;
-  border-radius: 8px;
-  padding: 5px 0;
-  z-index: 1000;
-  min-width: 120px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
-}
-
-.context-menu ul {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-
-.context-menu li {
-  padding: 8px 12px;
-  color: #fff;
-  cursor: pointer;
-  transition: background 0.2s;
-}
-
-.context-menu li:hover {
-  background: #333;
-}
-.room-item {
-  display: flex;
-  align-items: center;
-  justify-content: space-between; /* σπρώχνει το counter δεξιά */
-  padding: 8px 12px;
-  border-radius: 10px;
+  display: none;
   background: var(--panel);
-  color: #fff;
-  cursor: pointer;
-  transition: background 0.2s, transform 0.1s;
+  border: 1px solid rgba(255,255,255,.12);
+  border-radius: 8px;
+  box-shadow: var(--shadow);
+  z-index: 1000;
 }
-
-.room-count {
-  font-size: 11px;
+.context-menu button {
+  display: block;
+  width: 100%;
+  padding: 8px 14px;
+  background: transparent;
+  border: none;
+  color: var(--danger);
   font-weight: 600;
-  background: linear-gradient(90deg, var(--accent), var(--accent-2));
-  color: #fff;
-  padding: 2px 6px;
-  border-radius: 12px;
-  box-shadow: 0 0 4px rgba(110, 168, 255, 0.4);
-  line-height: 1;
+  cursor: pointer;
+  text-align: left;
+}
+.context-menu button:hover {
+  background: rgba(255,0,0,0.15);
 }
 
 
-
-.room-item:hover {
-  background: #333a;
-  transform: translateX(2px);
-}
 html, body {
   height: 100%;
   margin: 0;
@@ -872,29 +806,6 @@ html, body {
   height: 100%;
   border-radius: 50%;
   object-fit: cover;
-}
-.context-menu {
-  position: absolute;
-  display: none;
-  background: var(--panel);
-  border: 1px solid rgba(255,255,255,.12);
-  border-radius: 8px;
-  box-shadow: var(--shadow);
-  z-index: 1000;
-}
-.context-menu button {
-  display: block;
-  width: 100%;
-  padding: 8px 14px;
-  background: transparent;
-  border: none;
-  color: var(--danger);
-  font-weight: 600;
-  cursor: pointer;
-  text-align: left;
-}
-.context-menu button:hover {
-  background: rgba(255,0,0,0.15);
 }
 
 /* ==== BADGES ==== */
@@ -1315,3 +1226,28 @@ dialog{background:var(--panel-solid);color:var(--text);border:1px solid rgba(255
 #usersList {
   margin-top: -13px; /* ανάσα κάτω από το κουμπί Αποθήκευση */
 }
+
+/* ===================== USER ROLES / AVATARS ===================== */
+.avatar {
+  position: relative;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  overflow: hidden;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  background: #444;
+  color: #fff;
+  margin-right: 8px;
+  border: 2px solid transparent; /* default */
+}
+.avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
