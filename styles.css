@@ -555,7 +555,7 @@ label {
   overflow-x: hidden; /* κόβει ό,τι περισσεύει δεξιά */
 }
 
-/* Input wrapper (κρατάει το input + emoji) */
+/* Input wrapper */
 .input-wrapper {
   position: relative;
   flex: 1;
@@ -565,7 +565,7 @@ label {
 /* Emoji button μέσα στο input */
 .input-wrapper .emoji-btn {
   position: absolute;
-  left: 8px;
+  left: 10px;
   top: 50%;
   transform: translateY(-50%);
   background: none;
@@ -577,6 +577,7 @@ label {
   display: flex;
   align-items: center;
   justify-content: center;
+  color: var(--text);
 }
 
 /* ===================== MESSAGE INPUT ===================== */
@@ -589,7 +590,7 @@ label {
   color: var(--text, #eaeaea);
   font-size: 15px;
   line-height: 1.4;
-  padding: 8px 10px 8px 40px; /* extra αριστερά για το emoji */
+  padding: 8px 12px 8px 42px; /* ➝ extra αριστερά για το emoji */
   border-radius: 999px;
 
   box-sizing: border-box;
@@ -606,15 +607,11 @@ label {
 }
 
 /* Send button */
-.send-btn {
+.message-form .btn.primary {
   flex: 0 0 auto;
   padding: 0 16px;
   height: 40px;
   border-radius: 999px;
-  background: var(--accent);
-  border: none;
-  color: #fff;
-  cursor: pointer;
 }
 /* ===================== EMOJI / GIF / STICKERS PANEL ===================== */
 .emoji-panel {position:absolute;bottom:68px;left:22%; /* ή 16px */width:500px;max-width:96vw;background:#11162f;color:var(--text);border:1px solid rgba(255,255,255,.12);border-radius:14px;box-shadow:var(--shadow);display:none;flex-direction:column;z-index:50}.emoji-panel.show{display:flex}
