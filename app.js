@@ -658,13 +658,14 @@ onAuthStateChanged(auth, async (user) => {
 
   } else {
     // Αν δεν υπάρχει user → δείξε την οθόνη login
-    appView.classList.add("hidden");
-    authView.classList.remove("hidden");
-    helloUser.textContent = "";
+    appView.classList.add('hidden');
+    authView.classList.remove('hidden');
+    helloUser.textContent = '';
     if (messagesUnsub) messagesUnsub();
     if (presenceUnsub) presenceUnsub();
   }
-});
+}); // 👈 κλείνει σωστά το onAuthStateChanged
+
 // Helper για να δίνει σταθερό id από string
 function hashCode(str) {
   let hash = 0;
