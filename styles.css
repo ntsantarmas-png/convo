@@ -1274,3 +1274,15 @@ dialog{background:var(--panel-solid);color:var(--text);border:1px solid rgba(255
   66%  { content: '..'; }
   100% { content: '...'; }
 }
+/* Wrapper για name + typing */
+.name-wrapper {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+}
+
+.typing-indicator {
+  font-size: 11px;
+  color: var(--muted);
+  margin-left: 4px; /* μικρό offset για να ευθυγραμμιστεί */
+}
