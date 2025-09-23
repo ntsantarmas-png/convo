@@ -256,13 +256,18 @@ if (text.includes("youtube.com") || text.includes("youtu.be")) {
 messageInput.addEventListener("input", () => {
   messageInput.style.height = "auto";
   messageInput.style.height = messageInput.scrollHeight + "px";
-});
 
-messageInput.addEventListener("keydown", (e) => {
-  if (e.key === "Enter" && !e.shiftKey) {
-    e.preventDefault(); 
-    messageForm.requestSubmit(); // αποστολή με Enter
-  }
+  // Typing indicator
+  set(typingRef, {
+    uid: auth.currentUser.uid,
+    name: auth.currentUser.displayName || "Anonymous",
+    typing: true
+  });
+
+  clearTimeout(typingTimeout);
+  typingTimeout = setTimeout(() => {
+    set(typingRef, { typing: false });
+  }, 2000);
 });
 
 
