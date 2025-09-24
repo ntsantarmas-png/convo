@@ -1500,11 +1500,12 @@ document.addEventListener("click", (e) => {
 document.querySelectorAll(".status-options button").forEach(btn => {
   btn.addEventListener("click", () => {
     const status = btn.dataset.status;
-    updateStatus(status);
+    updateStatus(status);   // 🔹 η helper function που έχεις
     showToast(`✅ Status set to: ${status}`);
-    document.getElementById("profileMenu").style.display = "none";
+    profileMenu.style.display = "none";
   });
 });
+
 
 // ===================== STATUS HANDLING =====================
 const statusButtons = document.querySelectorAll(".status-options button");
