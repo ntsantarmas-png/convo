@@ -54,14 +54,14 @@ body {
 .profile-menu {
   position: absolute;
   right: 0;
-  top: 44px; /* λίγο κάτω από το avatar */
+  top: 44px;
   background: var(--panel);
   border: 1px solid rgba(255,255,255,.12);
   border-radius: 10px;
   box-shadow: var(--shadow);
-  display: none; /* κρυφό από default */
+  display: none;
   flex-direction: column;
-  min-width: 140px;
+  min-width: 160px;
   z-index: 2000;
 }
 
@@ -78,68 +78,26 @@ body {
 .profile-menu button:hover {
   background: rgba(255,255,255,.08);
 }
-.profile-menu {
-  display: none; /* Κρυφό από default */
-}
-.profile-menu {
-  position: absolute;
-  right: 0;
-  top: 44px;
-  background: var(--panel-solid, #141936);
-  border: 1px solid rgba(255,255,255,.12);
-  border-radius: 12px;
-  box-shadow: 0 8px 24px rgba(0,0,0,.4);
-  display: none; 
+
+/* ===================== STATUS OPTIONS ===================== */
+.status-options {
+  display: flex;
   flex-direction: column;
-  min-width: 160px;
-  z-index: 2000;
-  overflow: hidden; /* κάνει smooth το border-radius */
 }
 
-.profile-menu button {
+.status-options button {
   background: transparent;
   border: none;
-  padding: 12px 16px;
+  padding: 8px 14px;
   text-align: left;
   color: var(--text);
   cursor: pointer;
   font-size: 14px;
-  transition: background 0.2s;
 }
 
-.profile-menu button:hover {
+.status-options button:hover {
   background: rgba(255,255,255,.08);
 }
-.profile-menu {
-  position: absolute;
-  right: 0;
-  top: 44px;
-  background: var(--panel-solid, #141936);
-  border: 1px solid rgba(255,255,255,.12);
-  border-radius: 12px;
-  box-shadow: 0 8px 24px rgba(0,0,0,.4);
-  display: none; 
-  flex-direction: column;
-  min-width: 160px;
-  z-index: 2000;
-  overflow: hidden; /* κάνει smooth το border-radius */
-}
-
-.profile-menu button {
-  background: transparent;
-  border: none;
-  padding: 12px 16px;
-  text-align: left;
-  color: var(--text);
-  cursor: pointer;
-  font-size: 14px;
-  transition: background 0.2s;
-}
-
-.profile-menu button:hover {
-  background: rgba(255,255,255,.08);
-}
-
 
 /* ===================== TOPBAR / HEADER ===================== */
 .topbar {
@@ -1693,23 +1651,4 @@ dialog{background:var(--panel-solid);color:var(--text);border:1px solid rgba(255
   display: flex;
   justify-content: center;
   gap: 10px;
-}
-/* ===================== STATUS OPTIONS ===================== */
-.status-options {
-  display: flex;
-  flex-direction: column;
-}
-
-.status-options button {
-  background: transparent;
-  border: none;
-  padding: 8px 14px;
-  text-align: left;
-  color: var(--text);
-  cursor: pointer;
-  font-size: 14px;
-}
-
-.status-options button:hover {
-  background: rgba(255,255,255,.08);
 }
