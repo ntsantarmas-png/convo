@@ -952,12 +952,10 @@ function renderStickerGrid(items){
 
 // Hook sticker tab
 stickerTabBtn && stickerTabBtn.addEventListener('click', ()=>{ setEmojiActiveTab('stickers'); loadTrendingStickers(); });
-
 // ===================== USER CONTEXT MENU =====================
 // Context menu για users
 const userContextMenu = document.getElementById("userContextMenu");
 let contextTargetUser = null;
-
 
 // Δεξί κλικ σε user
 document.addEventListener("contextmenu", (e) => {
@@ -965,58 +963,81 @@ document.addEventListener("contextmenu", (e) => {
   if (li && li.parentElement.classList.contains("users-sublist")) {
     e.preventDefault();
     contextTargetUser = li;
-   userContextMenu.style.display = "block";
+    userContextMenu.style.display = "block";
 
-// Υπολογισμός θέσης με βάση τα όρια της οθόνης
-const menuWidth = userContextMenu.offsetWidth;
-const menuHeight = userContextMenu.offsetHeight;
+    // Υπολογισμός θέσης με βάση τα όρια της οθόνης
+    const menuWidth = userContextMenu.offsetWidth;
+    const menuHeight = userContextMenu.offsetHeight;
 
-let posX = e.pageX;
-let posY = e.pageY;
+    let posX = e.pageX;
+    let posY = e.pageY;
 
-// Αν πάει να βγει δεξιά → μετακινείται αριστερά
-if (posX + menuWidth > window.innerWidth) {
-  posX = window.innerWidth - menuWidth - 10;
-}
+    if (posX + menuWidth > window.innerWidth) {
+      posX = window.innerWidth - menuWidth - 10;
+    }
+    if (posY + menuHeight > window.innerHeight) {
+      posY = window.innerHeight - menuHeight - 10;
+    }
 
-// Αν πάει να βγει κάτω → μετακινείται πιο πάνω
-if (posY + menuHeight > window.innerHeight) {
-  posY = window.innerHeight - menuHeight - 10;
-}
-
-userContextMenu.style.left = `${posX}px`;
-userContextMenu.style.top = `${posY}px`;
+    userContextMenu.style.left = `${posX}px`;
+    userContextMenu.style.top = `${posY}px`;
 
   } else {
     userContextMenu.style.display = "none";
   }
 });
 
-
-// Κλείσιμο όταν κλικάρεις αλλού
-// Handlers για τα menu items
+// ===== Handlers για τα menu items =====
 document.getElementById("ctxAddFriend").addEventListener("click", () => {
-  if (!contextTargetUser) return;
-  const username = contextTargetUser.querySelector("span")?.textContent;
-  alert(`Add Friend: ${username}`);
+  if (!contextTargetUser || !auth.currentUser) return;
+  const friendUid = contextTargetUser.dataset.uid;
+  const friendName = contextTargetUser.querySelector("span")?.textContent;
+
+  set(ref(db, `users/${auth.currentUser.uid}/friends/${friendUid}`), {
+    name: friendName
+  }).then(() => {
+    showToast(`✅ ${friendName} added as friend`);
+  }).catch(err => console.error("Error adding friend:", err));
+
+  userContextMenu.style.display = "none";
 });
 
 document.getElementById("ctxRemoveFriend").addEventListener("click", () => {
-  if (!contextTargetUser) return;
-  const username = contextTargetUser.querySelector("span")?.textContent;
-  alert(`Remove Friend: ${username}`);
+  if (!contextTargetUser || !auth.currentUser) return;
+  const friendUid = contextTargetUser.dataset.uid;
+  const friendName = contextTargetUser.querySelector("span")?.textContent;
+
+  remove(ref(db, `users/${auth.currentUser.uid}/friends/${friendUid}`))
+    .then(() => showToast(`❌ ${friendName} removed from friends`))
+    .catch(err => console.error("Error removing friend:", err));
+
+  userContextMenu.style.display = "none";
 });
 
 document.getElementById("ctxBlock").addEventListener("click", () => {
-  if (!contextTargetUser) return;
-  const username = contextTargetUser.querySelector("span")?.textContent;
-  alert(`Block: ${username}`);
+  if (!contextTargetUser || !auth.currentUser) return;
+  const friendUid = contextTargetUser.dataset.uid;
+  const friendName = contextTargetUser.querySelector("span")?.textContent;
+
+  set(ref(db, `users/${auth.currentUser.uid}/blocked/${friendUid}`), {
+    name: friendName
+  }).then(() => {
+    showToast(`⛔ ${friendName} blocked`);
+  }).catch(err => console.error("Error blocking user:", err));
+
+  userContextMenu.style.display = "none";
 });
 
 document.getElementById("ctxUnblock").addEventListener("click", () => {
-  if (!contextTargetUser) return;
-  const username = contextTargetUser.querySelector("span")?.textContent;
-  alert(`Unblock: ${username}`);
+  if (!contextTargetUser || !auth.currentUser) return;
+  const friendUid = contextTargetUser.dataset.uid;
+  const friendName = contextTargetUser.querySelector("span")?.textContent;
+
+  remove(ref(db, `users/${auth.currentUser.uid}/blocked/${friendUid}`))
+    .then(() => showToast(`✅ ${friendName} unblocked`))
+    .catch(err => console.error("Error unblocking user:", err));
+
+  userContextMenu.style.display = "none";
 });
 
 // ===================== ROOM CONTEXT MENU =====================
