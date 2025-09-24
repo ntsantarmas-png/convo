@@ -606,6 +606,7 @@ li.appendChild(nameWrapper);
 onAuthStateChanged(auth, async (user) => {
   if (user) {
     // ✅ Έχει συνδεθεί χρήστης
+    document.getElementById("logoutBtn").style.display = "inline-flex";
 
     // Αν δεν υπάρχει avatar, δώσε ένα σταθερό από pravatar
     if (!user.photoURL) {
@@ -620,23 +621,16 @@ onAuthStateChanged(auth, async (user) => {
       }
     }
 
-    // Δείξε την εφαρμογή
+    // Εμφάνιση της εφαρμογής μετά το login
     authView.classList.add("hidden");
     appView.classList.remove("hidden");
-
-    // Εμφάνιση username
     helloUser.textContent = `Hello, ${user.displayName || "User"}!`;
-
-    // Δείξε και το κουμπί logout (αν υπάρχει στο DOM)
-    document.getElementById("logoutBtn")?.classList.remove("hidden");
 
   } else {
     // ❌ Δεν υπάρχει χρήστης -> login σελίδα
-    appView.classList.add("hidden");
+    document.getElementById("logoutBtn").style.display = "none";
     authView.classList.remove("hidden");
-
-    // Κρύψε το κουμπί logout
-    document.getElementById("logoutBtn")?.classList.add("hidden");
+    appView.classList.add("hidden");
   }
 });
 
