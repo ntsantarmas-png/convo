@@ -1507,8 +1507,6 @@ const confirmDeleteBtn = document.getElementById("confirmDeleteBtn");
 
 // ====== Dropdown Profile Menu ======
 
-const profileMenu = document.querySelector(".profile-menu");
-
 // Toggle profile dropdown
 if (profileWrapper) {
   profileWrapper.addEventListener("click", () => {
