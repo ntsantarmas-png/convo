@@ -675,6 +675,8 @@ onAuthStateChanged(auth, async (user) => {
     await renderRooms();
     switchRoom(currentRoom);
     watchPresence();
+    renderUserList();
+
 
   } else {
     // Αν δεν υπάρχει user → δείξε την οθόνη login
@@ -699,6 +701,33 @@ function hashCode(str) {
   // Utils (safe RegExp)
   function escapeHtml(str=''){ return str.replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;'); }
   function linkify(text=''){ const urlRegex=new RegExp('https?:\\/\\/[^\\s]+','g'); return text.replace(urlRegex,'<a href=\"$&\" target=\"_blank\" rel=\"noopener noreferrer\">$&</a>'); }
+
+// ===================== RENDER USER LIST =====================
+function renderUserList() {
+  const usersList = document.getElementById("usersList");
+
+  onValue(ref(db, "users"), (snap) => {
+    usersList.innerHTML = "";
+
+    snap.forEach(child => {
+      const u = child.val();
+
+      // Αν δεν έχει status -> default online/offline
+      const statusClass = u.status || (u.online ? "online" : "offline");
+
+      const li = document.createElement("li");
+      li.innerHTML = `
+        <span class="user-status ${statusClass}"></span>
+        <div class="avatar">
+          <img src="${u.photoURL || "https://i.pravatar.cc/40"}" alt="avatar">
+        </div>
+        <span class="username">${u.displayName || "Anonymous"}</span>
+      `;
+
+      usersList.appendChild(li);
+    });
+  });
+}
 
   
 // ===================== EMOJI / GIF / STICKERS PICKER =====================
