@@ -1496,6 +1496,15 @@ document.addEventListener("click", (e) => {
     profileMenu.style.display = "none";
   }
 });
+// ===================== PROFILE MENU: STATUS =====================
+document.querySelectorAll(".status-options button").forEach(btn => {
+  btn.addEventListener("click", () => {
+    const status = btn.dataset.status;
+    updateStatus(status);
+    showToast(`✅ Status set to: ${status}`);
+    document.getElementById("profileMenu").style.display = "none";
+  });
+});
 
 // ===================== STATUS HANDLING =====================
 const statusButtons = document.querySelectorAll(".status-options button");
