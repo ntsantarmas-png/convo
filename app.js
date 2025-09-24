@@ -604,6 +604,16 @@ li.appendChild(nameWrapper);
 
 
 // ===================== AUTH STATE HANDLING =====================
+onAuthStateChanged(auth, (user) => {
+  if (user) {
+    // ✅ Έχει συνδεθεί χρήστης
+    document.getElementById("logoutBtn").style.display = "inline-flex";
+  } else {
+    // ❌ Δεν υπάρχει χρήστης -> login σελίδα
+    document.getElementById("logoutBtn").style.display = "none";
+  }
+});
+
 onAuthStateChanged(auth, async (user) => {
   if (user) {
     // Αν δεν υπάρχει avatar, δώσε ένα σταθερό από pravatar
