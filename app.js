@@ -1571,7 +1571,7 @@ if (confirmDeleteBtn) {
         await signOut(auth);
       } catch (err) {
         console.error("Error deleting profile", err);
-      }
+   }
     }
   });
-});
+}
