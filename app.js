@@ -1570,3 +1570,35 @@ if (confirmDeleteBtn) {
     }
   });
 }
+// ===================== FRIENDS TAB DEMO =====================
+const friendsList = document.getElementById("friendsList");
+const noFriendsMsg = document.getElementById("noFriendsMsg");
+
+// Demo data (για αρχή)
+let demoFriends = ["Alice", "Bob", "Charlie"];
+
+function renderFriends() {
+  friendsList.innerHTML = "";
+  if (demoFriends.length === 0) {
+    noFriendsMsg.style.display = "block";
+    return;
+  }
+  noFriendsMsg.style.display = "none";
+  demoFriends.forEach(friend => {
+    const li = document.createElement("li");
+    li.innerHTML = `<span>${friend}</span> <button data-name="${friend}">Remove</button>`;
+    friendsList.appendChild(li);
+  });
+}
+
+// Remove friend
+friendsList.addEventListener("click", (e) => {
+  if (e.target.tagName === "BUTTON") {
+    const name = e.target.dataset.name;
+    demoFriends = demoFriends.filter(f => f !== name);
+    renderFriends();
+  }
+});
+
+// Render αρχικά
+renderFriends();
