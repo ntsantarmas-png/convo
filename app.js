@@ -700,8 +700,8 @@ const watchPresence = () => {
       document.getElementById("modsCount").textContent   = document.getElementById("modsList").childElementCount;
       document.getElementById("vipCount").textContent    = document.getElementById("vipList").childElementCount;
       document.getElementById("usersCount").textContent  = document.getElementById("normalList").childElementCount;
-    }, 0);
-  });
+    }, 0);   // ✅ εδώ τελειώνει σωστά
+
 
 
 // ===================== AUTH STATE HANDLING =====================
