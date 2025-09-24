@@ -1306,3 +1306,11 @@ toggleUsersBtn?.addEventListener("click", () => {
   usersPanel.classList.toggle("show");
   sidebar.classList.remove("show"); // κλείνει το Rooms αν ήταν ανοιχτό
 });
+// ===================== PROFILE MENU TOGGLE =====================
+const profileWrapper = document.querySelector(".profile-wrapper");
+const profileMenu = document.getElementById("profileMenu");
+
+profileWrapper?.addEventListener("click", () => {
+  profileMenu.style.display =
+    profileMenu.style.display === "flex" ? "none" : "flex";
+});
