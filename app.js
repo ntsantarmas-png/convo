@@ -69,24 +69,27 @@ const $ = (id) => document.getElementById(id);
   
 // ===================== PRESENCE =====================
 async function setupPresence(user) {
-  const statusRef = ref(db, "status/" + user.uid);
+  const userRef = ref(db, "users/" + user.uid);
 
-  // Τι θα αποθηκευτεί όταν φύγει (disconnect)
-  onDisconnect(statusRef).set({
-    state: "offline",
-    last_changed: serverTimestamp(),
-    displayName: user.displayName || "User",
-    photoURL: user.photoURL || null
+  // Όταν είναι online
+  await set(userRef, {
+    uid: user.uid,
+    displayName: user.displayName || "Anonymous",
+    photoURL: user.photoURL || "https://i.pravatar.cc/40",
+    status: "online", // 👈 default status
+    online: true
   });
 
-  // Τι αποθηκεύουμε όταν είναι online
-  await set(statusRef, {
-    state: "online",
-    last_changed: serverTimestamp(),
-    displayName: user.displayName || "User",
-    photoURL: user.photoURL || null
+  // Όταν κλείνει το παράθυρο -> offline
+  onDisconnect(userRef).set({
+    uid: user.uid,
+    displayName: user.displayName || "Anonymous",
+    photoURL: user.photoURL || "https://i.pravatar.cc/40",
+    status: "offline",
+    online: false
   });
 }
+
   
 // ===================== ROOMS (Default / Create / Switch) =====================
 // Rooms
