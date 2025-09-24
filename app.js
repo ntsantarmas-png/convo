@@ -1571,8 +1571,6 @@ if (confirmDeleteBtn) {
   });
 }
 // ===================== FRIENDS TAB (Firebase) =====================
-import { ref, onValue, update, remove } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
-
 const friendsList = document.getElementById("friendsList");
 const noFriendsMsg = document.getElementById("noFriendsMsg");
 
