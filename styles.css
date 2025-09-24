@@ -1688,3 +1688,13 @@ dialog{background:var(--panel-solid);color:var(--text);border:1px solid rgba(255
   justify-content: center;
   gap: 10px;
 }
+/* ===================== GAME COLORS ===================== */
+.board div.X {
+  color: #6ea8ff;   /* μπλε για Χ */
+  font-weight: bold;
+}
+
+.board div.O {
+  color: #ff6b6b;   /* κόκκινο για O */
+  font-weight: bold;
+}
