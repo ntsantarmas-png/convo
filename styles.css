@@ -1453,3 +1453,15 @@ dialog{background:var(--panel-solid);color:var(--text);border:1px solid rgba(255
     display: none !important; /* εξαφανίζονται στο PC */
   }
 }
+/* ==== MOBILE ONLY ELEMENTS ==== */
+.mobile-only {
+  display: none !important; /* κρυφά σε PC */
+}
+
+@media (max-width: 980px) {
+  .mobile-only {
+    display: inline-flex !important; /* να φαίνονται σε κινητό */
+    align-items: center;
+    justify-content: center;
+  }
+}
