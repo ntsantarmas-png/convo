@@ -678,7 +678,7 @@ onAuthStateChanged(auth, async (user) => {
     await renderRooms();
     switchRoom(currentRoom);
     watchPresence();
-    renderUserList();
+    
 
 
   } else {
