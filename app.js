@@ -512,9 +512,15 @@ const watchPresence = () => {
     document.getElementById("vipList").innerHTML = "";
     document.getElementById("normalList").innerHTML = "";
 
+    const seen = new Set(); // ✅ για να μην μπει κάποιος 2η φορά
+
     Object.entries(data).forEach(([uid, u]) => {
+      if (seen.has(uid)) return;
+      seen.add(uid);
+
       const li = document.createElement('li');
 
+      // === Avatar ===
       const avatar = document.createElement('div');
       avatar.className = 'avatar ' + (u.status === 'online' ? 'online' : 'offline');
 
@@ -531,12 +537,15 @@ const watchPresence = () => {
         avatar.textContent = (u.displayName || 'U')[0].toUpperCase();
       }
 
+      // === Status dot ===
       const dot = document.createElement('span');
       dot.className = 'status-dot ' + (u.status === 'online' ? 'online' : 'offline');
 
+      // === Username ===
       const name = document.createElement('span');
       name.textContent = u.displayName || 'User';
 
+      // === Badge ===
       let badge = null;
       if ((u.displayName || '') === 'MysteryMan') {
         badge = document.createElement('span');
@@ -564,11 +573,13 @@ const watchPresence = () => {
         document.getElementById("normalList").appendChild(li);
       }
 
+      // === Name wrapper ===
       const nameWrapper = document.createElement('div');
       nameWrapper.className = 'name-wrapper';
       nameWrapper.appendChild(name);
       if (badge) nameWrapper.appendChild(badge);
 
+      // === Typing indicator ===
       if (u.typing) {
         const typingEl = document.createElement('div');
         typingEl.className = 'typing-indicator';
@@ -576,19 +587,21 @@ const watchPresence = () => {
         nameWrapper.appendChild(typingEl);
       }
 
+      // === Append row ===
       li.appendChild(avatar);
       li.appendChild(dot);
       li.appendChild(nameWrapper);
     });
 
+    // ✅ Update counters αφού γεμίσουν οι λίστες
     setTimeout(() => {
       document.getElementById("adminsCount").textContent = document.getElementById("adminsList").childElementCount;
       document.getElementById("modsCount").textContent   = document.getElementById("modsList").childElementCount;
       document.getElementById("vipCount").textContent    = document.getElementById("vipList").childElementCount;
       document.getElementById("usersCount").textContent  = document.getElementById("normalList").childElementCount;
-}, 0);   // εδώ τελειώνει το setTimeout
-});      // εδώ τελειώνει το onValue
-};       // εδώ τελειώνει η watchPresence
+    }, 0);
+  });
+};
 
 // Καθαρίζουμε όλες τις λίστες
     document.getElementById("adminsList").innerHTML = "";
