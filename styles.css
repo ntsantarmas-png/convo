@@ -1495,7 +1495,8 @@ dialog{background:var(--panel-solid);color:var(--text);border:1px solid rgba(255
     border-right: none;
   }
 
-  .users.show {
-    display: block;
-  }
+  .users {
+  display: none; /* ✅ default hidden */
+}
+
 }
