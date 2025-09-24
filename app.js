@@ -1272,7 +1272,8 @@ if (toggleRoomsBtn && roomsPanel) {
 
 if (toggleUsersBtn && usersPanel) {
   toggleUsersBtn.addEventListener("click", () => {
-    usersPanel.classList.toggle("active");
+    usersPanel.classList.toggle("show");
+
     roomsPanel?.classList.remove("active"); // κλείσε rooms αν είναι ανοιχτό
   });
 }
