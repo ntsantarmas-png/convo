@@ -98,6 +98,30 @@ body {
 .status-options button:hover {
   background: rgba(255,255,255,.08);
 }
+/* ===================== USER STATUS DOT ===================== */
+.user-status {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  margin-right: 6px;
+}
+
+.user-status.online {
+  background: #2fd79a; /* πράσινο */
+}
+
+.user-status.away {
+  background: #ffb703; /* κίτρινο */
+}
+
+.user-status.busy {
+  background: #ff6b6b; /* κόκκινο */
+}
+
+.user-status.offline {
+  background: #999; /* γκρι */
+}
 
 /* ===================== TOPBAR / HEADER ===================== */
 .topbar {
