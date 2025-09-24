@@ -602,20 +602,11 @@ li.appendChild(nameWrapper);
   });
 };
 
-
 // ===================== AUTH STATE HANDLING =====================
-onAuthStateChanged(auth, (user) => {
-  if (user) {
-    // ✅ Έχει συνδεθεί χρήστης
-    document.getElementById("logoutBtn").style.display = "inline-flex";
-  } else {
-    // ❌ Δεν υπάρχει χρήστης -> login σελίδα
-    document.getElementById("logoutBtn").style.display = "none";
-  }
-});
-
 onAuthStateChanged(auth, async (user) => {
   if (user) {
+    // ✅ Έχει συνδεθεί χρήστης
+
     // Αν δεν υπάρχει avatar, δώσε ένα σταθερό από pravatar
     if (!user.photoURL) {
       const avatarId = Math.abs(hashCode(user.uid)) % 70 + 1; // pravatar έχει ~70 images
@@ -629,12 +620,27 @@ onAuthStateChanged(auth, async (user) => {
       }
     }
 
-    // Εμφάνιση της εφαρμογής μετά το login
+    // Δείξε την εφαρμογή
     authView.classList.add("hidden");
     appView.classList.remove("hidden");
+
+    // Εμφάνιση username
     helloUser.textContent = `Hello, ${user.displayName || "User"}!`;
 
-    // === CLEAR CHAT BUTTON ===
+    // Δείξε και το κουμπί logout (αν υπάρχει στο DOM)
+    document.getElementById("logoutBtn")?.classList.remove("hidden");
+
+  } else {
+    // ❌ Δεν υπάρχει χρήστης -> login σελίδα
+    appView.classList.add("hidden");
+    authView.classList.remove("hidden");
+
+    // Κρύψε το κουμπί logout
+    document.getElementById("logoutBtn")?.classList.add("hidden");
+  }
+});
+
+// === CLEAR CHAT BUTTON ===
     const clearChatBtn = document.getElementById("clearChatBtn");
     if (user.displayName === "MysteryMan") {
       currentUserRole = "admin";   // 👈 Ορίζουμε ρόλο admin
