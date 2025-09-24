@@ -1611,22 +1611,19 @@ dialog{background:var(--panel-solid);color:var(--text);border:1px solid rgba(255
   .users {
   display: none; /* ✅ default hidden */
 }
-
 }
+
 /* ===================== GAME MODAL ===================== */
 .game-modal {
   position: fixed;
-  inset: 0; /* top, right, bottom, left = 0 */
-  background: rgba(0,0,0,.6); /* ημιδιαφανές φόντο */
+  inset: 0;
+  background: rgba(0,0,0,.6);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 3000;
 }
-
-.game-modal.hidden {
-  display: none;
-}
+.game-modal.hidden { display: none; }
 
 .game-content {
   background: var(--panel);
@@ -1637,19 +1634,18 @@ dialog{background:var(--panel-solid);color:var(--text);border:1px solid rgba(255
   text-align: center;
   width: 320px;
 }
-
 .game-content h2 {
   margin-top: 0;
   margin-bottom: 16px;
 }
 
+/* ===================== GAME BOARD ===================== */
 .board {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 6px;
   margin-bottom: 12px;
 }
-
 .board div {
   width: 80px;
   height: 80px;
@@ -1661,46 +1657,40 @@ dialog{background:var(--panel-solid);color:var(--text);border:1px solid rgba(255
   font-size: 32px;
   cursor: pointer;
   border-radius: 8px;
-  transition: background .2s;
+  transition: background .2s, transform .2s;
 }
-
 .board div:hover {
   background: rgba(255,255,255,.1);
+  transform: scale(1.05);
 }
 
+/* ===================== GAME STATUS ===================== */
 #gameStatus {
   font-size: 14px;
   margin-bottom: 10px;
   color: var(--muted);
 }
-.board div.X {
-  color: var(--accent); /* μπλε για X */
-  font-weight: bold;
-}
 
-.board div.O {
-  color: var(--danger); /* κόκκινο για O */
-  font-weight: bold;
-}
-
-.game-actions {
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-}
 /* ===================== GAME COLORS ===================== */
 .board div.X {
-  color: #6ea8ff;   /* μπλε για Χ */
+  color: #6ea8ff;
+  font-weight: bold;
+}
+.board div.O {
+  color: #ff6b6b;
   font-weight: bold;
 }
 
-.board div.O {
-  color: #ff6b6b;   /* κόκκινο για O */
-  font-weight: bold;
-}
 /* ===================== GAME WIN HIGHLIGHT ===================== */
 .board div.win {
   background: rgba(47, 215, 154, 0.15);
   box-shadow: 0 0 12px #2fd79a;
   border-radius: 6px;
+}
+
+/* ===================== GAME ACTIONS ===================== */
+.game-actions {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
 }
