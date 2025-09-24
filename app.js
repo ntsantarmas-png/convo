@@ -1314,3 +1314,7 @@ profileWrapper?.addEventListener("click", () => {
   profileMenu.style.display =
     profileMenu.style.display === "flex" ? "none" : "flex";
 });
+// ===================== EDIT PROFILE (demo) =====================
+document.getElementById("editProfileBtn")?.addEventListener("click", () => {
+  alert("Edit Profile coming soon!");
+});
