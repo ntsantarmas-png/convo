@@ -223,21 +223,6 @@ function playYouTube(url) {
   });
 }
 
-// ===================== MOBILE TOGGLE BUTTONS =====================
-const toggleRoomsBtn = document.getElementById("toggleRooms");
-const toggleUsersBtn = document.getElementById("toggleUsers");
-const sidebar = document.querySelector(".sidebar");
-const usersPanel = document.querySelector(".users");
-
-// Rooms toggle
-toggleRoomsBtn?.addEventListener("click", () => {
-  sidebar.classList.toggle("show");
-});
-
-// Users toggle
-toggleUsersBtn?.addEventListener("click", () => {
-  usersPanel.classList.toggle("show");
-});
 // ===================== MESSAGES =====================
 messageForm?.addEventListener("submit", async (e) => {
   e.preventDefault();
