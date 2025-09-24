@@ -1320,83 +1320,79 @@ document.getElementById("editProfileBtn")?.addEventListener("click", () => {
   alert("Edit Profile coming soon!");
 });
 // ===================== GAME: TIC TAC TOE =====================
-const gameBtn = document.getElementById("gameBtn");
-const gameModal = document.getElementById("gameModal");
-const closeGame = document.getElementById("closeGame");
-const board = document.getElementById("ticTacToeBoard");
-const gameStatus = document.getElementById("gameStatus");
+window.addEventListener("DOMContentLoaded", () => {
+  const gameBtn = document.getElementById("gameBtn");
+  const gameModal = document.getElementById("gameModal");
+  const closeGame = document.getElementById("closeGame");
+  const board = document.getElementById("ticTacToeBoard");
+  const gameStatus = document.getElementById("gameStatus");
 
-let currentPlayer = "X";
-let gameActive = true;
-let gameState = ["", "", "", "", "", "", "", "", ""];
+  let currentPlayer = "X";
+  let gameActive = true;
+  let gameState = ["", "", "", "", "", "", "", "", ""];
 
-// Δημιουργία πινάκακι 3x3
-function initBoard() {
-  board.innerHTML = "";
-  gameState = ["", "", "", "", "", "", "", "", ""];
-  currentPlayer = "X";
-  gameActive = true;
-  gameStatus.textContent = "Ξεκινάει ο παίκτης X";
+  function initBoard() {
+    board.innerHTML = "";
+    gameState = ["", "", "", "", "", "", "", "", ""];
+    currentPlayer = "X";
+    gameActive = true;
+    gameStatus.textContent = "Ξεκινάει ο παίκτης X";
 
-  for (let i = 0; i < 9; i++) {
-    const cell = document.createElement("div");
-    cell.dataset.index = i;
-    cell.addEventListener("click", handleCellClick);
-    board.appendChild(cell);
-  }
-}
-
-// Κλικ σε κελί
-function handleCellClick(e) {
-  const index = e.target.dataset.index;
-  if (gameState[index] !== "" || !gameActive) return;
-
-  gameState[index] = currentPlayer;
-  e.target.textContent = currentPlayer;
-
-  if (checkWin()) {
-    gameStatus.textContent = `🎉 Ο παίκτης ${currentPlayer} κέρδισε!`;
-    gameActive = false;
-    return;
+    for (let i = 0; i < 9; i++) {
+      const cell = document.createElement("div");
+      cell.dataset.index = i;
+      cell.addEventListener("click", handleCellClick);
+      board.appendChild(cell);
+    }
   }
 
-  if (!gameState.includes("")) {
-    gameStatus.textContent = "🤝 Ισοπαλία!";
-    gameActive = false;
-    return;
+  function handleCellClick(e) {
+    const index = e.target.dataset.index;
+    if (gameState[index] !== "" || !gameActive) return;
+
+    gameState[index] = currentPlayer;
+    e.target.textContent = currentPlayer;
+
+    if (checkWin()) {
+      gameStatus.textContent = `🎉 Ο παίκτης ${currentPlayer} κέρδισε!`;
+      gameActive = false;
+      return;
+    }
+
+    if (!gameState.includes("")) {
+      gameStatus.textContent = "🤝 Ισοπαλία!";
+      gameActive = false;
+      return;
+    }
+
+    currentPlayer = currentPlayer === "X" ? "O" : "X";
+    gameStatus.textContent = `Σειρά του παίκτη ${currentPlayer}`;
   }
 
-  currentPlayer = currentPlayer === "X" ? "O" : "X";
-  gameStatus.textContent = `Σειρά του παίκτη ${currentPlayer}`;
-}
+  function checkWin() {
+    const winPatterns = [
+      [0,1,2],[3,4,5],[6,7,8],
+      [0,3,6],[1,4,7],[2,5,8],
+      [0,4,8],[2,4,6]
+    ];
+    return winPatterns.some(pattern => {
+      const [a,b,c] = pattern;
+      return gameState[a] && gameState[a] === gameState[b] && gameState[a] === gameState[c];
+    });
+  }
 
-// Έλεγχος νίκης
-function checkWin() {
-  const winPatterns = [
-    [0,1,2],[3,4,5],[6,7,8],
-    [0,3,6],[1,4,7],[2,5,8],
-    [0,4,8],[2,4,6]
-  ];
-  return winPatterns.some(pattern => {
-    const [a,b,c] = pattern;
-    return gameState[a] && gameState[a] === gameState[b] && gameState[a] === gameState[c];
+  gameBtn?.addEventListener("click", () => {
+    gameModal.classList.remove("hidden");
+    initBoard();
   });
-}
 
-// Άνοιγμα παιχνιδιού
-gameBtn?.addEventListener("click", () => {
-  gameModal.classList.remove("hidden");
-  initBoard();
-});
-
-// Κλείσιμο παιχνιδιού
-closeGame?.addEventListener("click", () => {
-  gameModal.classList.add("hidden");
-});
-
-// Κλείσιμο με Esc
-document.addEventListener("keydown", (e) => {
-  if (e.key === "Escape") {
+  closeGame?.addEventListener("click", () => {
     gameModal.classList.add("hidden");
-  }
+  });
+
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") {
+      gameModal.classList.add("hidden");
+    }
+  });
 });
