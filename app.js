@@ -705,6 +705,15 @@ function hashCode(str) {
   function escapeHtml(str=''){ return str.replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;'); }
   function linkify(text=''){ const urlRegex=new RegExp('https?:\\/\\/[^\\s]+','g'); return text.replace(urlRegex,'<a href=\"$&\" target=\"_blank\" rel=\"noopener noreferrer\">$&</a>'); }
 
+function updateStatus(newStatus) {
+  if (!auth.currentUser) return;
+  const userRef = ref(db, "users/" + auth.currentUser.uid);
+
+  update(userRef, {
+    status: newStatus,
+    online: newStatus === "online"
+  });
+}
 // ===================== RENDER USER LIST =====================
 function renderUserList() {
   const usersList = document.getElementById("usersList");
