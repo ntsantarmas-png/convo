@@ -1355,7 +1355,6 @@ document.getElementById("editProfileBtn")?.addEventListener("click", () => {
 });
 
 // ===================== GAME: TIC TAC TOE (Firebase Sync) =====================
-
 window.addEventListener("DOMContentLoaded", () => {
   const gameBtn = document.getElementById("gameBtn");
   const gameModal = document.getElementById("gameModal");
@@ -1409,11 +1408,12 @@ window.addEventListener("DOMContentLoaded", () => {
   }
 
   function highlightWin(pattern) {
-    if (pattern) {
-      pattern.forEach(i => {
+    if (!pattern) return;
+    pattern.forEach(i => {
+      if (board.children[i]) { // ✅ έλεγχος ασφαλείας
         board.children[i].classList.add("win");
-      });
-    }
+      }
+    });
   }
 
   // === Sync από Firebase ===
@@ -1424,6 +1424,11 @@ window.addEventListener("DOMContentLoaded", () => {
     gameState = data.state || ["", "", "", "", "", "", "", "", ""];
     currentPlayer = data.player === "X" ? "O" : "X"; // αλλάζει παίκτης
     gameActive = data.active;
+
+    // ✅ Αν δεν έχει φτιαχτεί board → ξαναφτιάξτο
+    if (board.children.length === 0) {
+      initBoard();
+    }
 
     // redraw board
     [...board.children].forEach((cell, i) => {
@@ -1462,6 +1467,7 @@ window.addEventListener("DOMContentLoaded", () => {
   });
 
   restartGame?.addEventListener("click", () => {
+    initBoard();
     set(gameRef, {
       state: ["", "", "", "", "", "", "", "", ""],
       player: "X",
