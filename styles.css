@@ -1519,3 +1519,35 @@ dialog{background:var(--panel-solid);color:var(--text);border:1px solid rgba(255
     display: block;
   }
 }
+/* ===================== MOBILE DRAWER FIX ===================== */
+@media (max-width: 980px) {
+  .sidebar,
+  .users {
+    display: none; 
+    position: fixed;
+    top: 54px;
+    bottom: 0;
+    width: 80%;
+    max-width: 320px;
+    z-index: 2000;
+    background: var(--panel);
+    border-right: 1px solid rgba(255,255,255,.1);
+    overflow-y: auto;
+  }
+
+  .sidebar.show {
+    display: block;
+    left: 0;
+  }
+
+  .users {
+    right: 0;
+    left: auto;
+    border-left: 1px solid rgba(255,255,255,.1);
+    border-right: none;
+  }
+
+  .users.show {
+    display: block;
+  }
+}
