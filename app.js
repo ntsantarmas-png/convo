@@ -1324,6 +1324,7 @@ window.addEventListener("DOMContentLoaded", () => {
   const gameBtn = document.getElementById("gameBtn");
   const gameModal = document.getElementById("gameModal");
   const closeGame = document.getElementById("closeGame");
+  const restartGame = document.getElementById("restartGame"); // ✅ εδώ
   const board = document.getElementById("ticTacToeBoard");
   const gameStatus = document.getElementById("gameStatus");
 
@@ -1352,6 +1353,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
     gameState[index] = currentPlayer;
     e.target.textContent = currentPlayer;
+    e.target.classList.add(currentPlayer); // χρώμα ανάλογα με X ή O
 
     if (checkWin()) {
       gameStatus.textContent = `🎉 Ο παίκτης ${currentPlayer} κέρδισε!`;
@@ -1381,48 +1383,26 @@ window.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  // Open modal
   gameBtn?.addEventListener("click", () => {
     gameModal.classList.remove("hidden");
     initBoard();
   });
 
+  // Close modal
   closeGame?.addEventListener("click", () => {
     gameModal.classList.add("hidden");
   });
 
+  // Restart game
+  restartGame?.addEventListener("click", () => {
+    initBoard();
+  });
+
+  // Close with ESC
   document.addEventListener("keydown", (e) => {
     if (e.key === "Escape") {
       gameModal.classList.add("hidden");
     }
   });
-});
-const restartGame = document.getElementById("restartGame");
-
-function handleCellClick(e) {
-  const index = e.target.dataset.index;
-  if (gameState[index] !== "" || !gameActive) return;
-
-  gameState[index] = currentPlayer;
-  e.target.textContent = currentPlayer;
-  e.target.classList.add(currentPlayer); // χρώμα ανάλογα με X ή O
-
-  if (checkWin()) {
-    gameStatus.textContent = `🎉 Ο παίκτης ${currentPlayer} κέρδισε!`;
-    gameActive = false;
-    return;
-  }
-
-  if (!gameState.includes("")) {
-    gameStatus.textContent = "🤝 Ισοπαλία!";
-    gameActive = false;
-    return;
-  }
-
-  currentPlayer = currentPlayer === "X" ? "O" : "X";
-  gameStatus.textContent = `Σειρά του παίκτη ${currentPlayer}`;
-}
-
-// Restart game
-restartGame?.addEventListener("click", () => {
-  initBoard();
 });
