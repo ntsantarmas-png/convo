@@ -1441,3 +1441,36 @@ window.addEventListener("DOMContentLoaded", () => {
     }
   });
 });
+// ===================== PROFILE MENU TOGGLE =====================
+const profileWrapper = document.querySelector(".profile-wrapper");
+const profileMenu = document.getElementById("profileMenu");
+
+profileWrapper?.addEventListener("click", () => {
+  profileMenu.style.display = profileMenu.style.display === "flex" ? "none" : "flex";
+});
+
+// Κλείσιμο αν κάνεις click έξω
+document.addEventListener("click", (e) => {
+  if (!profileWrapper.contains(e.target)) {
+    profileMenu.style.display = "none";
+  }
+});
+
+// ===================== STATUS HANDLING =====================
+const statusButtons = document.querySelectorAll(".status-options button");
+
+statusButtons.forEach(btn => {
+  btn.addEventListener("click", () => {
+    const newStatus = btn.dataset.status;
+    const user = auth.currentUser;
+    if (!user) return;
+
+    // Update στο Firebase
+    update(ref(db, "users/" + user.uid), {
+      status: newStatus
+    });
+
+    console.log("✅ Status updated:", newStatus);
+    profileMenu.style.display = "none"; // κλείνει το menu μετά την επιλογή
+  });
+});
