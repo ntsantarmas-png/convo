@@ -78,6 +78,9 @@ body {
 .profile-menu button:hover {
   background: rgba(255,255,255,.08);
 }
+.profile-menu {
+  display: none; /* Κρυφό από default */
+}
 
 /* ===================== TOPBAR / HEADER ===================== */
 .topbar {
