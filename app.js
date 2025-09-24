@@ -512,7 +512,12 @@ const watchPresence = () => {
     document.getElementById("vipList").innerHTML = "";
     document.getElementById("normalList").innerHTML = "";
 
+    const seen = new Set(); // ✅ για να μην μπει 2η φορά
+
     Object.entries(data).forEach(([uid, u]) => {
+      if (seen.has(uid)) return;  // skip αν υπάρχει ήδη
+      seen.add(uid);
+
       const li = document.createElement('li');
 
       // === Avatar ===
@@ -588,16 +593,16 @@ const watchPresence = () => {
       li.appendChild(nameWrapper);
     });
 
-  // ✅ Update counters αφού γεμίσουν οι λίστες
-setTimeout(() => {
-  document.getElementById("adminsCount").textContent = document.getElementById("adminsList").childElementCount;
-  document.getElementById("modsCount").textContent   = document.getElementById("modsList").childElementCount;
-  document.getElementById("vipCount").textContent    = document.getElementById("vipList").childElementCount;
-  document.getElementById("usersCount").textContent  = document.getElementById("normalList").childElementCount;
-}, 0);
+    // ✅ Update counters αφού γεμίσουν οι λίστες
+    setTimeout(() => {
+      document.getElementById("adminsCount").textContent = document.getElementById("adminsList").childElementCount;
+      document.getElementById("modsCount").textContent   = document.getElementById("modsList").childElementCount;
+      document.getElementById("vipCount").textContent    = document.getElementById("vipList").childElementCount;
+      document.getElementById("usersCount").textContent  = document.getElementById("normalList").childElementCount;
+    }, 0);
+  });
+};
 
-});   // 👈 κλείνει το onValue
-};     // 👈 κλείνει η watchPresence
 
 
 // ===================== AUTH STATE HANDLING =====================
