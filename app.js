@@ -601,16 +601,26 @@ li.appendChild(nameWrapper);
     });
   });
 };
+
+
 // ===================== AUTH STATE HANDLING =====================
-onAuthStateChanged(auth, async (user) => {
+onAuthStateChanged(auth, (user) => {
   if (user) {
     // ✅ Έχει συνδεθεί χρήστης
     document.getElementById("logoutBtn").style.display = "inline-flex";
+  } else {
+    // ❌ Δεν υπάρχει χρήστης -> login σελίδα
+    document.getElementById("logoutBtn").style.display = "none";
+  }
+});
 
+onAuthStateChanged(auth, async (user) => {
+  if (user) {
     // Αν δεν υπάρχει avatar, δώσε ένα σταθερό από pravatar
     if (!user.photoURL) {
-      const avatarId = Math.abs(hashCode(user.uid)) % 70 + 1;
+      const avatarId = Math.abs(hashCode(user.uid)) % 70 + 1; // pravatar έχει ~70 images
       const stableAvatar = `https://i.pravatar.cc/150?img=${avatarId}`;
+
       try {
         await updateProfile(user, { photoURL: stableAvatar });
         console.log("✅ Avatar set for user:", stableAvatar);
@@ -619,26 +629,34 @@ onAuthStateChanged(auth, async (user) => {
       }
     }
 
+    // Εμφάνιση της εφαρμογής μετά το login
+    authView.classList.add("hidden");
+    appView.classList.remove("hidden");
+    helloUser.textContent = `Hello, ${user.displayName || "User"}!`;
+
     // === CLEAR CHAT BUTTON ===
     const clearChatBtn = document.getElementById("clearChatBtn");
     if (user.displayName === "MysteryMan") {
-      currentUserRole = "admin";
-      clearChatBtn.style.display = "inline-block";
+      currentUserRole = "admin";   // 👈 Ορίζουμε ρόλο admin
+      clearChatBtn.style.display = "inline-block"; // δείξε το κουμπί μόνο στον admin
 
       clearChatBtn.addEventListener("click", async () => {
         if (!confirm("⚠️ Να διαγραφούν όλα τα μηνύματα από αυτό το room;")) return;
         try {
           const room = document.getElementById("roomTitle").textContent.replace("#", "");
           await remove(ref(db, "messages/" + room));
+
+          // 🆕 καθάρισε και το UI αμέσως
           document.getElementById("messages").innerHTML = "";
+
           console.log("🗑 Chat cleared for room:", room);
         } catch (err) {
           console.error("clearChat error:", err);
         }
       });
     } else {
-      currentUserRole = "user";
-      clearChatBtn.style.display = "none";
+      currentUserRole = "user";    // 👈 Ορίζουμε default ρόλο user
+      clearChatBtn.style.display = "none"; // κρύψε το κουμπί για μη-admin
     }
 
     // Header avatar από το database
@@ -658,20 +676,15 @@ onAuthStateChanged(auth, async (user) => {
     switchRoom(currentRoom);
     watchPresence();
 
-    // Εμφάνιση της εφαρμογής μετά το login
-    authView.classList.add("hidden");
-    appView.classList.remove("hidden");
-    helloUser.textContent = `Hello, ${user.displayName || "User"}!`;
-
   } else {
-    // ❌ Δεν υπάρχει user → δείξε την οθόνη login
-    appView.classList.add("hidden");
-    authView.classList.remove("hidden");
-    helloUser.textContent = "";
+    // Αν δεν υπάρχει user → δείξε την οθόνη login
+    appView.classList.add('hidden');
+    authView.classList.remove('hidden');
+    helloUser.textContent = '';
     if (messagesUnsub) messagesUnsub();
     if (presenceUnsub) presenceUnsub();
   }
-}); // 👈 Εδώ κλείνει το onAuthStateChanged
+}); // 👈 κλείνει σωστά το onAuthStateChanged
 
 // Helper για να δίνει σταθερό id από string
 function hashCode(str) {
@@ -681,6 +694,7 @@ function hashCode(str) {
   }
   return hash;
 }
+
 
   // Utils (safe RegExp)
   function escapeHtml(str=''){ return str.replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;'); }
@@ -1246,29 +1260,53 @@ if (usersPanel) {
 // ===================== MOBILE TOGGLE PANELS =====================
 const toggleRoomsBtn = document.getElementById("toggleRooms");
 const toggleUsersBtn = document.getElementById("toggleUsers");
-const roomsPanel = document.querySelector(".sidebar");
-const usersPanel = document.querySelector(".users");
+const roomsPanel = document.querySelector(".rooms");
+// ❌ δεν ξαναδηλώνουμε usersPanel γιατί υπάρχει ήδη
 
-// Rooms toggle
-toggleRoomsBtn?.addEventListener("click", () => {
-  roomsPanel.classList.toggle("show");
-  usersPanel.classList.remove("show"); // κλείνει το Users αν είναι ανοιχτό
-});
+if (toggleRoomsBtn && roomsPanel) {
+  toggleRoomsBtn.addEventListener("click", () => {
+    roomsPanel.classList.toggle("active");
+    usersPanel?.classList.remove("active"); // κλείσε users αν είναι ανοιχτό
+  });
+}
 
-// Users toggle
-toggleUsersBtn?.addEventListener("click", () => {
-  usersPanel.classList.toggle("show");
-  roomsPanel.classList.remove("show"); // κλείνει το Rooms αν είναι ανοιχτό
+if (toggleUsersBtn && usersPanel) {
+  toggleUsersBtn.addEventListener("click", () => {
+    usersPanel.classList.toggle("show");
+
+    roomsPanel?.classList.remove("active"); // κλείσε rooms αν είναι ανοιχτό
+  });
+}
+
+// Κλείσιμο με click έξω
+document.addEventListener("click", (e) => {
+  if (roomsPanel && roomsPanel.classList.contains("active") && 
+      !roomsPanel.contains(e.target) && e.target !== toggleRoomsBtn) {
+    roomsPanel.classList.remove("active");
+  }
+  if (usersPanel && usersPanel.classList.contains("active") && 
+      !usersPanel.contains(e.target) && e.target !== toggleUsersBtn) {
+    usersPanel.classList.remove("active");
+  }
 });
 
 // Κλείσιμο με ESC
 document.addEventListener("keydown", (e) => {
   if (e.key === "Escape") {
-    roomsPanel.classList.remove("show");
-    usersPanel.classList.remove("show");
+    roomsPanel?.classList.remove("active");
+    usersPanel?.classList.remove("active");
   }
 });
+// ===================== MOBILE TOGGLE EVENTS =====================
+toggleRoomsBtn?.addEventListener("click", () => {
+  sidebar.classList.toggle("show");
+  usersPanel.classList.remove("show"); // κλείνει το Users αν ήταν ανοιχτό
+});
 
+toggleUsersBtn?.addEventListener("click", () => {
+  usersPanel.classList.toggle("show");
+  sidebar.classList.remove("show"); // κλείνει το Rooms αν ήταν ανοιχτό
+});
 // ===================== PROFILE MENU TOGGLE =====================
 const profileWrapper = document.querySelector(".profile-wrapper");
 const profileMenu = document.getElementById("profileMenu");
