@@ -504,7 +504,6 @@ onValue(ref(db, 'status'), () => {
 
 
 // ===================== USERS LIST & ROLES =====================
-// Users online
 const watchPresence = () => {
   if (presenceUnsub) presenceUnsub();
   presenceUnsub = onValue(ref(db, 'status'), (snap) => {
@@ -516,7 +515,12 @@ const watchPresence = () => {
     document.getElementById("vipList").innerHTML = "";
     document.getElementById("normalList").innerHTML = "";
 
+    const seen = new Set(); // 🔹 για να μην μπει ο ίδιος user πολλές φορές
+
     Object.entries(data).forEach(([uid, s]) => {
+      if (seen.has(uid)) return; // skip αν το uid υπάρχει ήδη
+      seen.add(uid);
+
       const li = document.createElement('li');
 
       // === Avatar ===
@@ -524,7 +528,6 @@ const watchPresence = () => {
       avatar.className = 'avatar ' + (s.state === 'online' ? 'online' : 'offline');
 
       if (s.photoURL) {
-        // Αν έχει photoURL → εμφάνιση εικόνας
         const img = document.createElement('img');
         img.src = s.photoURL;
         img.alt = s.displayName || 'U';
@@ -534,82 +537,76 @@ const watchPresence = () => {
         img.style.objectFit = 'cover';
         avatar.appendChild(img);
       } else {
-        // Αν δεν έχει photoURL → πρώτο γράμμα ονόματος
         avatar.textContent = (s.displayName || 'U')[0].toUpperCase();
       }
 
-      // === Status dot (online/offline) ===
+      // === Status dot ===
       const dot = document.createElement('span');
       dot.className = 'status-dot ' + (s.state === 'online' ? 'online' : 'offline');
 
-// === Username ===
-const name = document.createElement('span');
-name.textContent = s.displayName || 'User';
+      // === Username ===
+      const name = document.createElement('span');
+      name.textContent = s.displayName || 'User';
 
-// === Badge ===
-let badge = null;
+      // === Badge ===
+      let badge = null;
 
-// --- Admin: ΜΟΝΟ MysteryMan ---
-if ((s.displayName || '') === 'MysteryMan') {
-  badge = document.createElement('span');
-  badge.className = 'badge admin';
-  badge.textContent = '🛡️ ADMIN';
-  name.innerHTML = `<strong style="color:#ffb703">${s.displayName}</strong>`;
-  li.classList.add("admin");
-  document.getElementById("adminsList").appendChild(li);
+      if ((s.displayName || '') === 'MysteryMan') {
+        badge = document.createElement('span');
+        badge.className = 'badge admin';
+        badge.textContent = '🛡️ ADMIN';
+        name.innerHTML = `<strong style="color:#ffb703">${s.displayName}</strong>`;
+        li.classList.add("admin");
+        document.getElementById("adminsList").appendChild(li);
 
-} else if (s.role === "mod") {
-  // --- Moderator ---
-  badge = document.createElement('span');
-  badge.className = 'badge mod';
-  badge.textContent = '🛠️ MOD';
-  name.innerHTML = `<span style="color:#06d6a0">${s.displayName}</span>`;
-  li.classList.add("mod");
-  document.getElementById("modsList").appendChild(li);
+      } else if (s.role === "mod") {
+        badge = document.createElement('span');
+        badge.className = 'badge mod';
+        badge.textContent = '🛠️ MOD';
+        name.innerHTML = `<span style="color:#06d6a0">${s.displayName}</span>`;
+        li.classList.add("mod");
+        document.getElementById("modsList").appendChild(li);
 
-} else if (s.role === "vip") {
-  // --- VIP ---
-  badge = document.createElement('span');
-  badge.className = 'badge vip';
-  badge.textContent = '💎 VIP';
-  name.innerHTML = `<span style="color:#7209b7">${s.displayName}</span>`;
-  li.classList.add("vip");
-  document.getElementById("vipList").appendChild(li);
+      } else if (s.role === "vip") {
+        badge = document.createElement('span');
+        badge.className = 'badge vip';
+        badge.textContent = '💎 VIP';
+        name.innerHTML = `<span style="color:#7209b7">${s.displayName}</span>`;
+        li.classList.add("vip");
+        document.getElementById("vipList").appendChild(li);
 
-} else {
-  // --- Απλοί χρήστες ---
-  li.classList.add("user");
-  document.getElementById("normalList").appendChild(li);
-}
+      } else {
+        li.classList.add("user");
+        document.getElementById("normalList").appendChild(li);
+      }
 
-// === Name + typing wrapper ===
-const nameWrapper = document.createElement('div');
-nameWrapper.className = 'name-wrapper';
-nameWrapper.appendChild(name);
-if (badge) nameWrapper.appendChild(badge);
+      // === Name + typing wrapper ===
+      const nameWrapper = document.createElement('div');
+      nameWrapper.className = 'name-wrapper';
+      nameWrapper.appendChild(name);
+      if (badge) nameWrapper.appendChild(badge);
 
-// === Typing indicator ===
-if (s.typing) {
-  const typingEl = document.createElement('div');
-  typingEl.className = 'typing-indicator';
-  typingEl.textContent = '✍️ typing…';
-  nameWrapper.appendChild(typingEl);
-}
+      // === Typing indicator ===
+      if (s.typing) {
+        const typingEl = document.createElement('div');
+        typingEl.className = 'typing-indicator';
+        typingEl.textContent = '✍️ typing…';
+        nameWrapper.appendChild(typingEl);
+      }
 
-// === Append row ===
-li.appendChild(avatar);
-li.appendChild(dot);
-li.appendChild(nameWrapper);
-      // ✅ Update counters αφού γεμίσουν οι λίστες
-setTimeout(() => {
-  document.getElementById("adminsCount").textContent = document.getElementById("adminsList").childElementCount;
-  document.getElementById("modsCount").textContent   = document.getElementById("modsList").childElementCount;
-  document.getElementById("vipCount").textContent    = document.getElementById("vipList").childElementCount;
-  document.getElementById("usersCount").textContent  = document.getElementById("normalList").childElementCount;
-}, 0);
-
-
+      // === Append row ===
+      li.appendChild(avatar);
+      li.appendChild(dot);
+      li.appendChild(nameWrapper);
     });
+
+    // ✅ Update counters αφού γεμίσουν οι λίστες
+    setTimeout(() => {
+      document.getElementById("adminsCount").textContent = document.getElementById("adminsList").childElementCount;
+      document.getElementById("modsCount").textContent   = document.getElementById("modsList").childElementCount;
+      document.getElementById("vipCount").textContent    = document.getElementById("vipList").childElementCount;
+      document.getElementById("usersCount").textContent  = document.getElementById("normalList").childElementCount;
+    }, 0);
   });
 };
 
