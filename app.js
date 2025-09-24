@@ -1286,3 +1286,13 @@ document.addEventListener("keydown", (e) => {
     usersPanel?.classList.remove("active");
   }
 });
+// ===================== MOBILE TOGGLE EVENTS =====================
+toggleRoomsBtn?.addEventListener("click", () => {
+  sidebar.classList.toggle("show");
+  usersPanel.classList.remove("show"); // κλείνει το Users αν ήταν ανοιχτό
+});
+
+toggleUsersBtn?.addEventListener("click", () => {
+  usersPanel.classList.toggle("show");
+  sidebar.classList.remove("show"); // κλείνει το Rooms αν ήταν ανοιχτό
+});
