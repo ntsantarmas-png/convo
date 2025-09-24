@@ -600,6 +600,14 @@ if (s.typing) {
 li.appendChild(avatar);
 li.appendChild(dot);
 li.appendChild(nameWrapper);
+      // ✅ Update counters αφού γεμίσουν οι λίστες
+setTimeout(() => {
+  document.getElementById("adminsCount").textContent = document.getElementById("adminsList").childElementCount;
+  document.getElementById("modsCount").textContent   = document.getElementById("modsList").childElementCount;
+  document.getElementById("vipCount").textContent    = document.getElementById("vipList").childElementCount;
+  document.getElementById("usersCount").textContent  = document.getElementById("normalList").childElementCount;
+}, 0);
+
 
     });
   });
