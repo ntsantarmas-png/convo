@@ -1321,7 +1321,6 @@ document.getElementById("editProfileBtn")?.addEventListener("click", () => {
 });
 
 // ===================== GAME: TIC TAC TOE (Firebase Sync) =====================
-import { ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
 window.addEventListener("DOMContentLoaded", () => {
   const gameBtn = document.getElementById("gameBtn");
