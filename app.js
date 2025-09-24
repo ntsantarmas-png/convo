@@ -702,7 +702,6 @@ const watchPresence = () => {
       document.getElementById("usersCount").textContent  = document.getElementById("normalList").childElementCount;
     }, 0);
   });
-};
 
 
 // ===================== AUTH STATE HANDLING =====================
