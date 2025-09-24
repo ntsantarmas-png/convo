@@ -1591,4 +1591,4 @@ if (confirmDeleteBtn) {
       }
     }
   });
-});
+})
