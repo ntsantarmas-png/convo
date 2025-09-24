@@ -586,11 +586,11 @@ const watchPresence = () => {
       document.getElementById("modsCount").textContent   = document.getElementById("modsList").childElementCount;
       document.getElementById("vipCount").textContent    = document.getElementById("vipList").childElementCount;
       document.getElementById("usersCount").textContent  = document.getElementById("normalList").childElementCount;
-    }, 0);
-  });
-};
+}, 0);   // εδώ τελειώνει το setTimeout
+});      // εδώ τελειώνει το onValue
+};       // εδώ τελειώνει η watchPresence
 
-    // Καθαρίζουμε όλες τις λίστες
+// Καθαρίζουμε όλες τις λίστες
     document.getElementById("adminsList").innerHTML = "";
     document.getElementById("modsList").innerHTML = "";
     document.getElementById("vipList").innerHTML = "";
