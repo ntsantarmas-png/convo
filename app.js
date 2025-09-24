@@ -87,6 +87,12 @@ async function setupPresence(user) {
     photoURL: user.photoURL || "https://i.pravatar.cc/40",
     status: "offline",
     online: false
+  
+    document.getElementById("adminsCount").textContent = adminsList.childElementCount;
+    document.getElementById("modsCount").textContent = modsList.childElementCount;
+    document.getElementById("vipCount").textContent = vipList.childElementCount;
+    document.getElementById("usersCount").textContent = normalList.childElementCount;
+
   });
 }
 
