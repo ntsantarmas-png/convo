@@ -1508,7 +1508,6 @@ const confirmDeleteBtn = document.getElementById("confirmDeleteBtn");
 // ====== Dropdown Profile Menu ======
 const profileWrapper = document.querySelector(".profile-wrapper");
 const profileMenu = document.querySelector(".profile-menu");
-const editProfileBtn = document.getElementById("editProfileBtn");
 
 // Toggle profile dropdown
 if (profileWrapper) {
@@ -1523,13 +1522,15 @@ document.addEventListener("click", (e) => {
   }
 });
 
-// ====== Open Profile Modal (από το menu "Edit Profile") ======
-if (editProfileBtn) {
-  editProfileBtn.addEventListener("click", () => {
-    profileModal.showModal();
-    profileMenu.style.display = "none"; // κλείσε το dropdown
-  });
-}
+// ====== Open Profile Modal (κουμπί "Edit My Profile") ======
+document.querySelectorAll(".profile-menu button").forEach(btn => {
+  if (btn.textContent.trim() === "Edit My Profile") {
+    btn.addEventListener("click", () => {
+      profileModal.showModal();
+      profileMenu.style.display = "none";
+    });
+  }
+});
 
 // ====== Close Profile Modal ======
 if (closeProfileModal) {
@@ -1541,10 +1542,8 @@ if (closeProfileModal) {
 // ====== Tabs switching ======
 document.querySelectorAll("#profileModal .tab").forEach(tab => {
   tab.addEventListener("click", () => {
-    // reset all
     document.querySelectorAll("#profileModal .tab").forEach(t => t.classList.remove("active"));
     document.querySelectorAll("#profileModal .tab-panel").forEach(p => p.classList.remove("active"));
-    // activate current
     tab.classList.add("active");
     document.getElementById(tab.dataset.tab).classList.add("active");
   });
@@ -1588,7 +1587,6 @@ if (confirmDeleteBtn) {
         await deleteUser(auth.currentUser);
         showToast("❌ Profile deleted");
         deleteConfirmModal.close();
-        // Logout μετά το delete
         await signOut(auth);
       } catch (err) {
         console.error("Error deleting profile", err);
@@ -1596,4 +1594,3 @@ if (confirmDeleteBtn) {
     }
   });
 });
-
