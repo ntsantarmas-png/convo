@@ -1260,53 +1260,29 @@ if (usersPanel) {
 // ===================== MOBILE TOGGLE PANELS =====================
 const toggleRoomsBtn = document.getElementById("toggleRooms");
 const toggleUsersBtn = document.getElementById("toggleUsers");
-const roomsPanel = document.querySelector(".rooms");
-// ❌ δεν ξαναδηλώνουμε usersPanel γιατί υπάρχει ήδη
+const roomsPanel = document.querySelector(".sidebar");
+const usersPanel = document.querySelector(".users");
 
-if (toggleRoomsBtn && roomsPanel) {
-  toggleRoomsBtn.addEventListener("click", () => {
-    roomsPanel.classList.toggle("active");
-    usersPanel?.classList.remove("active"); // κλείσε users αν είναι ανοιχτό
-  });
-}
+// Rooms toggle
+toggleRoomsBtn?.addEventListener("click", () => {
+  roomsPanel.classList.toggle("show");
+  usersPanel.classList.remove("show"); // κλείνει το Users αν είναι ανοιχτό
+});
 
-if (toggleUsersBtn && usersPanel) {
-  toggleUsersBtn.addEventListener("click", () => {
-    usersPanel.classList.toggle("show");
-
-    roomsPanel?.classList.remove("active"); // κλείσε rooms αν είναι ανοιχτό
-  });
-}
-
-// Κλείσιμο με click έξω
-document.addEventListener("click", (e) => {
-  if (roomsPanel && roomsPanel.classList.contains("active") && 
-      !roomsPanel.contains(e.target) && e.target !== toggleRoomsBtn) {
-    roomsPanel.classList.remove("active");
-  }
-  if (usersPanel && usersPanel.classList.contains("active") && 
-      !usersPanel.contains(e.target) && e.target !== toggleUsersBtn) {
-    usersPanel.classList.remove("active");
-  }
+// Users toggle
+toggleUsersBtn?.addEventListener("click", () => {
+  usersPanel.classList.toggle("show");
+  roomsPanel.classList.remove("show"); // κλείνει το Rooms αν είναι ανοιχτό
 });
 
 // Κλείσιμο με ESC
 document.addEventListener("keydown", (e) => {
   if (e.key === "Escape") {
-    roomsPanel?.classList.remove("active");
-    usersPanel?.classList.remove("active");
+    roomsPanel.classList.remove("show");
+    usersPanel.classList.remove("show");
   }
 });
-// ===================== MOBILE TOGGLE EVENTS =====================
-toggleRoomsBtn?.addEventListener("click", () => {
-  sidebar.classList.toggle("show");
-  usersPanel.classList.remove("show"); // κλείνει το Users αν ήταν ανοιχτό
-});
 
-toggleUsersBtn?.addEventListener("click", () => {
-  usersPanel.classList.toggle("show");
-  sidebar.classList.remove("show"); // κλείνει το Rooms αν ήταν ανοιχτό
-});
 // ===================== PROFILE MENU TOGGLE =====================
 const profileWrapper = document.querySelector(".profile-wrapper");
 const profileMenu = document.getElementById("profileMenu");
