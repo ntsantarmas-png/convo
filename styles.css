@@ -1480,13 +1480,12 @@ dialog{background:var(--panel-solid);color:var(--text);border:1px solid rgba(255
     box-shadow: var(--shadow);
   }
 
-  .sidebar.show {
-    display: block;
-    left: 0;
-  }
-
-  .users.show {
-    display: block;
-    right: 0;
-  }
+.sidebar.show {
+  display: flex; /* αντί για block */
+  left: 0;
 }
+
+.users.show {
+  display: flex; /* αντί για block */
+  right: 0;
+}}
