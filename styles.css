@@ -31,6 +31,53 @@ body {
   color: var(--text);
 }
 /* ===================== GLOBAL RESETS ===================== */
+/* ===================== PROFILE MENU ===================== */
+.profile-wrapper {
+  position: relative;
+  display: inline-block;
+  cursor: pointer;
+}
+
+.profile-wrapper img {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--accent);
+  transition: transform 0.2s;
+}
+
+.profile-wrapper img:hover {
+  transform: scale(1.05);
+}
+
+.profile-menu {
+  position: absolute;
+  right: 0;
+  top: 44px; /* λίγο κάτω από το avatar */
+  background: var(--panel);
+  border: 1px solid rgba(255,255,255,.12);
+  border-radius: 10px;
+  box-shadow: var(--shadow);
+  display: none; /* κρυφό από default */
+  flex-direction: column;
+  min-width: 140px;
+  z-index: 2000;
+}
+
+.profile-menu button {
+  background: transparent;
+  border: none;
+  padding: 10px 14px;
+  text-align: left;
+  color: var(--text);
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.profile-menu button:hover {
+  background: rgba(255,255,255,.08);
+}
 
 /* ===================== TOPBAR / HEADER ===================== */
 .topbar {
