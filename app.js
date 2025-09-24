@@ -1358,6 +1358,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
     if (checkWin()) {
       gameStatus.textContent = `🎉 Ο παίκτης ${currentPlayer} κέρδισε!`;
+      highlightWin();
       gameActive = false;
       return;
     }
@@ -1378,31 +1379,33 @@ window.addEventListener("DOMContentLoaded", () => {
       [0,3,6],[1,4,7],[2,5,8],
       [0,4,8],[2,4,6]
     ];
-    for (let pattern of winPatterns) {
-      const [a, b, c] = pattern;
-      if (gameState[a] && gameState[a] === gameState[b] && gameState[a] === gameState[c]) {
-        // 🟢 Highlight στα νικητήρια κελιά
-        document.querySelectorAll("#ticTacToeBoard div")[a].classList.add("win");
-        document.querySelectorAll("#ticTacToeBoard div")[b].classList.add("win");
-        document.querySelectorAll("#ticTacToeBoard div")[c].classList.add("win");
-        return true;
-      }
-    }
-    return false;
+    return winPatterns.find(pattern => {
+      const [a,b,c] = pattern;
+      return gameState[a] && gameState[a] === gameState[b] && gameState[a] === gameState[c];
+    });
   }
 
-  // Events
+  function highlightWin() {
+    const pattern = checkWin();
+    if (pattern) {
+      pattern.forEach(i => {
+        board.children[i].classList.add("win");
+      });
+    }
+  }
+
+  // === Events ===
   gameBtn?.addEventListener("click", () => {
     gameModal.classList.remove("hidden");
     initBoard();
   });
 
-  restartGame?.addEventListener("click", () => {
-    initBoard();
-  });
-
   closeGame?.addEventListener("click", () => {
     gameModal.classList.add("hidden");
+  });
+
+  restartGame?.addEventListener("click", () => {
+    initBoard();
   });
 
   document.addEventListener("keydown", (e) => {
