@@ -714,34 +714,6 @@ function updateStatus(newStatus) {
     online: newStatus === "online"
   });
 }
-// ===================== RENDER USER LIST =====================
-function renderUserList() {
-  const usersList = document.getElementById("usersList");
-
-  onValue(ref(db, "users"), (snap) => {
-    usersList.innerHTML = "";
-
-    snap.forEach(child => {
-      const u = child.val();
-
-      // Αν δεν έχει status -> default online/offline
-      const statusClass = u.status || (u.online ? "online" : "offline");
-
-      const li = document.createElement("li");
-      li.innerHTML = `
-        <span class="user-status ${statusClass}"></span>
-        <div class="avatar">
-          <img src="${u.photoURL || "https://i.pravatar.cc/40"}" alt="avatar">
-        </div>
-        <span class="username">${u.displayName || "Anonymous"}</span>
-      `;
-
-      usersList.appendChild(li);
-    });
-  });
-}
-
-  
 // ===================== EMOJI / GIF / STICKERS PICKER =====================
 // Emoji Picker
   const EMOJIS=[["😀","grinning happy smile"],["😃","smile open"],["😄","smile grin"],["😁","grin"],["😆","laugh"],["😅","sweat laugh"],["🤣","rofl rolling floor laughing"],["😂","joy tears"],["🙂","slight smile"],["🙃","upside down"],["😉","wink"],["😊","blush"],["😇","innocent angel"],["🥰","in love hearts"],["😍","heart eyes"],["🤩","star struck"],["😘","kiss"],["😗","kiss"],["😙","kiss"],["😚","kiss"],["😋","yum"],["😛","tongue"],["😜","winking tongue"],["🤪","zany"],["😝","squint tongue"],["🤑","money"],["🤗","hug"],["🤭","oops"],["🤫","shush"],["🤔","thinking"],["🤐","zipper mouth"],["😐","neutral"],["😑","expressionless"],["😶","no mouth"],["😏","smirk"],["😒","unamused"],["🙄","eyeroll"],["😬","grimace"],["🤥","lying"],["😌","relieved"],["😔","pensive"],["😪","sleepy"],["🤤","drool"],["😴","sleeping"],["😷","mask"],["🤒","thermometer"],["🤕","head bandage"],["🤧","sneeze"],["🥵","hot"],["🥶","cold"],["🥴","woozy"],["😵","dizzy"],["🤯","mind blown"],["🤠","cowboy"],["🥳","party"],["😎","cool sunglasses"],["🤓","nerd"],["🫡","salute"],["👍","thumbs up like"],["👎","thumbs down"],["👏","clap"],["🙏","pray thanks"],["👌","ok"],["✌️","victory peace"],["🤝","handshake"],["💪","muscle"],["👀","eyes look"],["👋","wave"],["🔥","fire lit"],["✨","sparkles"],["❤️","heart love"],["🧡","heart orange"],["💛","heart yellow"],["💚","heart green"],["💙","heart blue"],["💜","heart purple"],["💯","100"],["💩","poop"],["🎉","tada party"],["🎂","cake birthday"],["🍕","pizza"],["🍔","burger"],["☕","coffee"]];
