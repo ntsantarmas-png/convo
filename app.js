@@ -1319,11 +1319,6 @@ toggleUsersBtn?.addEventListener("click", () => {
   sidebar.classList.remove("show"); // κλείνει το Rooms αν ήταν ανοιχτό
 });
 
-// ===================== EDIT PROFILE (demo) =====================
-document.getElementById("editProfileBtn")?.addEventListener("click", () => {
-  alert("Edit Profile coming soon!");
-});
-
 // ===================== GAME: TIC TAC TOE (Firebase Sync) =====================
 window.addEventListener("DOMContentLoaded", () => {
   const gameBtn = document.getElementById("gameBtn");
