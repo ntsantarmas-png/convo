@@ -1465,3 +1465,28 @@ dialog{background:var(--panel-solid);color:var(--text);border:1px solid rgba(255
     justify-content: center;
   }
 }
+
+/* ===================== MOBILE PANELS SHOW ===================== */
+@media (max-width: 980px) {
+  .sidebar,
+  .users {
+    display: none; /* κλειστά από default */
+    position: absolute;
+    top: 54px; /* κάτω από το topbar */
+    bottom: 0;
+    width: 240px;
+    background: var(--panel);
+    z-index: 100;
+    box-shadow: var(--shadow);
+  }
+
+  .sidebar.show {
+    display: block;
+    left: 0;
+  }
+
+  .users.show {
+    display: block;
+    right: 0;
+  }
+}
