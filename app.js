@@ -1575,7 +1575,6 @@ document.querySelectorAll(".status-options button").forEach(btn => {
   });
 });
 
-
 // ===================== STATUS HANDLING =====================
 const statusButtons = document.querySelectorAll(".status-options button");
 
