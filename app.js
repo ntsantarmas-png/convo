@@ -1320,7 +1320,9 @@ document.getElementById("editProfileBtn")?.addEventListener("click", () => {
   alert("Edit Profile coming soon!");
 });
 
-// ===================== GAME: TIC TAC TOE =====================
+// ===================== GAME: TIC TAC TOE (Firebase Sync) =====================
+import { ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
 window.addEventListener("DOMContentLoaded", () => {
   const gameBtn = document.getElementById("gameBtn");
   const gameModal = document.getElementById("gameModal");
@@ -1329,51 +1331,39 @@ window.addEventListener("DOMContentLoaded", () => {
   const board = document.getElementById("ticTacToeBoard");
   const gameStatus = document.getElementById("gameStatus");
 
+  const gameRef = ref(db, "game/tictactoe"); // 🔥 ίδιο σημείο για όλους τους παίκτες
+
   let currentPlayer = "X";
   let gameActive = true;
   let gameState = ["", "", "", "", "", "", "", "", ""];
 
+  // === Board Setup ===
   function initBoard() {
     board.innerHTML = "";
-    gameState = ["", "", "", "", "", "", "", "", ""];
-    currentPlayer = "X";
-    gameActive = true;
-    gameStatus.textContent = "Ξεκινάει ο παίκτης X";
-
     for (let i = 0; i < 9; i++) {
       const cell = document.createElement("div");
       cell.dataset.index = i;
-      cell.addEventListener("click", handleCellClick);
+      cell.addEventListener("click", () => handleCellClick(i));
       board.appendChild(cell);
     }
   }
 
-  function handleCellClick(e) {
-    const index = e.target.dataset.index;
+  // === Handle Click ===
+  function handleCellClick(index) {
     if (gameState[index] !== "" || !gameActive) return;
 
     gameState[index] = currentPlayer;
-    e.target.textContent = currentPlayer;
-    e.target.classList.add(currentPlayer);
 
-    if (checkWin()) {
-      gameStatus.textContent = `🎉 Ο παίκτης ${currentPlayer} κέρδισε!`;
-      highlightWin();
-      gameActive = false;
-      return;
-    }
-
-    if (!gameState.includes("")) {
-      gameStatus.textContent = "🤝 Ισοπαλία!";
-      gameActive = false;
-      return;
-    }
-
-    currentPlayer = currentPlayer === "X" ? "O" : "X";
-    gameStatus.textContent = `Σειρά του παίκτη ${currentPlayer}`;
+    // save στο Firebase
+    set(gameRef, {
+      state: gameState,
+      player: currentPlayer,
+      active: true,
+    });
   }
 
-  function checkWin() {
+  // === Check Win ===
+  function checkWin(state) {
     const winPatterns = [
       [0,1,2],[3,4,5],[6,7,8],
       [0,3,6],[1,4,7],[2,5,8],
@@ -1381,12 +1371,11 @@ window.addEventListener("DOMContentLoaded", () => {
     ];
     return winPatterns.find(pattern => {
       const [a,b,c] = pattern;
-      return gameState[a] && gameState[a] === gameState[b] && gameState[a] === gameState[c];
+      return state[a] && state[a] === state[b] && state[a] === state[c];
     });
   }
 
-  function highlightWin() {
-    const pattern = checkWin();
+  function highlightWin(pattern) {
     if (pattern) {
       pattern.forEach(i => {
         board.children[i].classList.add("win");
@@ -1394,10 +1383,45 @@ window.addEventListener("DOMContentLoaded", () => {
     }
   }
 
+  // === Sync από Firebase ===
+  onValue(gameRef, (snap) => {
+    const data = snap.val();
+    if (!data) return;
+
+    gameState = data.state || ["", "", "", "", "", "", "", "", ""];
+    currentPlayer = data.player === "X" ? "O" : "X"; // αλλάζει παίκτης
+    gameActive = data.active;
+
+    // redraw board
+    [...board.children].forEach((cell, i) => {
+      cell.textContent = gameState[i];
+      cell.className = "";
+      if (gameState[i]) cell.classList.add(gameState[i]);
+    });
+
+    const win = checkWin(gameState);
+    if (win) {
+      gameStatus.textContent = `🎉 Ο παίκτης ${data.player} κέρδισε!`;
+      highlightWin(win);
+      gameActive = false;
+    } else if (!gameState.includes("")) {
+      gameStatus.textContent = "🤝 Ισοπαλία!";
+      gameActive = false;
+    } else {
+      gameStatus.textContent = `Σειρά του παίκτη ${currentPlayer}`;
+    }
+  });
+
   // === Events ===
   gameBtn?.addEventListener("click", () => {
     gameModal.classList.remove("hidden");
     initBoard();
+    // reset παιχνίδι
+    set(gameRef, {
+      state: ["", "", "", "", "", "", "", "", ""],
+      player: "X",
+      active: true,
+    });
   });
 
   closeGame?.addEventListener("click", () => {
@@ -1405,7 +1429,11 @@ window.addEventListener("DOMContentLoaded", () => {
   });
 
   restartGame?.addEventListener("click", () => {
-    initBoard();
+    set(gameRef, {
+      state: ["", "", "", "", "", "", "", "", ""],
+      player: "X",
+      active: true,
+    });
   });
 
   document.addEventListener("keydown", (e) => {
