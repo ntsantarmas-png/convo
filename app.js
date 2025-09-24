@@ -1396,3 +1396,33 @@ window.addEventListener("DOMContentLoaded", () => {
     }
   });
 });
+const restartGame = document.getElementById("restartGame");
+
+function handleCellClick(e) {
+  const index = e.target.dataset.index;
+  if (gameState[index] !== "" || !gameActive) return;
+
+  gameState[index] = currentPlayer;
+  e.target.textContent = currentPlayer;
+  e.target.classList.add(currentPlayer); // χρώμα ανάλογα με X ή O
+
+  if (checkWin()) {
+    gameStatus.textContent = `🎉 Ο παίκτης ${currentPlayer} κέρδισε!`;
+    gameActive = false;
+    return;
+  }
+
+  if (!gameState.includes("")) {
+    gameStatus.textContent = "🤝 Ισοπαλία!";
+    gameActive = false;
+    return;
+  }
+
+  currentPlayer = currentPlayer === "X" ? "O" : "X";
+  gameStatus.textContent = `Σειρά του παίκτη ${currentPlayer}`;
+}
+
+// Restart game
+restartGame?.addEventListener("click", () => {
+  initBoard();
+});
