@@ -1506,7 +1506,7 @@ const cancelDeleteBtn = document.getElementById("cancelDeleteBtn");
 const confirmDeleteBtn = document.getElementById("confirmDeleteBtn");
 
 // ====== Dropdown Profile Menu ======
-const profileWrapper = document.querySelector(".profile-wrapper");
+
 const profileMenu = document.querySelector(".profile-menu");
 
 // Toggle profile dropdown
