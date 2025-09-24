@@ -1493,3 +1493,107 @@ statusButtons.forEach(btn => {
     profileMenu.style.display = "none"; // κλείνει το menu μετά την επιλογή
   });
 });
+
+// ===================== PROFILE MODAL =====================
+import { updateProfile, deleteUser, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+const profileModal = document.getElementById("profileModal");
+const deleteConfirmModal = document.getElementById("deleteConfirmModal");
+const closeProfileModal = document.getElementById("closeProfileModal");
+const saveProfileBtn = document.getElementById("saveProfileBtn");
+const deleteProfileBtn = document.getElementById("deleteProfileBtn");
+const cancelDeleteBtn = document.getElementById("cancelDeleteBtn");
+const confirmDeleteBtn = document.getElementById("confirmDeleteBtn");
+
+// ====== Dropdown Profile Menu ======
+const profileWrapper = document.querySelector(".profile-wrapper");
+const profileMenu = document.querySelector(".profile-menu");
+const editProfileBtn = document.getElementById("editProfileBtn");
+
+// Toggle profile dropdown
+if (profileWrapper) {
+  profileWrapper.addEventListener("click", () => {
+    profileMenu.style.display = profileMenu.style.display === "flex" ? "none" : "flex";
+  });
+}
+// Close on click outside
+document.addEventListener("click", (e) => {
+  if (profileMenu && profileMenu.style.display === "flex" && !profileWrapper.contains(e.target)) {
+    profileMenu.style.display = "none";
+  }
+});
+
+// ====== Open Profile Modal (από το menu "Edit Profile") ======
+if (editProfileBtn) {
+  editProfileBtn.addEventListener("click", () => {
+    profileModal.showModal();
+    profileMenu.style.display = "none"; // κλείσε το dropdown
+  });
+}
+
+// ====== Close Profile Modal ======
+if (closeProfileModal) {
+  closeProfileModal.addEventListener("click", () => {
+    profileModal.close();
+  });
+}
+
+// ====== Tabs switching ======
+document.querySelectorAll("#profileModal .tab").forEach(tab => {
+  tab.addEventListener("click", () => {
+    // reset all
+    document.querySelectorAll("#profileModal .tab").forEach(t => t.classList.remove("active"));
+    document.querySelectorAll("#profileModal .tab-panel").forEach(p => p.classList.remove("active"));
+    // activate current
+    tab.classList.add("active");
+    document.getElementById(tab.dataset.tab).classList.add("active");
+  });
+});
+
+// ====== Save Profile ======
+if (saveProfileBtn) {
+  saveProfileBtn.addEventListener("click", () => {
+    const newName = document.getElementById("profileName").value.trim();
+    const newAvatar = document.getElementById("profileAvatar").value.trim();
+    if (auth.currentUser) {
+      updateProfile(auth.currentUser, {
+        displayName: newName || auth.currentUser.displayName,
+        photoURL: newAvatar || auth.currentUser.photoURL
+      }).then(() => {
+        showToast("✅ Profile updated!");
+        profileModal.close();
+      }).catch(err => {
+        console.error("Error updating profile", err);
+      });
+    }
+  });
+}
+
+// ====== Delete Profile ======
+if (deleteProfileBtn) {
+  deleteProfileBtn.addEventListener("click", () => {
+    profileModal.close();
+    deleteConfirmModal.showModal();
+  });
+}
+if (cancelDeleteBtn) {
+  cancelDeleteBtn.addEventListener("click", () => {
+    deleteConfirmModal.close();
+  });
+}
+if (confirmDeleteBtn) {
+  confirmDeleteBtn.addEventListener("click", async () => {
+    if (auth.currentUser) {
+      try {
+        await deleteUser(auth.currentUser);
+        showToast("❌ Profile deleted");
+        deleteConfirmModal.close();
+        // Logout μετά το delete
+        await signOut(auth);
+      } catch (err) {
+        console.error("Error deleting profile", err);
+      }
+    }
+  });
+});
+
