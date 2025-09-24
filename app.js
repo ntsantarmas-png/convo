@@ -1494,9 +1494,7 @@ statusButtons.forEach(btn => {
   });
 });
 
-// ===================== PROFILE MODAL =====================
-
-
+// ===================== PROFILE MODAL (only new logic) =====================
 const profileModal = document.getElementById("profileModal");
 const deleteConfirmModal = document.getElementById("deleteConfirmModal");
 const closeProfileModal = document.getElementById("closeProfileModal");
@@ -1505,27 +1503,12 @@ const deleteProfileBtn = document.getElementById("deleteProfileBtn");
 const cancelDeleteBtn = document.getElementById("cancelDeleteBtn");
 const confirmDeleteBtn = document.getElementById("confirmDeleteBtn");
 
-// ====== Dropdown Profile Menu ======
-
-// Toggle profile dropdown
-if (profileWrapper) {
-  profileWrapper.addEventListener("click", () => {
-    profileMenu.style.display = profileMenu.style.display === "flex" ? "none" : "flex";
-  });
-}
-// Close on click outside
-document.addEventListener("click", (e) => {
-  if (profileMenu && profileMenu.style.display === "flex" && !profileWrapper.contains(e.target)) {
-    profileMenu.style.display = "none";
-  }
-});
-
 // ====== Open Profile Modal (κουμπί "Edit My Profile") ======
 document.querySelectorAll(".profile-menu button").forEach(btn => {
   if (btn.textContent.trim() === "Edit My Profile") {
     btn.addEventListener("click", () => {
       profileModal.showModal();
-      profileMenu.style.display = "none";
+      document.querySelector(".profile-menu").style.display = "none"; // κλείσε dropdown
     });
   }
 });
@@ -1591,4 +1574,4 @@ if (confirmDeleteBtn) {
       }
     }
   });
-})
+});
