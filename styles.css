@@ -1673,3 +1673,18 @@ dialog{background:var(--panel-solid);color:var(--text);border:1px solid rgba(255
   margin-bottom: 10px;
   color: var(--muted);
 }
+.board div.X {
+  color: var(--accent); /* μπλε για X */
+  font-weight: bold;
+}
+
+.board div.O {
+  color: var(--danger); /* κόκκινο για O */
+  font-weight: bold;
+}
+
+.game-actions {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
