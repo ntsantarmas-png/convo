@@ -1,26 +1,38 @@
 <!DOCTYPE html>
-
 <html lang="el">
 <head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>convo • Chat v012803</title>
-<link href="https://fonts.googleapis.com" rel="preconnect"/>
-<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
-<link href="data:image/svg+xml,&lt;svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'&gt;&lt;text y='.9em' font-size='90'&gt;💬&lt;/text&gt;&lt;/svg&gt;" rel="icon"/>
-<link rel="stylesheet" href="styles.css">
-
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>convo • Chat v012803</title>
+  <link href="https://fonts.googleapis.com" rel="preconnect"/>
+  <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+  <link href="data:image/svg+xml,&lt;svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'&gt;&lt;text y='.9em' font-size='90'&gt;💬&lt;/text&gt;&lt;/svg&gt;" rel="icon"/>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-<!-- ===================== HEADER / TOPBAR ===================== -->
-<header class="topbar">
-<div class="brand"><span class="logo">💬</span><h1>convo</h1></div>
-<div class="top-actions"><span id="helloUser"></span>
-<div id="headerAvatar" class="header-avatar"></div>
-<button class="btn ghost" id="logoutBtn" title="Logout">Logout ↗</button></div>
+  <!-- ===================== HEADER / TOPBAR ===================== -->
+  <header class="topbar">
+    <div class="brand">
+      <span class="logo">💬</span>
+      <h1>convo</h1>
+    </div>
 
-</header>
+    <div class="top-actions">
+      <span id="helloUser"></span>
+
+      <!-- ✅ Profile Wrapper με avatar + dropdown -->
+      <div class="profile-wrapper">
+        <img id="profileAvatar" src="https://i.pravatar.cc/40" alt="User Avatar" />
+        <div id="profileMenu" class="profile-menu">
+          <button id="logoutBtn">Logout</button>
+        </div>
+      </div>
+    </div>
+  </header>
+</body>
+</html>
+
 
 <!-- Auth -->
 <!-- ===================== AUTH VIEW (Login / Register / Anonymous) ===================== -->
