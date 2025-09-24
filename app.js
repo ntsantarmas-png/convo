@@ -1495,7 +1495,7 @@ statusButtons.forEach(btn => {
 });
 
 // ===================== PROFILE MODAL =====================
-import { updateProfile, deleteUser, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
 
 const profileModal = document.getElementById("profileModal");
 const deleteConfirmModal = document.getElementById("deleteConfirmModal");
