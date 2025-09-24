@@ -594,10 +594,10 @@ setTimeout(() => {
   document.getElementById("modsCount").textContent   = document.getElementById("modsList").childElementCount;
   document.getElementById("vipCount").textContent    = document.getElementById("vipList").childElementCount;
   document.getElementById("usersCount").textContent  = document.getElementById("normalList").childElementCount;
-}, 0);   // 👈 εδώ τελειώνει
-};       // 👈 εδώ κλείνει η watchPresence
+}, 0);
 
-
+});   // 👈 κλείνει το onValue
+};     // 👈 κλείνει η watchPresence
 
 
 // ===================== AUTH STATE HANDLING =====================
