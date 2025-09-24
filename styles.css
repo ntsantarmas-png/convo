@@ -1694,3 +1694,22 @@ dialog{background:var(--panel-solid);color:var(--text);border:1px solid rgba(255
   justify-content: center;
   gap: 10px;
 }
+/* ===================== STATUS OPTIONS ===================== */
+.status-options {
+  display: flex;
+  flex-direction: column;
+}
+
+.status-options button {
+  background: transparent;
+  border: none;
+  padding: 8px 14px;
+  text-align: left;
+  color: var(--text);
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.status-options button:hover {
+  background: rgba(255,255,255,.08);
+}
