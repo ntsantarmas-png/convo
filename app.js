@@ -753,8 +753,11 @@ onAuthStateChanged(auth, async (user) => {
     appView.classList.remove("hidden");
     helloUser.textContent = `Hello, ${user.displayName || "User"}!`;
 
+    // 🆕 Φόρτωσε φίλους
+    loadFriends();
+
   } else {
-    // ❌ Δεν υπάρχει user → δείξε την οθόνη login
+    // Αν δεν υπάρχει user → δείξε την οθόνη login
     appView.classList.add("hidden");
     authView.classList.remove("hidden");
     helloUser.textContent = "";
