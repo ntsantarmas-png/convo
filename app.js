@@ -689,7 +689,7 @@ onAuthStateChanged(auth, async (user) => {
   if (user) {
     // === Avatar check ===
     if (!user.photoURL) {
-      const avatarId = Math.abs(hashCode(user.uid)) % 70 + 1; // pravatar έχει ~70 images
+      const avatarId = Math.abs(hashCode(user.uid)) % 70 + 1;
       const stableAvatar = `https://i.pravatar.cc/150?img=${avatarId}`;
 
       try {
@@ -753,11 +753,20 @@ onAuthStateChanged(auth, async (user) => {
     appView.classList.remove("hidden");
     helloUser.textContent = `Hello, ${user.displayName || "User"}!`;
 
-    // === Logout κουμπί ===
+    // === Dropdown buttons ===
     const logoutBtn = document.getElementById("logoutBtn");
+    const editProfileBtn = document.getElementById("editProfileBtn");
+
     if (logoutBtn) {
-      logoutBtn.style.display = "block"; // ✅ τώρα εμφανίζεται πάντα
+      logoutBtn.style.display = "block";
       logoutBtn.addEventListener("click", () => signOut(auth));
+    }
+
+    if (editProfileBtn) {
+      editProfileBtn.style.display = "block";
+      editProfileBtn.addEventListener("click", () => {
+        profileModal.showModal();
+      });
     }
 
     // === Φόρτωσε φίλους ===
@@ -770,13 +779,14 @@ onAuthStateChanged(auth, async (user) => {
     helloUser.textContent = "";
 
     const logoutBtn = document.getElementById("logoutBtn");
+    const editProfileBtn = document.getElementById("editProfileBtn");
     if (logoutBtn) logoutBtn.style.display = "none";
+    if (editProfileBtn) editProfileBtn.style.display = "none";
 
     if (messagesUnsub) messagesUnsub();
     if (presenceUnsub) presenceUnsub();
   }
 }); // 👈 Τέλος onAuthStateChanged
-
 
 // Utils
 function escapeHtml(str = '') {
