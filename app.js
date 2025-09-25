@@ -39,7 +39,7 @@ const $ = (id) => document.getElementById(id);
 
   
 // ===================== AUTH (Register / Login / Anon / Forgot / Logout) =====================
-// AUTH
+
 // ===================== REGISTER FORM =====================
 const registerForm = document.getElementById("registerForm");
 
@@ -51,10 +51,11 @@ registerForm.addEventListener("submit", async (e) => {
   const password = document.getElementById("regPassword").value;
 
   try {
+    // Δημιουργία χρήστη στο Firebase Auth
     const cred = await createUserWithEmailAndPassword(auth, email, password);
     const user = cred.user;
 
-    // ✅ Βάζουμε το username στο Firebase Auth
+    // ✅ Ορίζουμε το displayName στο Auth
     await updateProfile(user, { displayName: username });
 
     // ✅ Αποθήκευση στο Realtime Database
@@ -63,7 +64,8 @@ registerForm.addEventListener("submit", async (e) => {
       displayName: username,
       photoURL: user.photoURL || "",
       status: "online",
-      typing: false
+      typing: false,
+      createdAt: Date.now()
     });
 
     showToast(`✅ Welcome ${username}!`);
@@ -75,13 +77,27 @@ registerForm.addEventListener("submit", async (e) => {
   }
 });
 
+// ===================== LOGIN FORM =====================
+const loginForm = document.getElementById("loginForm");
 
-  loginForm?.addEventListener('submit', async (e)=>{
-    e.preventDefault();
-    const email=$('loginEmail').value.trim(); const pass=$('loginPassword').value;
-    try{ await signInWithEmailAndPassword(auth,email,pass); showToast('Welcome back!'); }
-    catch(err){ console.error('login error',err); showToast(err.message); }
-  });
+loginForm?.addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const email = document.getElementById("loginEmail").value.trim();
+  const pass = document.getElementById("loginPassword").value;
+
+  try {
+    await signInWithEmailAndPassword(auth, email, pass);
+    showToast("✅ Welcome back!");
+  } catch (err) {
+    console.error("login error", err);
+    showToast("❌ " + err.message);
+  }
+});
+
+// ===================== ANONYMOUS LOGIN =====================
+const anonForm = document.getElementById("anonForm");
+
 anonForm?.addEventListener("submit", async (e) => {
   e.preventDefault();
 
@@ -115,11 +131,30 @@ anonForm?.addEventListener("submit", async (e) => {
   }
 });
 
-  forgotLink?.addEventListener('click', async ()=>{
-    const email=$('loginEmail').value.trim(); if(!email){showToast('Enter your email first.');return;}
-    try{ await sendPasswordResetEmail(auth,email); showToast('Reset email sent.'); }catch(err){ console.error('reset error',err); showToast(err.message); }
-  });
-  logoutBtn?.addEventListener('click',()=>signOut(auth));
+// ===================== FORGOT PASSWORD =====================
+const forgotLink = document.getElementById("forgotLink");
+
+forgotLink?.addEventListener("click", async () => {
+  const email = document.getElementById("loginEmail").value.trim();
+
+  if (!email) {
+    showToast("❌ Enter your email first.");
+    return;
+  }
+
+  try {
+    await sendPasswordResetEmail(auth, email);
+    showToast("✅ Reset email sent.");
+  } catch (err) {
+    console.error("reset error", err);
+    showToast("❌ " + err.message);
+  }
+});
+
+// ===================== LOGOUT =====================
+const logoutBtn = document.getElementById("logoutBtn");
+
+logoutBtn?.addEventListener("click", () => signOut(auth));
 
   
 // ===================== PRESENCE =====================
