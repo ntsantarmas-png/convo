@@ -1638,11 +1638,12 @@ document.querySelectorAll("#profileModal .tab").forEach(tab => {
 // ====== Save Profile ======
 if (saveProfileBtn) {
   saveProfileBtn.addEventListener("click", () => {
-const nameInput = document.getElementById("profileName");
-const avatarInput = document.getElementById("profileAvatar");
+    const nameInput = document.getElementById("profileName");
+    const avatarInput = document.getElementById("profileAvatarInput");
 
-const newName = nameInput ? nameInput.value.trim() : "";
-const newAvatar = avatarInput ? avatarInput.value.trim() : "";
+    const newName = nameInput ? nameInput.value.trim() : "";
+    const newAvatar = avatarInput ? avatarInput.value.trim() : "";
+
     if (auth.currentUser) {
       updateProfile(auth.currentUser, {
         displayName: newName || auth.currentUser.displayName,
@@ -1656,6 +1657,7 @@ const newAvatar = avatarInput ? avatarInput.value.trim() : "";
     }
   });
 }
+
 
 // ====== Delete Profile ======
 if (deleteProfileBtn) {
