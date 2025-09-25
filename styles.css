@@ -1943,6 +1943,7 @@ dialog{background:var(--panel-solid);color:var(--text);border:1px solid rgba(255
   color: #fff;
   font-weight: 600;
 }
+
 /* ===================== FRIENDS LIST ===================== */
 .friends-list {
   list-style: none;
@@ -1975,5 +1976,9 @@ dialog{background:var(--panel-solid);color:var(--text);border:1px solid rgba(255
   font-size: 12px;
   border-radius: 8px;
   cursor: pointer;
+  transition: opacity 0.2s;
 }
 
+.friends-list li button:hover {
+  opacity: 0.85;
+}
