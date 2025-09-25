@@ -630,12 +630,26 @@ onAuthStateChanged(auth, async (user) => {
       }
     }
 
+    // ✅ Ενημέρωση Firebase DB με σωστό όνομα & avatar
+    await set(ref(db, "users/" + user.uid), {
+      uid: user.uid,
+      displayName: user.displayName || "Anonymous",
+      photoURL: user.photoURL || "",
+      status: "online",
+      typing: false
+    });
+
     // Εμφάνιση της εφαρμογής μετά το login
     authView.classList.add("hidden");
     appView.classList.remove("hidden");
     helloUser.textContent = `Hello, ${user.displayName || "User"}!`;
-
-    // === CLEAR CHAT BUTTON ===
+  } else {
+    // Αν δεν είναι συνδεδεμένος
+    authView.classList.remove("hidden");
+    appView.classList.add("hidden");
+  }
+});
+// === CLEAR CHAT BUTTON ===
     const clearChatBtn = document.getElementById("clearChatBtn");
     if (user.displayName === "MysteryMan") {
       currentUserRole = "admin";   // 👈 Ορίζουμε ρόλο admin
