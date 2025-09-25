@@ -1599,43 +1599,17 @@ statusButtons.forEach(btn => {
   });
 });
 
-// ===================== PROFILE MODAL (only new logic) =====================
+// ===================== PROFILE MODAL LOGIC =====================
+
+// --- Elements ---
 const profileModal = document.getElementById("profileModal");
-const deleteConfirmModal = document.getElementById("deleteConfirmModal");
 const closeProfileModal = document.getElementById("closeProfileModal");
 const saveProfileBtn = document.getElementById("saveProfileBtn");
 const deleteProfileBtn = document.getElementById("deleteProfileBtn");
-const cancelDeleteBtn = document.getElementById("cancelDeleteBtn");
-const confirmDeleteBtn = document.getElementById("confirmDeleteBtn");
+const friendsList = document.getElementById("friendsList");
+const noFriendsMsg = document.getElementById("noFriendsMsg");
 
-// ====== Open Profile Modal (κουμπί "Edit My Profile") ======
-document.querySelectorAll(".profile-menu button").forEach(btn => {
-  if (btn.textContent.trim() === "Edit My Profile") {
-    btn.addEventListener("click", () => {
-      profileModal.showModal();
-      document.querySelector(".profile-menu").style.display = "none"; // κλείσε dropdown
-    });
-  }
-});
-
-// ====== Close Profile Modal ======
-if (closeProfileModal) {
-  closeProfileModal.addEventListener("click", () => {
-    profileModal.close();
-  });
-}
-
-// ====== Tabs switching ======
-document.querySelectorAll("#profileModal .tab").forEach(tab => {
-  tab.addEventListener("click", () => {
-    document.querySelectorAll("#profileModal .tab").forEach(t => t.classList.remove("active"));
-    document.querySelectorAll("#profileModal .tab-panel").forEach(p => p.classList.remove("active"));
-    tab.classList.add("active");
-    document.getElementById(tab.dataset.tab).classList.add("active");
-  });
-});
-
-// ====== Save Profile ======
+// --- Save Profile ---
 if (saveProfileBtn) {
   saveProfileBtn.addEventListener("click", () => {
     const nameInput = document.getElementById("profileName");
@@ -1651,74 +1625,87 @@ if (saveProfileBtn) {
       }).then(() => {
         showToast("✅ Profile updated!");
         profileModal.close();
+
+        // Ενημέρωση και στο DB
+        update(ref(db, "users/" + auth.currentUser.uid), {
+          displayName: newName || auth.currentUser.displayName,
+          photoURL: newAvatar || auth.currentUser.photoURL
+        });
       }).catch(err => {
         console.error("Error updating profile", err);
+        showToast("❌ Error updating profile");
       });
     }
   });
 }
 
-// ====== Delete Profile / Αποχώρηση ======
+// --- Delete Profile ---
 if (deleteProfileBtn) {
   deleteProfileBtn.addEventListener("click", async () => {
-    if (!confirm("⚠️ Είσαι σίγουρος ότι θέλεις να διαγράψεις το προφίλ σου; Αυτή η ενέργεια είναι μη αναστρέψιμη.")) {
-      return;
-    }
-    if (auth.currentUser) {
-      try {
-        // Διαγραφή από DB
-        await remove(ref(db, "users/" + auth.currentUser.uid));
+    if (!auth.currentUser) return;
+    if (!confirm("⚠️ Σίγουρα θες να διαγράψεις το προφίλ σου;")) return;
 
-        // Διαγραφή από Auth
-        await deleteUser(auth.currentUser);
+    try {
+      const uid = auth.currentUser.uid;
 
-        showToast("✅ Το προφίλ διαγράφηκε");
-        profileModal.close();
-      } catch (err) {
-        console.error("Error deleting profile", err);
-        showToast("❌ " + err.message);
-      }
+      // Σβήνουμε από DB
+      await remove(ref(db, "users/" + uid));
+
+      // Σβήνουμε από Auth
+      await deleteUser(auth.currentUser);
+
+      showToast("🗑 Profile deleted.");
+      profileModal.close();
+    } catch (err) {
+      console.error("Error deleting profile", err);
+      showToast("❌ Error deleting profile: " + err.message);
     }
   });
 }
 
-// ====== Friends Tab Rendering ======
-function renderFriends() {
+// --- Load Friends ---
+function loadFriends() {
   if (!auth.currentUser) return;
-  const friendsList = document.getElementById("friendsList");
-  if (!friendsList) return;
 
-  onValue(ref(db, "users/" + auth.currentUser.uid + "/friends"), (snap) => {
+  const uid = auth.currentUser.uid;
+  const friendsRef = ref(db, "users/" + uid + "/friends");
+
+  onValue(friendsRef, (snap) => {
     friendsList.innerHTML = "";
-
     if (!snap.exists()) {
-      friendsList.innerHTML = `<li class="muted">No friends yet</li>`;
+      noFriendsMsg.style.display = "block";
       return;
     }
+    noFriendsMsg.style.display = "none";
 
     snap.forEach(child => {
-      const friendUid = child.key;
-      const friendData = child.val();
-
+      const f = child.val();
       const li = document.createElement("li");
       li.innerHTML = `
-        <span>${friendData?.name || "(Unknown User)"}</span>
-        <button class="btn tiny danger" data-id="${friendUid}">❌</button>
+        <span>${f.name || "Unknown"}</span>
+        <button data-id="${child.key}">❌ Remove</button>
       `;
-
-      // Remove Friend action
-      li.querySelector("button").addEventListener("click", () => {
-        if (auth.currentUser) {
-          remove(ref(db, `users/${auth.currentUser.uid}/friends/${friendUid}`));
-        }
-      });
-
       friendsList.appendChild(li);
     });
   });
 }
 
-// 🟢 Κάλεσέ το όταν ανοίγει το modal
-profileModal?.addEventListener("show", () => {
-  renderFriends();
+// --- Remove Friend ---
+friendsList?.addEventListener("click", (e) => {
+  if (e.target.tagName === "BUTTON") {
+    const fid = e.target.dataset.id;
+    if (!auth.currentUser) return;
+    const uid = auth.currentUser.uid;
+    remove(ref(db, `users/${uid}/friends/${fid}`));
+  }
 });
+
+// --- Auto-load friends on login ---
+onAuthStateChanged(auth, (user) => {
+  if (user) loadFriends();
+});
+
+// --- Close Modal ---
+if (closeProfileModal) {
+  closeProfileModal.addEventListener("click", () => profileModal.close());
+}
