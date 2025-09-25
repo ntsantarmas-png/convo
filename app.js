@@ -360,13 +360,13 @@ messageInput.addEventListener("input", () => {
   messageInput.style.height = messageInput.scrollHeight + "px";
 
   // Typing indicator
-  update(ref(db, "status/" + auth.currentUser.uid), {
+  update(ref(db, "users/" + auth.currentUser.uid), {
     typing: true
   });
 
   clearTimeout(typingTimeout);
   typingTimeout = setTimeout(() => {
-    update(ref(db, "status/" + auth.currentUser.uid), {
+    update(ref(db, "users/" + auth.currentUser.uid), {
       typing: false
     });
   }, 2000);
