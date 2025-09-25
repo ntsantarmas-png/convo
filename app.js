@@ -82,13 +82,39 @@ registerForm.addEventListener("submit", async (e) => {
     try{ await signInWithEmailAndPassword(auth,email,pass); showToast('Welcome back!'); }
     catch(err){ console.error('login error',err); showToast(err.message); }
   });
-  anonForm?.addEventListener('submit', async (e)=>{
-    e.preventDefault();
-    const name=$('anonUsername').value.trim()||'Anon';
-    try{ const cred=await signInAnonymously(auth); await updateProfile(cred.user,{displayName:name});
-      await update(ref(db,`users/${cred.user.uid}`),{displayName:name,email:null,createdAt:Date.now(),anonymous:true}); showToast('Joined anonymously.');
-    }catch(err){ console.error('anon error',err); showToast(err.message); }
-  });
+anonForm?.addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const name = document.getElementById("anonUsername").value.trim() || "Anon";
+
+  try {
+    const cred = await signInAnonymously(auth);
+    const user = cred.user;
+
+    // ✅ Βάζουμε το όνομα στο Auth
+    await updateProfile(user, { displayName: name });
+
+    // ✅ Γράφουμε χρήστη στο DB
+    await set(ref(db, `users/${user.uid}`), {
+      uid: user.uid,
+      displayName: name,
+      email: null,
+      photoURL: "",
+      anonymous: true,
+      createdAt: Date.now(),
+      status: "online",
+      typing: false
+    });
+
+    showToast(`✅ Joined as ${name}`);
+    console.log("Anonymous user joined:", name);
+
+  } catch (err) {
+    console.error("anon error", err);
+    showToast("❌ " + err.message);
+  }
+});
+
   forgotLink?.addEventListener('click', async ()=>{
     const email=$('loginEmail').value.trim(); if(!email){showToast('Enter your email first.');return;}
     try{ await sendPasswordResetEmail(auth,email); showToast('Reset email sent.'); }catch(err){ console.error('reset error',err); showToast(err.message); }
