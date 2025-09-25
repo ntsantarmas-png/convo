@@ -685,16 +685,6 @@ const watchPresence = () => {
 
 
 // ===================== AUTH STATE HANDLING =====================
-onAuthStateChanged(auth, (user) => {
-  if (user) {
-    // ✅ Έχει συνδεθεί χρήστης
-    document.getElementById("logoutBtn").style.display = "inline-flex";
-  } else {
-    // ❌ Δεν υπάρχει χρήστης -> login σελίδα
-    document.getElementById("logoutBtn").style.display = "none";
-  }
-});
-
 onAuthStateChanged(auth, async (user) => {
   if (user) {
     // === Avatar check ===
@@ -764,7 +754,7 @@ onAuthStateChanged(auth, async (user) => {
     helloUser.textContent = `Hello, ${user.displayName || "User"}!`;
 
   } else {
-    // Αν δεν υπάρχει user → δείξε την οθόνη login
+    // ❌ Δεν υπάρχει user → δείξε την οθόνη login
     appView.classList.add("hidden");
     authView.classList.remove("hidden");
     helloUser.textContent = "";
@@ -773,19 +763,32 @@ onAuthStateChanged(auth, async (user) => {
   }
 }); // 👈 Τέλος onAuthStateChanged
 
-  // Utils (safe RegExp)
-  function escapeHtml(str=''){ return str.replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;'); }
-  function linkify(text=''){ const urlRegex=new RegExp('https?:\\/\\/[^\\s]+','g'); return text.replace(urlRegex,'<a href=\"$&\" target=\"_blank\" rel=\"noopener noreferrer\">$&</a>'); }
-
+// Utils
+function escapeHtml(str = '') {
+  return str.replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;');
+}
+function linkify(text = '') {
+  const urlRegex = new RegExp('https?:\\/\\/[^\\s]+', 'g');
+  return text.replace(urlRegex, '<a href="$&" target="_blank" rel="noopener noreferrer">$&</a>');
+}
 function updateStatus(newStatus) {
   if (!auth.currentUser) return;
   const userRef = ref(db, "users/" + auth.currentUser.uid);
-
   update(userRef, {
     status: newStatus,
     online: newStatus === "online"
   });
 }
+
+// Helper για να δίνει σταθερό id από string (avatar επιλογή)
+function hashCode(str) {
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    hash = str.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  return hash;
+}
+
 // ===================== EMOJI / GIF / STICKERS PICKER =====================
 // Emoji Picker
   const EMOJIS=[["😀","grinning happy smile"],["😃","smile open"],["😄","smile grin"],["😁","grin"],["😆","laugh"],["😅","sweat laugh"],["🤣","rofl rolling floor laughing"],["😂","joy tears"],["🙂","slight smile"],["🙃","upside down"],["😉","wink"],["😊","blush"],["😇","innocent angel"],["🥰","in love hearts"],["😍","heart eyes"],["🤩","star struck"],["😘","kiss"],["😗","kiss"],["😙","kiss"],["😚","kiss"],["😋","yum"],["😛","tongue"],["😜","winking tongue"],["🤪","zany"],["😝","squint tongue"],["🤑","money"],["🤗","hug"],["🤭","oops"],["🤫","shush"],["🤔","thinking"],["🤐","zipper mouth"],["😐","neutral"],["😑","expressionless"],["😶","no mouth"],["😏","smirk"],["😒","unamused"],["🙄","eyeroll"],["😬","grimace"],["🤥","lying"],["😌","relieved"],["😔","pensive"],["😪","sleepy"],["🤤","drool"],["😴","sleeping"],["😷","mask"],["🤒","thermometer"],["🤕","head bandage"],["🤧","sneeze"],["🥵","hot"],["🥶","cold"],["🥴","woozy"],["😵","dizzy"],["🤯","mind blown"],["🤠","cowboy"],["🥳","party"],["😎","cool sunglasses"],["🤓","nerd"],["🫡","salute"],["👍","thumbs up like"],["👎","thumbs down"],["👏","clap"],["🙏","pray thanks"],["👌","ok"],["✌️","victory peace"],["🤝","handshake"],["💪","muscle"],["👀","eyes look"],["👋","wave"],["🔥","fire lit"],["✨","sparkles"],["❤️","heart love"],["🧡","heart orange"],["💛","heart yellow"],["💚","heart green"],["💙","heart blue"],["💜","heart purple"],["💯","100"],["💩","poop"],["🎉","tada party"],["🎂","cake birthday"],["🍕","pizza"],["🍔","burger"],["☕","coffee"]];
