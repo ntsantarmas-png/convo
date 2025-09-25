@@ -617,7 +617,7 @@ onAuthStateChanged(auth, (user) => {
 
 onAuthStateChanged(auth, async (user) => {
   if (user) {
-    // Αν δεν υπάρχει avatar, δώσε ένα σταθερό από pravatar
+    // === Avatar check ===
     if (!user.photoURL) {
       const avatarId = Math.abs(hashCode(user.uid)) % 70 + 1; // pravatar έχει ~70 images
       const stableAvatar = `https://i.pravatar.cc/150?img=${avatarId}`;
@@ -630,7 +630,7 @@ onAuthStateChanged(auth, async (user) => {
       }
     }
 
-    // ✅ Ενημέρωση Firebase DB με σωστό όνομα & avatar
+    // === Ενημέρωση Firebase DB με user info ===
     await set(ref(db, "users/" + user.uid), {
       uid: user.uid,
       displayName: user.displayName || "Anonymous",
@@ -639,42 +639,29 @@ onAuthStateChanged(auth, async (user) => {
       typing: false
     });
 
-    // Εμφάνιση της εφαρμογής μετά το login
-    authView.classList.add("hidden");
-    appView.classList.remove("hidden");
-    helloUser.textContent = `Hello, ${user.displayName || "User"}!`;
-  } else {
-    // Αν δεν είναι συνδεδεμένος
-    authView.classList.remove("hidden");
-    appView.classList.add("hidden");
-  }
-});
-// === CLEAR CHAT BUTTON ===
+    // === Clear Chat Button (μόνο για admin) ===
     const clearChatBtn = document.getElementById("clearChatBtn");
     if (user.displayName === "MysteryMan") {
-      currentUserRole = "admin";   // 👈 Ορίζουμε ρόλο admin
-      clearChatBtn.style.display = "inline-block"; // δείξε το κουμπί μόνο στον admin
+      currentUserRole = "admin";
+      clearChatBtn.style.display = "inline-block";
 
       clearChatBtn.addEventListener("click", async () => {
         if (!confirm("⚠️ Να διαγραφούν όλα τα μηνύματα από αυτό το room;")) return;
         try {
           const room = document.getElementById("roomTitle").textContent.replace("#", "");
           await remove(ref(db, "messages/" + room));
-
-          // 🆕 καθάρισε και το UI αμέσως
           document.getElementById("messages").innerHTML = "";
-
           console.log("🗑 Chat cleared for room:", room);
         } catch (err) {
           console.error("clearChat error:", err);
         }
       });
     } else {
-      currentUserRole = "user";    // 👈 Ορίζουμε default ρόλο user
-      clearChatBtn.style.display = "none"; // κρύψε το κουμπί για μη-admin
+      currentUserRole = "user";
+      clearChatBtn.style.display = "none";
     }
 
-    // Header avatar από το database
+    // === Header avatar από DB ===
     const headerAvatar = document.getElementById("headerAvatar");
     onValue(ref(db, "users/" + user.uid), (snap) => {
       const u = snap.val() || {};
@@ -685,33 +672,26 @@ onAuthStateChanged(auth, async (user) => {
       }
     });
 
-    // Presence + rooms
+    // === Presence + rooms ===
     await setupPresence(user);
     await renderRooms();
     switchRoom(currentRoom);
     watchPresence();
-    
 
+    // === Εμφάνιση εφαρμογής ===
+    authView.classList.add("hidden");
+    appView.classList.remove("hidden");
+    helloUser.textContent = `Hello, ${user.displayName || "User"}!`;
 
   } else {
     // Αν δεν υπάρχει user → δείξε την οθόνη login
-    appView.classList.add('hidden');
-    authView.classList.remove('hidden');
-    helloUser.textContent = '';
+    appView.classList.add("hidden");
+    authView.classList.remove("hidden");
+    helloUser.textContent = "";
     if (messagesUnsub) messagesUnsub();
     if (presenceUnsub) presenceUnsub();
   }
-}); // 👈 κλείνει σωστά το onAuthStateChanged
-
-// Helper για να δίνει σταθερό id από string
-function hashCode(str) {
-  let hash = 0;
-  for (let i = 0; i < str.length; i++) {
-    hash = str.charCodeAt(i) + ((hash << 5) - hash);
-  }
-  return hash;
-}
-
+}); // 👈 Τέλος onAuthStateChanged
 
   // Utils (safe RegExp)
   function escapeHtml(str=''){ return str.replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;'); }
