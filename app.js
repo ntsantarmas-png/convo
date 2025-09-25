@@ -595,6 +595,12 @@ const watchPresence = () => {
     const seen = new Set(); // ✅ για να μην μπει κάποιος 2η φορά
 
     Object.entries(data).forEach(([uid, u]) => {
+  if (seen.has(uid)) return;
+  seen.add(uid);
+
+  const li = document.createElement('li');
+  li.dataset.uid = uid;   // 👈 ΠΡΟΣΘΗΚΗ (ώστε να ξέρουμε ποιος είναι)
+
       if (seen.has(uid)) return;
       seen.add(uid);
 
