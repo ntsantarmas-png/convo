@@ -604,8 +604,6 @@ const watchPresence = () => {
       if (seen.has(uid)) return;
       seen.add(uid);
 
-      const li = document.createElement('li');
-
       // === Avatar ===
       const avatar = document.createElement('div');
       avatar.className = 'avatar ' + (u.status === 'online' ? 'online' : 'offline');
