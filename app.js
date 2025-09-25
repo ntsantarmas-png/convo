@@ -6,7 +6,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/fireba
 import { 
   getAuth, onAuthStateChanged, createUserWithEmailAndPassword, 
   signInWithEmailAndPassword, signInAnonymously, updateProfile, 
-  sendPasswordResetEmail, signOut 
+  sendPasswordResetEmail, signOut, deleteUser
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { 
   getDatabase, ref, onChildAdded, onChildRemoved, push, 
