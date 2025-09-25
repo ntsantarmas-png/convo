@@ -1102,10 +1102,9 @@ document.getElementById("ctxAddFriend").addEventListener("click", () => {
       const friendData = snapshot.val();
       const friendName = friendData.displayName || "Anonymous";
 
-      // Σώζουμε στο δικό μας προφίλ -> friends
+      // ✅ Σώζουμε μόνο το name (το key = uid υπάρχει ήδη)
       set(ref(db, `users/${auth.currentUser.uid}/friends/${friendUid}`), {
-        name: friendName,
-        uid: friendUid
+        name: friendName
       }).then(() => {
         showToast(`✅ ${friendName} added as friend`);
       }).catch(err => console.error("Error adding friend:", err));
@@ -1116,6 +1115,7 @@ document.getElementById("ctxAddFriend").addEventListener("click", () => {
 
   userContextMenu.style.display = "none";
 });
+
 
 document.getElementById("ctxRemoveFriend").addEventListener("click", () => {
   if (!contextTargetUser || !auth.currentUser) return;
