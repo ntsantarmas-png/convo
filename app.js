@@ -753,18 +753,30 @@ onAuthStateChanged(auth, async (user) => {
     appView.classList.remove("hidden");
     helloUser.textContent = `Hello, ${user.displayName || "User"}!`;
 
-    // 🆕 Φόρτωσε φίλους
+    // === Logout κουμπί ===
+    const logoutBtn = document.getElementById("logoutBtn");
+    if (logoutBtn) {
+      logoutBtn.style.display = "block"; // ✅ τώρα εμφανίζεται πάντα
+      logoutBtn.addEventListener("click", () => signOut(auth));
+    }
+
+    // === Φόρτωσε φίλους ===
     loadFriends();
 
   } else {
-    // Αν δεν υπάρχει user → δείξε την οθόνη login
+    // ❌ Δεν υπάρχει user → δείξε την οθόνη login
     appView.classList.add("hidden");
     authView.classList.remove("hidden");
     helloUser.textContent = "";
+
+    const logoutBtn = document.getElementById("logoutBtn");
+    if (logoutBtn) logoutBtn.style.display = "none";
+
     if (messagesUnsub) messagesUnsub();
     if (presenceUnsub) presenceUnsub();
   }
 }); // 👈 Τέλος onAuthStateChanged
+
 
 // Utils
 function escapeHtml(str = '') {
