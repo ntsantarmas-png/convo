@@ -990,14 +990,26 @@ document.addEventListener("contextmenu", (e) => {
 // ===== Handlers για τα menu items =====
 document.getElementById("ctxAddFriend").addEventListener("click", () => {
   if (!contextTargetUser || !auth.currentUser) return;
-  const friendUid = contextTargetUser.dataset.uid;
-  const friendName = contextTargetUser.querySelector("span")?.textContent;
 
-  set(ref(db, `users/${auth.currentUser.uid}/friends/${friendUid}`), {
-    name: friendName
-  }).then(() => {
-    showToast(`✅ ${friendName} added as friend`);
-  }).catch(err => console.error("Error adding friend:", err));
+  const friendUid = contextTargetUser.dataset.uid;
+
+  // Τραβάμε τα στοιχεία του φίλου από Firebase
+  get(ref(db, `users/${friendUid}`)).then(snapshot => {
+    if (snapshot.exists()) {
+      const friendData = snapshot.val();
+      const friendName = friendData.displayName || "Anonymous";
+
+      // Σώζουμε στο δικό μας προφίλ -> friends
+      set(ref(db, `users/${auth.currentUser.uid}/friends/${friendUid}`), {
+        name: friendName,
+        uid: friendUid
+      }).then(() => {
+        showToast(`✅ ${friendName} added as friend`);
+      }).catch(err => console.error("Error adding friend:", err));
+    } else {
+      console.error("❌ Friend not found in DB");
+    }
+  });
 
   userContextMenu.style.display = "none";
 });
