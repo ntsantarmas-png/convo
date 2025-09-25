@@ -594,95 +594,92 @@ const watchPresence = () => {
 
     const seen = new Set(); // ✅ για να μην μπει κάποιος 2η φορά
 
-    Object.entries(data).forEach(([uid, u]) => {
-  if (seen.has(uid)) return;
+Object.entries(data).forEach(([uid, u]) => {
+  if (seen.has(uid)) return;   // ✅ Έλεγχος διπλών
   seen.add(uid);
 
   const li = document.createElement('li');
-  li.dataset.uid = uid;   // 👈 ΠΡΟΣΘΗΚΗ (ώστε να ξέρουμε ποιος είναι)
+  li.dataset.uid = uid;   // 👈 Για context menu κλπ.
 
-      if (seen.has(uid)) return;
-      seen.add(uid);
+  // === Avatar ===
+  const avatar = document.createElement('div');
+  avatar.className = 'avatar ' + (u.status === 'online' ? 'online' : 'offline');
 
-      // === Avatar ===
-      const avatar = document.createElement('div');
-      avatar.className = 'avatar ' + (u.status === 'online' ? 'online' : 'offline');
+  if (u.photoURL) {
+    const img = document.createElement('img');
+    img.src = u.photoURL;
+    img.alt = u.displayName || 'U';
+    img.style.width = '100%';
+    img.style.height = '100%';
+    img.style.borderRadius = '50%';
+    img.style.objectFit = 'cover';
+    avatar.appendChild(img);
+  } else {
+    avatar.textContent = (u.displayName || 'U')[0].toUpperCase();
+  }
 
-      if (u.photoURL) {
-        const img = document.createElement('img');
-        img.src = u.photoURL;
-        img.alt = u.displayName || 'U';
-        img.style.width = '100%';
-        img.style.height = '100%';
-        img.style.borderRadius = '50%';
-        img.style.objectFit = 'cover';
-        avatar.appendChild(img);
-      } else {
-        avatar.textContent = (u.displayName || 'U')[0].toUpperCase();
-      }
+  // === Status dot ===
+  const dot = document.createElement('span');
+  dot.className = 'status-dot ' + (u.status === 'online' ? 'online' : 'offline');
 
-      // === Status dot ===
-      const dot = document.createElement('span');
-      dot.className = 'status-dot ' + (u.status === 'online' ? 'online' : 'offline');
+  // === Username ===
+  const name = document.createElement('span');
+  name.textContent = u.displayName || 'User';
 
-      // === Username ===
-      const name = document.createElement('span');
-      name.textContent = u.displayName || 'User';
+  // === Badge ===
+  let badge = null;
+  if ((u.displayName || '') === 'MysteryMan') {
+    badge = document.createElement('span');
+    badge.className = 'badge admin';
+    badge.textContent = '🛡️ ADMIN';
+    name.innerHTML = `<strong style="color:#ffb703">${u.displayName}</strong>`;
+    li.classList.add("admin");
+    document.getElementById("adminsList").appendChild(li);
+  } else if (u.role === "mod") {
+    badge = document.createElement('span');
+    badge.className = 'badge mod';
+    badge.textContent = '🛠️ MOD';
+    name.innerHTML = `<span style="color:#06d6a0">${u.displayName}</span>`;
+    li.classList.add("mod");
+    document.getElementById("modsList").appendChild(li);
+  } else if (u.role === "vip") {
+    badge = document.createElement('span');
+    badge.className = 'badge vip';
+    badge.textContent = '💎 VIP';
+    name.innerHTML = `<span style="color:#7209b7">${u.displayName}</span>`;
+    li.classList.add("vip");
+    document.getElementById("vipList").appendChild(li);
+  } else {
+    li.classList.add("user");
+    document.getElementById("normalList").appendChild(li);
+  }
 
-      // === Badge ===
-      let badge = null;
-      if ((u.displayName || '') === 'MysteryMan') {
-        badge = document.createElement('span');
-        badge.className = 'badge admin';
-        badge.textContent = '🛡️ ADMIN';
-        name.innerHTML = `<strong style="color:#ffb703">${u.displayName}</strong>`;
-        li.classList.add("admin");
-        document.getElementById("adminsList").appendChild(li);
-      } else if (u.role === "mod") {
-        badge = document.createElement('span');
-        badge.className = 'badge mod';
-        badge.textContent = '🛠️ MOD';
-        name.innerHTML = `<span style="color:#06d6a0">${u.displayName}</span>`;
-        li.classList.add("mod");
-        document.getElementById("modsList").appendChild(li);
-      } else if (u.role === "vip") {
-        badge = document.createElement('span');
-        badge.className = 'badge vip';
-        badge.textContent = '💎 VIP';
-        name.innerHTML = `<span style="color:#7209b7">${u.displayName}</span>`;
-        li.classList.add("vip");
-        document.getElementById("vipList").appendChild(li);
-      } else {
-        li.classList.add("user");
-        document.getElementById("normalList").appendChild(li);
-      }
+  // === Name wrapper ===
+  const nameWrapper = document.createElement('div');
+  nameWrapper.className = 'name-wrapper';
+  nameWrapper.appendChild(name);
+  if (badge) nameWrapper.appendChild(badge);
 
-      // === Name wrapper ===
-      const nameWrapper = document.createElement('div');
-      nameWrapper.className = 'name-wrapper';
-      nameWrapper.appendChild(name);
-      if (badge) nameWrapper.appendChild(badge);
+  // === Typing indicator ===
+  if (u.typing) {
+    const typingEl = document.createElement('div');
+    typingEl.className = 'typing-indicator';
+    typingEl.textContent = '✍️ typing…';
+    nameWrapper.appendChild(typingEl);
+  }
 
-      // === Typing indicator ===
-      if (u.typing) {
-        const typingEl = document.createElement('div');
-        typingEl.className = 'typing-indicator';
-        typingEl.textContent = '✍️ typing…';
-        nameWrapper.appendChild(typingEl);
-      }
+  // === Append row ===
+  li.appendChild(avatar);
+  li.appendChild(dot);
+  li.appendChild(nameWrapper);
+});
 
-      // === Append row ===
-      li.appendChild(avatar);
-      li.appendChild(dot);
-      li.appendChild(nameWrapper);
-    });
-
-    // ✅ Update counters αφού γεμίσουν οι λίστες
-    setTimeout(() => {
-      document.getElementById("adminsCount").textContent = document.getElementById("adminsList").childElementCount;
-      document.getElementById("modsCount").textContent   = document.getElementById("modsList").childElementCount;
-      document.getElementById("vipCount").textContent    = document.getElementById("vipList").childElementCount;
-      document.getElementById("usersCount").textContent  = document.getElementById("normalList").childElementCount;
+// ✅ Update counters
+setTimeout(() => {
+  document.getElementById("adminsCount").textContent = document.getElementById("adminsList").childElementCount;
+  document.getElementById("modsCount").textContent   = document.getElementById("modsList").childElementCount;
+  document.getElementById("vipCount").textContent    = document.getElementById("vipList").childElementCount;
+  document.getElementById("usersCount").textContent  = document.getElementById("normalList").childElementCount;
     }, 0);
   });
 };
