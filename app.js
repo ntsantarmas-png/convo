@@ -20,7 +20,7 @@ import {
   // ===================== GLOBAL ELEMENT REFERENCES =====================
 const $ = (id) => document.getElementById(id);
   const authView = $('authView'), appView = $('appView'), logoutBtn=$('logoutBtn'), helloUser=$('helloUser');
-  
+  const loginForm=$('loginForm'), registerForm=$('registerForm'), anonForm=$('anonForm'), forgotLink=$('forgotLink');
   const roomsList=$('roomsList'), newRoomBtn=$('newRoomBtn'), roomDialog=$('roomDialog'), roomForm=$('roomForm'), roomNameInput=$('roomNameInput');
   const roomTitle=$('roomTitle'), messagesEl=$('messages'), messageForm=$('messageForm'), messageInput=$('messageInput'), usersList=$('usersList');
   const emojiToggle=$('emojiToggle'), emojiPanel=$('emojiPanel'), emojiGrid=$('emojiGrid'), emojiSearch=$('emojiSearch');
@@ -41,8 +41,6 @@ const $ = (id) => document.getElementById(id);
 // ===================== AUTH (Register / Login / Anon / Forgot / Logout) =====================
 
 // ===================== REGISTER FORM =====================
-const registerForm = document.getElementById("registerForm");
-
 registerForm.addEventListener("submit", async (e) => {
   e.preventDefault();
 
@@ -78,8 +76,6 @@ registerForm.addEventListener("submit", async (e) => {
 });
 
 // ===================== LOGIN FORM =====================
-const loginForm = document.getElementById("loginForm");
-
 loginForm?.addEventListener("submit", async (e) => {
   e.preventDefault();
 
@@ -96,8 +92,6 @@ loginForm?.addEventListener("submit", async (e) => {
 });
 
 // ===================== ANONYMOUS LOGIN =====================
-const anonForm = document.getElementById("anonForm");
-
 anonForm?.addEventListener("submit", async (e) => {
   e.preventDefault();
 
@@ -132,8 +126,6 @@ anonForm?.addEventListener("submit", async (e) => {
 });
 
 // ===================== FORGOT PASSWORD =====================
-const forgotLink = document.getElementById("forgotLink");
-
 forgotLink?.addEventListener("click", async () => {
   const email = document.getElementById("loginEmail").value.trim();
 
@@ -152,8 +144,6 @@ forgotLink?.addEventListener("click", async () => {
 });
 
 // ===================== LOGOUT =====================
-const logoutBtn = document.getElementById("logoutBtn");
-
 logoutBtn?.addEventListener("click", () => signOut(auth));
 
   
