@@ -1658,75 +1658,67 @@ if (saveProfileBtn) {
   });
 }
 
-
-// ====== Delete Profile ======
+// ====== Delete Profile / Αποχώρηση ======
 if (deleteProfileBtn) {
-  deleteProfileBtn.addEventListener("click", () => {
-    profileModal.close();
-    deleteConfirmModal.showModal();
-  });
-}
-if (cancelDeleteBtn) {
-  cancelDeleteBtn.addEventListener("click", () => {
-    deleteConfirmModal.close();
-  });
-}
-if (confirmDeleteBtn) {
-  confirmDeleteBtn.addEventListener("click", async () => {
+  deleteProfileBtn.addEventListener("click", async () => {
+    if (!confirm("⚠️ Είσαι σίγουρος ότι θέλεις να διαγράψεις το προφίλ σου; Αυτή η ενέργεια είναι μη αναστρέψιμη.")) {
+      return;
+    }
     if (auth.currentUser) {
       try {
+        // Διαγραφή από DB
+        await remove(ref(db, "users/" + auth.currentUser.uid));
+
+        // Διαγραφή από Auth
         await deleteUser(auth.currentUser);
-        showToast("❌ Profile deleted");
-        deleteConfirmModal.close();
-        await signOut(auth);
+
+        showToast("✅ Το προφίλ διαγράφηκε");
+        profileModal.close();
       } catch (err) {
         console.error("Error deleting profile", err);
-   }
+        showToast("❌ " + err.message);
+      }
     }
   });
 }
-// ===================== FRIENDS TAB (Firebase) =====================
-const friendsList = document.getElementById("friendsList");
-const noFriendsMsg = document.getElementById("noFriendsMsg");
 
-// Render friends από Firebase
-function loadFriends() {
+// ====== Friends Tab Rendering ======
+function renderFriends() {
   if (!auth.currentUser) return;
-  const uid = auth.currentUser.uid;
-  const friendsRef = ref(db, `users/${uid}/friends`);
+  const friendsList = document.getElementById("friendsList");
+  if (!friendsList) return;
 
-  onValue(friendsRef, (snap) => {
+  onValue(ref(db, "users/" + auth.currentUser.uid + "/friends"), (snap) => {
     friendsList.innerHTML = "";
-    const friends = snap.val() || {};
-    const keys = Object.keys(friends);
 
-    if (keys.length === 0) {
-      noFriendsMsg.style.display = "block";
+    if (!snap.exists()) {
+      friendsList.innerHTML = `<li class="muted">No friends yet</li>`;
       return;
     }
 
-    noFriendsMsg.style.display = "none";
-    keys.forEach(fid => {
-      const f = friends[fid];
+    snap.forEach(child => {
+      const friendUid = child.key;
+      const friendData = child.val();
+
       const li = document.createElement("li");
-      li.innerHTML = `<span>${f.name || "Unknown"}</span> 
-                      <button data-id="${fid}">Remove</button>`;
+      li.innerHTML = `
+        <span>${friendData?.name || "(Unknown User)"}</span>
+        <button class="btn tiny danger" data-id="${friendUid}">❌</button>
+      `;
+
+      // Remove Friend action
+      li.querySelector("button").addEventListener("click", () => {
+        if (auth.currentUser) {
+          remove(ref(db, `users/${auth.currentUser.uid}/friends/${friendUid}`));
+        }
+      });
+
       friendsList.appendChild(li);
     });
   });
 }
 
-// Remove friend
-friendsList.addEventListener("click", (e) => {
-  if (e.target.tagName === "BUTTON") {
-    const fid = e.target.dataset.id;
-    if (!auth.currentUser) return;
-    const uid = auth.currentUser.uid;
-    remove(ref(db, `users/${uid}/friends/${fid}`));
-  }
-});
-
-// Κάθε φορά που κάνει login user -> φορτώνουμε τους φίλους
-onAuthStateChanged(auth, (user) => {
-  if (user) loadFriends();
+// 🟢 Κάλεσέ το όταν ανοίγει το modal
+profileModal?.addEventListener("show", () => {
+  renderFriends();
 });
