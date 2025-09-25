@@ -40,7 +40,7 @@ const $ = (id) => document.getElementById(id);
   
 // ===================== AUTH (Register / Login / Anon / Forgot / Logout) =====================
 // AUTH
- // ===================== REGISTER FORM =====================
+// ===================== REGISTER FORM =====================
 const registerForm = document.getElementById("registerForm");
 
 registerForm.addEventListener("submit", async (e) => {
@@ -51,11 +51,10 @@ registerForm.addEventListener("submit", async (e) => {
   const password = document.getElementById("regPassword").value;
 
   try {
-    // Δημιουργία χρήστη στο Firebase Auth
     const cred = await createUserWithEmailAndPassword(auth, email, password);
     const user = cred.user;
 
-    // ✅ Ορίζουμε το displayName στο Auth
+    // ✅ Βάζουμε το username στο Firebase Auth
     await updateProfile(user, { displayName: username });
 
     // ✅ Αποθήκευση στο Realtime Database
@@ -75,6 +74,7 @@ registerForm.addEventListener("submit", async (e) => {
     showToast("❌ " + err.message);
   }
 });
+
 
   loginForm?.addEventListener('submit', async (e)=>{
     e.preventDefault();
