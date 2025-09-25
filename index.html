@@ -60,13 +60,13 @@
     </div>
 
     <!-- Tab Panels -->
+    <!-- Profile Tab -->
     <div class="tab-panel active" id="profileTab">
       <label>Display Name</label>
       <input type="text" id="profileName" class="input" />
 
       <label>Avatar URL</label>
-<input type="text" id="profileAvatarInput" class="input" />
-
+      <input type="text" id="profileAvatarInput" class="input" />
 
       <button id="saveProfileBtn" class="btn primary">Save Changes</button>
 
@@ -75,21 +75,25 @@
       <button id="deleteProfileBtn" class="btn danger">Delete Profile</button>
     </div>
 
-<div class="tab-panel" id="friendsTab">
-  <ul id="friendsList" class="friends-list"></ul>
-  <p class="muted small" id="noFriendsMsg" style="display:none;">No friends yet.</p>
-</div>
+    <!-- Friends Tab -->
+    <div class="tab-panel" id="friendsTab">
+      <h3>Friends</h3>
+      <ul id="friendsList" class="friends-list"></ul>
+      <p class="muted small" id="noFriendsMsg" style="display:none;">No friends yet.</p>
+    </div>
 
-
+    <!-- Coins Tab -->
     <div class="tab-panel" id="coinsTab">
       <p class="muted small">Coins balance will appear here (placeholder).</p>
     </div>
 
+    <!-- Gifts Tab -->
     <div class="tab-panel" id="giftsTab">
       <p class="muted small">Gifts received will appear here (placeholder).</p>
     </div>
   </div>
 </dialog>
+
 
 <!-- ===================== DELETE CONFIRM MODAL ===================== -->
 <dialog id="deleteConfirmModal" class="modal">
