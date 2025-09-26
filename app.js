@@ -146,20 +146,6 @@ forgotLink?.addEventListener("click", async () => {
 // ===================== LOGOUT HANDLER =====================
 
 
-const logoutBtn = document.getElementById("logoutBtn");
-
-if (logoutBtn) {
-  logoutBtn.addEventListener("click", async () => {
-    try {
-      await signOut(auth);
-      console.log("✅ Logged out successfully");
-      // Αν θες να τον στέλνεις πίσω στο login:
-      window.location.href = "index.html"; 
-    } catch (err) {
-      console.error("❌ Error during logout:", err);
-    }
-  });
-}
 
   
 // ===================== PRESENCE =====================
