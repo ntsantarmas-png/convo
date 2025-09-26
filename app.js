@@ -1712,7 +1712,7 @@ if (deleteProfileBtn) {
   });
 }
 
-// --- Load Friends (clean version) ---
+// --- Load Friends (debug version) ---
 function loadFriends() {
   if (!auth.currentUser) {
     console.log("❌ loadFriends: no current user");
@@ -1720,23 +1720,34 @@ function loadFriends() {
   }
 
   const uid = auth.currentUser.uid;
-  const friendsRef = ref(db, "users/" + uid + "/friends");
+  const path = "users/" + uid + "/friends";
+  const friendsRef = ref(db, path);
+
+  console.log("🔎 loadFriends running for UID:", uid);
+  console.log("📂 Path being checked:", path);
 
   onValue(friendsRef, async (snap) => {
-    console.log("📡 loadFriends snapshot:", snap.val()); // DEBUG
+    console.log("📥 Snapshot received:", snap.val());
+
     friendsList.innerHTML = "";
 
     if (!snap.exists()) {
+      console.log("⚠️ No friends found at path:", path);
       noFriendsMsg.style.display = "block";
       return;
     }
 
     noFriendsMsg.style.display = "none";
     const friends = snap.val();
+    console.log("✅ Friends snapshot keys:", Object.keys(friends));
 
     for (const fid in friends) {
+      console.log("➡ Processing friend UID:", fid);
+
       try {
         const uSnap = await get(ref(db, "users/" + fid));
+        console.log("👀 Friend lookup in users/:", fid, "=>", uSnap.val());
+
         if (!uSnap.exists()) continue;
 
         const u = uSnap.val();
