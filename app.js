@@ -1770,7 +1770,3 @@ setTimeout(() => {
       console.error("❌ Error deleting profile:", err);
       alert("Δεν ήταν δυνατή η διαγραφή του προφίλ. Δοκίμασε ξανά.");
     }
-  });
-}
-
-
