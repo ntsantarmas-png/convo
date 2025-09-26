@@ -69,20 +69,24 @@ body {
   color: #ff8080;
 }
 
-/* ===================== LOGOUT ICON ===================== */
-.icon-btn {
-  background: transparent;
-  border: none;
-  font-size: 20px;
-  cursor: pointer;
-  margin-left: 12px;
-  color: var(--text, #eaeaea);
-  transition: color 0.2s, transform 0.2s;
+/* ===================== LOGOUT BUTTON SPECIAL ===================== */
+#logoutBtn.icon-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  font-size: 18px;
+  background: rgba(255, 80, 80, 0.15);
+  border: 1px solid rgba(255, 80, 80, 0.4);
+  color: #ff5555;
 }
 
-.icon-btn:hover {
-  color: #ff4d4d; /* κόκκινο στο hover */
-  transform: scale(1.1);
+#logoutBtn.icon-btn:hover {
+  background: rgba(255, 80, 80, 0.25);
+  box-shadow: 0 0 8px rgba(255, 80, 80, 0.5);
 }
 
 /* ===================== PROFILE MENU ===================== */
