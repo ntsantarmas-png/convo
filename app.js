@@ -1364,42 +1364,6 @@ deleteMsgBtn.addEventListener("click", () => {
 });
 
 // === // ===================== AVATAR SAVE =====================
-const avatarInput = document.getElementById("avatarUrl");
-const saveAvatarBtn = document.getElementById("saveAvatarBtn");
-
-if (saveAvatarBtn) {
-  saveAvatarBtn.addEventListener("click", async () => {
-    const url = avatarInput.value.trim();
-    if (!url) return;
-
-    const uid = auth.currentUser?.uid;
-    if (!uid) {
-      showToast("Δεν είσαι συνδεδεμένος!");
-      return;
-    }
-
-    try {
-      // 1. Αποθήκευση σε users + status
-      const updates = {};
-      updates["users/" + uid + "/photoURL"] = url;
-      updates["status/" + uid + "/photoURL"] = url;
-
-      await update(ref(db), updates);
-
-      // 2. Ενημέρωση στο Firebase Auth
-      await updateProfile(auth.currentUser, { photoURL: url });
-
-      // 3. Καθαρισμός input + επιβεβαίωση
-      avatarInput.value = "";
-      showToast("✅ Avatar ενημερώθηκε!");
-      console.log("✅ Avatar updated everywhere:", url);
-
-    } catch (err) {
-      console.error("❌ Error updating avatar:", err);
-      showToast("Σφάλμα: " + err.message, true);
-    }
-  });
-}
 
 // ===================== CLEANUP STRAY DOT (deep scan) =====================
 function removeStrayDotsDeep(el = document) {
