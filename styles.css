@@ -52,6 +52,10 @@ body {
   background: rgba(255,255,255,0.08);
   border-color: rgba(255,255,255,0.3);
 }
+/* ===================== AUTH ONLY TOP ACTIONS ===================== */
+#authOnlyTopActions {
+  display: none; /* κρυφό by default */
+}
 
 
 /* ===================== LOGOUT BUTTON SPECIAL ===================== */
