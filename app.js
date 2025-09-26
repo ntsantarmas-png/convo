@@ -1695,15 +1695,18 @@ if (deleteProfileBtn) {
   });
 }
 
-// --- Load Friends ---
+// --- Load Friends (debug test) ---
 function loadFriends() {
   if (!auth.currentUser) return;
 
   const uid = auth.currentUser.uid;
   const friendsRef = ref(db, "users/" + uid + "/friends");
 
+  // 👉 TEST HACK: βάλε ένα ψεύτικο li για να δούμε αν εμφανίζεται
+  friendsList.innerHTML = "<li style='color:red'>TEST FRIEND</li>";
+
   onValue(friendsRef, async (snap) => {
-    friendsList.innerHTML = "";
+    friendsList.innerHTML = ""; // καθάρισε πριν γεμίσεις με αληθινούς φίλους
 
     if (!snap.exists()) {
       noFriendsMsg.style.display = "block";
