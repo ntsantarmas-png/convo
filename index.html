@@ -44,58 +44,7 @@
   </div>
 </header>
 <!-- ===================== PROFILE MODAL ===================== -->
-<dialog id="profileModal" class="modal">
-  <div class="modal-content">
-    <div class="modal-header">
-      <h2>Edit Profile</h2>
-      <button class="close-btn" id="closeProfileModal">✖</button>
-    </div>
-
-    <!-- Tabs -->
-    <div class="tabs">
-      <button class="tab active" data-tab="profileTab">Profile</button>
-      <button class="tab" data-tab="friendsTab">Friends</button>
-      <button class="tab" data-tab="coinsTab">Coins</button>
-      <button class="tab" data-tab="giftsTab">Gifts</button>
-    </div>
-
-    <!-- Tab Panels -->
-    <!-- Profile Tab -->
-    <div class="tab-panel active" id="profileTab">
-      <label>Display Name</label>
-      <input type="text" id="profileName" class="input" />
-
-      <label>Avatar URL</label>
-      <input type="text" id="profileAvatarInput" class="input" />
-
-      <button id="saveProfileBtn" class="btn primary">Save Changes</button>
-
-      <hr style="margin:16px 0; opacity:.2;" />
-
-      <button id="deleteProfileBtn" class="btn danger">Delete Profile</button>
-    </div>
-
-   <!-- Friends Tab -->
-<div class="tab-panel" id="friendsTab">
-  <h3>Friends</h3>
-  <p class="muted small" id="noFriendsMsg" style="display:none;">No friends yet.</p>
-  <ul id="friendsList" class="friends-list"></ul>
-</div>
-
-
-    <!-- Coins Tab -->
-    <div class="tab-panel" id="coinsTab">
-      <p class="muted small">Coins balance will appear here (placeholder).</p>
-    </div>
-
-    <!-- Gifts Tab -->
-    <div class="tab-panel" id="giftsTab">
-      <p class="muted small">Gifts received will appear here (placeholder).</p>
-    </div>
-  </div>
-</dialog>
-
-
+  
 <!-- ===================== DELETE CONFIRM MODAL ===================== -->
 <dialog id="deleteConfirmModal" class="modal">
   <div class="modal-content">
