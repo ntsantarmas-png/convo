@@ -777,23 +777,29 @@ onAuthStateChanged(auth, async (user) => {
     }
 
   } else {
-    // ❌ Δεν υπάρχει user → κρύψε τα κουμπιά
-    authOnlyTopActions.style.display = "none";
+  // ❌ Δεν υπάρχει user → κρύψε τα κουμπιά
+  authOnlyTopActions.style.display = "none";
 
-    // Εμφάνισε login view
-    appView.classList.add("hidden");
-    authView.classList.remove("hidden");
-    helloUser.textContent = "";
+  // Εμφάνισε login view
+  appView.classList.add("hidden");
+  authView.classList.remove("hidden");
+  helloUser.textContent = "";
 
-    const logoutBtn = document.getElementById("logoutBtn");
-    const editProfileBtn = document.getElementById("editProfileBtn");
-    if (logoutBtn) logoutBtn.style.display = "none";
-    if (editProfileBtn) editProfileBtn.style.display = "none";
+  const logoutBtn = document.getElementById("logoutBtn");
+  const editProfileBtn = document.getElementById("editProfileBtn");
+  if (logoutBtn) logoutBtn.style.display = "none";
+  if (editProfileBtn) editProfileBtn.style.display = "none";
 
-    if (messagesUnsub) messagesUnsub();
-    if (presenceUnsub) presenceUnsub();
+  if (messagesUnsub) messagesUnsub();
+  if (presenceUnsub) presenceUnsub();
+
+  // ✅ Reset πάντα στο Login tab για να φαίνονται τα πεδία
+  const loginTab = document.getElementById("loginTab");
+  if (loginTab) {
+    loginTab.click();
   }
-}); // 👈 Τέλος onAuthStateChanged
+}
+
 
 
 
