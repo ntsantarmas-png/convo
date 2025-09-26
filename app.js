@@ -1702,18 +1702,18 @@ if (deleteProfileBtn) {
   });
 }
 
-// --- Load Friends (debug test) ---
+// --- Load Friends (clean version) ---
 function loadFriends() {
-  if (!auth.currentUser) return;
+  if (!auth.currentUser) {
+    console.log("❌ loadFriends: no current user");
+    return;
+  }
 
   const uid = auth.currentUser.uid;
   const friendsRef = ref(db, "users/" + uid + "/friends");
 
-  // 👉 TEST HACK: βάλε ένα ψεύτικο li για να δούμε αν εμφανίζεται
-  friendsList.innerHTML = "<li style='color:red'>TEST FRIEND</li>";
-
   onValue(friendsRef, async (snap) => {
-    friendsList.innerHTML = ""; // καθάρισε πριν γεμίσεις με αληθινούς φίλους
+    friendsList.innerHTML = "";
 
     if (!snap.exists()) {
       noFriendsMsg.style.display = "block";
@@ -1766,6 +1766,7 @@ function loadFriends() {
     }
   });
 }
+
 
 // --- Remove Friend ---
 friendsList?.addEventListener("click", (e) => {
