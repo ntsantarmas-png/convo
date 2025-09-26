@@ -764,12 +764,19 @@ onAuthStateChanged(auth, async (user) => {
     }
 
     if (editProfileBtn) {
-      editProfileBtn.style.display = "block";
-      editProfileBtn.addEventListener("click", () => {
-        profileModal.showModal();
-        loadFriends(); // ✅ Φόρτωσε φίλους όταν ανοίγει το modal
-      });
-    }
+  editProfileBtn.style.display = "block";
+  editProfileBtn.addEventListener("click", () => {
+    profileModal.showModal();
+
+    // Περίμενε λίγο ώστε να είναι σίγουρα διαθέσιμο το friendsList
+    setTimeout(() => {
+      const fl = document.getElementById("friendsList");
+      console.log("👉 friendsList element inside modal:", fl);
+      loadFriends();
+    }, 100);
+  });
+}
+
 
   } else {
     // ❌ Δεν υπάρχει user → δείξε την οθόνη login
