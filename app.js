@@ -767,6 +767,9 @@ onAuthStateChanged(auth, async (user) => {
   editProfileBtn.style.display = "block";
   editProfileBtn.addEventListener("click", () => {
     profileModal.showModal();
+    loadFriends(); // ✅ Φόρτωσε φίλους όταν ανοίγει το modal
+  });
+}
 
     const fl = document.getElementById("friendsList");
     const nm = document.getElementById("noFriendsMsg");
