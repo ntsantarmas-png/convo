@@ -1733,8 +1733,7 @@ if (editProfileBtn) {
     profileModal.showModal();
     loadFriends();
   });
-}
-// ===================== DELETE PROFILE HANDLER =====================
+}// ===================== DELETE PROFILE HANDLER =====================
 const deleteProfileBtn = document.getElementById("deleteProfileBtn");
 const deleteConfirmModal = document.getElementById("deleteConfirmModal");
 const cancelDeleteBtn = document.getElementById("cancelDeleteBtn");
@@ -1758,13 +1757,14 @@ if (deleteProfileBtn && deleteConfirmModal) {
       if (user) {
         await deleteUser(user);
         console.log("✅ Profile deleted");
-if (deleteConfirmModal.open) {
-  deleteConfirmModal.close();
-}
-setTimeout(() => {
-  window.location.href = "index.html";
-}, 100); // μικρή καθυστέρηση για σιγουριά
 
+        if (deleteConfirmModal.open) {
+          deleteConfirmModal.close();
+        }
+
+        setTimeout(() => {
+          window.location.href = "index.html";
+        }, 100); // μικρή καθυστέρηση για σιγουριά
       }
     } catch (err) {
       console.error("❌ Error deleting profile:", err);
