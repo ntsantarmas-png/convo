@@ -1610,3 +1610,169 @@ statusButtons.forEach(btn => {
   });
 });
 
+// ===================== PROFILE MODAL LOGIC =====================
+
+// --- Elements ---
+const profileModal = document.getElementById("profileModal");
+const closeProfileModal = document.getElementById("closeProfileModal");
+const saveProfileBtn = document.getElementById("saveProfileBtn");
+const friendsList = document.getElementById("friendsList");
+const noFriendsMsg = document.getElementById("noFriendsMsg");
+
+// --- Tabs logic ---
+document.querySelectorAll(".tabs .tab").forEach(tab => {
+  tab.addEventListener("click", () => {
+    // remove active from all
+    document.querySelectorAll(".tabs .tab").forEach(t => t.classList.remove("active"));
+    document.querySelectorAll(".tab-panel").forEach(p => p.classList.remove("active"));
+
+    // activate clicked tab + panel
+    tab.classList.add("active");
+    const target = document.getElementById(tab.dataset.tab);
+    if (target) target.classList.add("active");
+  });
+});
+
+// --- Save Profile ---
+if (saveProfileBtn) {
+  saveProfileBtn.addEventListener("click", () => {
+    const nameInput = document.getElementById("profileName");
+    const avatarInput = document.getElementById("profileAvatarInput");
+
+    const newName = nameInput?.value.trim();
+    const newAvatar = avatarInput?.value.trim();
+
+    if (auth.currentUser) {
+      updateProfile(auth.currentUser, {
+        displayName: newName || auth.currentUser.displayName,
+        photoURL: newAvatar || auth.currentUser.photoURL
+      }).then(() => {
+        update(ref(db, "users/" + auth.currentUser.uid), {
+          displayName: newName || auth.currentUser.displayName,
+          photoURL: newAvatar || auth.currentUser.photoURL
+        });
+        showToast("✅ Profile updated!");
+        profileModal.close();
+      }).catch(err => {
+        console.error("❌ Error updating profile:", err);
+        showToast("❌ Error updating profile");
+      });
+    }
+  });
+}
+
+// --- Load Friends ---
+function loadFriends() {
+  if (!auth.currentUser) return;
+
+  const uid = auth.currentUser.uid;
+  const friendsRef = ref(db, "users/" + uid + "/friends");
+
+  onValue(friendsRef, async (snap) => {
+    friendsList.innerHTML = "";
+
+    if (!snap.exists()) {
+      noFriendsMsg.style.display = "block";
+      return;
+    }
+
+    noFriendsMsg.style.display = "none";
+    const friends = snap.val();
+
+    for (const fid in friends) {
+      try {
+        const uSnap = await get(ref(db, "users/" + fid));
+        if (!uSnap.exists()) continue;
+
+        const u = uSnap.val();
+
+        const li = document.createElement("li");
+
+        const avatar = document.createElement("img");
+        avatar.src = u.photoURL || "https://i.pravatar.cc/40";
+        avatar.alt = u.displayName || friends[fid].name || "U";
+
+        const span = document.createElement("span");
+        span.textContent = u.displayName || friends[fid].name || "Unknown";
+
+        const btn = document.createElement("button");
+        btn.textContent = "❌";
+        btn.dataset.id = fid;
+
+        li.appendChild(avatar);
+        li.appendChild(span);
+        li.appendChild(btn);
+
+        friendsList.appendChild(li);
+      } catch (err) {
+        console.error("💥 Error loading friend:", fid, err);
+      }
+    }
+  });
+}
+
+// --- Remove Friend ---
+friendsList?.addEventListener("click", (e) => {
+  if (e.target.tagName === "BUTTON") {
+    const fid = e.target.dataset.id;
+    if (!auth.currentUser) return;
+    const uid = auth.currentUser.uid;
+    remove(ref(db, `users/${uid}/friends/${fid}`));
+  }
+});
+
+// --- Close Modal ---
+if (closeProfileModal) {
+  closeProfileModal.addEventListener("click", () => profileModal.close());
+}
+
+// --- Hook: open modal from header ---
+const editProfileBtn = document.getElementById("editProfileBtn");
+if (editProfileBtn) {
+  editProfileBtn.addEventListener("click", () => {
+    profileModal.showModal();
+    loadFriends();
+  });
+}
+  
+// ===================== DELETE PROFILE HANDLER =====================
+const deleteProfileBtn = document.getElementById("deleteProfileBtn");
+const deleteConfirmModal = document.getElementById("deleteConfirmModal");
+const cancelDeleteBtn = document.getElementById("cancelDeleteBtn");
+const confirmDeleteBtn = document.getElementById("confirmDeleteBtn");
+
+if (deleteProfileBtn && deleteConfirmModal) {
+  // Όταν πατάει Delete Profile -> ανοίγει το confirm modal
+  deleteProfileBtn.addEventListener("click", () => {
+    deleteConfirmModal.showModal();
+  });
+
+  // Cancel -> κλείνει το modal
+  cancelDeleteBtn.addEventListener("click", () => {
+    deleteConfirmModal.close();
+  });
+
+  // Confirm -> διαγραφή χρήστη
+  confirmDeleteBtn.addEventListener("click", async () => {
+    try {
+      const user = auth.currentUser;
+      if (user) {
+        await deleteUser(user);
+        console.log("✅ Profile deleted");
+
+        if (deleteConfirmModal.open) {
+          deleteConfirmModal.close();
+        }
+
+        setTimeout(() => {
+          window.location.href = "index.html";
+        }, 100); // μικρή καθυστέρηση για σιγουριά
+      }
+    } catch (err) {
+      console.error("❌ Error deleting profile:", err);
+      alert("Δεν ήταν δυνατή η διαγραφή του προφίλ. Δοκίμασε ξανά.");
+    }
+  });
+}
+
+console.log("✅ app.js loaded successfully");
