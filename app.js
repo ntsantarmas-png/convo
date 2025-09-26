@@ -1695,27 +1695,43 @@ if (deleteProfileBtn) {
   });
 }
 
-// --- Load Friends ---
+// --- Load Friends (Debug version) ---
 function loadFriends() {
-  if (!auth.currentUser) return;
+  if (!auth.currentUser) {
+    console.log("❌ loadFriends: no current user");
+    return;
+  }
 
   const uid = auth.currentUser.uid;
   const friendsRef = ref(db, "users/" + uid + "/friends");
 
+  console.log("▶ loadFriends running for:", uid);
+
   onValue(friendsRef, async (snap) => {
     friendsList.innerHTML = "";
+
     if (!snap.exists()) {
+      console.log("⚠️ No friends found for user:", uid);
       noFriendsMsg.style.display = "block";
       return;
     }
-    noFriendsMsg.style.display = "none";
 
     const friends = snap.val();
+    console.log("✅ Friends snapshot:", friends);
+    noFriendsMsg.style.display = "none";
 
     for (const fid in friends) {
+      console.log("➡ Rendering friend UID:", fid);
+
       try {
         const uSnap = await get(ref(db, "users/" + fid));
-        const u = uSnap.exists() ? uSnap.val() : {};
+        if (!uSnap.exists()) {
+          console.log("❌ Friend user not found in users/", fid);
+          continue;
+        }
+
+        const u = uSnap.val();
+        console.log("👤 Friend data:", u);
 
         const li = document.createElement("li");
         li.style.display = "flex";
@@ -1748,7 +1764,7 @@ function loadFriends() {
 
         friendsList.appendChild(li);
       } catch (err) {
-        console.error("Error loading friend:", fid, err);
+        console.error("💥 Error loading friend:", fid, err);
       }
     }
   });
