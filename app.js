@@ -1712,7 +1712,7 @@ if (deleteProfileBtn) {
   });
 }
 
-// --- Load Friends (debug version) ---
+// --- Load Friends (debug-simple) ---
 function loadFriends() {
   if (!auth.currentUser) {
     console.log("❌ loadFriends: no current user");
@@ -1720,74 +1720,39 @@ function loadFriends() {
   }
 
   const uid = auth.currentUser.uid;
-  const path = "users/" + uid + "/friends";
-  const friendsRef = ref(db, path);
-
-  console.log("🔎 loadFriends running for UID:", uid);
-  console.log("📂 Path being checked:", path);
+  const friendsRef = ref(db, "users/" + uid + "/friends");
 
   onValue(friendsRef, async (snap) => {
-    console.log("📥 Snapshot received:", snap.val());
-
     friendsList.innerHTML = "";
 
     if (!snap.exists()) {
-      console.log("⚠️ No friends found at path:", path);
       noFriendsMsg.style.display = "block";
       return;
     }
 
     noFriendsMsg.style.display = "none";
     const friends = snap.val();
-    console.log("✅ Friends snapshot keys:", Object.keys(friends));
 
     for (const fid in friends) {
-      console.log("➡ Processing friend UID:", fid);
-
       try {
         const uSnap = await get(ref(db, "users/" + fid));
-        console.log("👀 Friend lookup in users/:", fid, "=>", uSnap.val());
-
         if (!uSnap.exists()) continue;
-
         const u = uSnap.val();
 
+        console.log("👤 Adding friend to list:", u.displayName);
+
+        // Δημιουργία li απλά
         const li = document.createElement("li");
-        li.style.display = "flex";
-        li.style.alignItems = "center";
-        li.style.gap = "8px";
-        li.style.margin = "6px 0";
-
-        // Avatar
-        const avatar = document.createElement("img");
-        avatar.src = u.photoURL || "https://i.pravatar.cc/40";
-        avatar.alt = u.displayName || friends[fid].name || "U";
-        avatar.style.width = "28px";
-        avatar.style.height = "28px";
-        avatar.style.borderRadius = "50%";
-        avatar.style.objectFit = "cover";
-
-        // Name
-        const span = document.createElement("span");
-        span.textContent = u.displayName || friends[fid].name || "Unknown";
-
-        // Remove button
-        const btn = document.createElement("button");
-        btn.textContent = "❌";
-        btn.dataset.id = fid;
-        btn.style.marginLeft = "auto";
-
-        li.appendChild(avatar);
-        li.appendChild(span);
-        li.appendChild(btn);
-
+        li.textContent = u.displayName || friends[fid].name || "Unknown";
         friendsList.appendChild(li);
+
       } catch (err) {
         console.error("💥 Error loading friend:", fid, err);
       }
     }
   });
 }
+
 
 // --- Remove Friend ---
 friendsList?.addEventListener("click", (e) => {
