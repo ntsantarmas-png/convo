@@ -1982,3 +1982,7 @@ dialog{background:var(--panel-solid);color:var(--text);border:1px solid rgba(255
 .friends-list li button:hover {
   opacity: 0.85;
 }
+.friends-list li:hover {
+  background: rgba(255,255,255,.08);
+}
+
