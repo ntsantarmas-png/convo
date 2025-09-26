@@ -53,45 +53,26 @@ body {
   border-color: rgba(255,255,255,0.3);
 }
 
-/* Εικονίδιο Logout */
-.icon-btn {
-  background: transparent;
-  border: none;
-  font-size: 18px;
-  margin-left: 10px;
-  color: #ff5c5c; /* κόκκινο για logout */
-  cursor: pointer;
-  transition: transform 0.2s, color 0.2s;
-}
-
-.icon-btn:hover {
-  transform: scale(1.2);
-  color: #ff8080;
-}
 
 /* ===================== LOGOUT BUTTON SPECIAL ===================== */
 /* Logout Button */
-.icon-btn.logout {
-  font-size: 22px;
-  color: #ff4c4c;         /* κόκκινο εικονίδιο */
-  border: 2px solid #ff4c4c;
+.logout-btn {
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
-  width: 42px;
-  height: 42px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: transparent;
+  display: grid;
+  place-items: center;
+  font-size: 18px;
+  background: rgba(255,255,255,.08);
+  border: 1px solid rgba(255,255,255,.12);
   cursor: pointer;
-  transition: 0.25s ease;
+  transition: all .2s ease;
 }
-
-.icon-btn.logout:hover {
-  background: #ff4c4c;
-  color: #fff;
-  box-shadow: 0 0 12px rgba(255, 76, 76, 0.8);
+.logout-btn:hover {
+  background: rgba(255,0,0,.12);
+  box-shadow: 0 0 8px rgba(255,0,0,.4);
+  color: #ff4d4d;
 }
-
 
 /* ===================== PROFILE MENU ===================== */
 .profile-wrapper {
