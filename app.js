@@ -1733,7 +1733,9 @@ if (editProfileBtn) {
     profileModal.showModal();
     loadFriends();
   });
-}// ===================== DELETE PROFILE HANDLER =====================
+}
+  
+// ===================== DELETE PROFILE HANDLER =====================
 const deleteProfileBtn = document.getElementById("deleteProfileBtn");
 const deleteConfirmModal = document.getElementById("deleteConfirmModal");
 const cancelDeleteBtn = document.getElementById("cancelDeleteBtn");
