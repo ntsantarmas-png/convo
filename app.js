@@ -1108,8 +1108,9 @@ document.getElementById("ctxAddFriend").addEventListener("click", () => {
   name: friendName
 }).then(() => {
   showToast(`✅ ${friendName} added as friend`);
-  loadFriends(); // 🔄 refresh Friends tab
+  loadFriends(); // 🔄 Εδώ καλούμε το refresh
 }).catch(err => console.error("Error adding friend:", err));
+
     } else {
       console.error("❌ Friend not found in DB");
     }
