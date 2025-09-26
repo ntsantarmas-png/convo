@@ -1705,43 +1705,30 @@ if (deleteProfileBtn) {
   });
 }
 
-// --- Load Friends (Debug version) ---
+// --- Load Friends ---
 function loadFriends() {
-  if (!auth.currentUser) {
-    console.log("❌ loadFriends: no current user");
-    return;
-  }
+  if (!auth.currentUser) return;
 
   const uid = auth.currentUser.uid;
   const friendsRef = ref(db, "users/" + uid + "/friends");
-
-  console.log("▶ loadFriends running for:", uid);
 
   onValue(friendsRef, async (snap) => {
     friendsList.innerHTML = "";
 
     if (!snap.exists()) {
-      console.log("⚠️ No friends found for user:", uid);
       noFriendsMsg.style.display = "block";
       return;
     }
 
-    const friends = snap.val();
-    console.log("✅ Friends snapshot:", friends);
     noFriendsMsg.style.display = "none";
+    const friends = snap.val();
 
     for (const fid in friends) {
-      console.log("➡ Rendering friend UID:", fid);
-
       try {
         const uSnap = await get(ref(db, "users/" + fid));
-        if (!uSnap.exists()) {
-          console.log("❌ Friend user not found in users/", fid);
-          continue;
-        }
+        if (!uSnap.exists()) continue;
 
         const u = uSnap.val();
-        console.log("👤 Friend data:", u);
 
         const li = document.createElement("li");
         li.style.display = "flex";
@@ -1749,7 +1736,7 @@ function loadFriends() {
         li.style.gap = "8px";
         li.style.margin = "6px 0";
 
-        // avatar
+        // Avatar
         const avatar = document.createElement("img");
         avatar.src = u.photoURL || "https://i.pravatar.cc/40";
         avatar.alt = u.displayName || friends[fid].name || "U";
@@ -1758,11 +1745,11 @@ function loadFriends() {
         avatar.style.borderRadius = "50%";
         avatar.style.objectFit = "cover";
 
-        // name
+        // Name
         const span = document.createElement("span");
         span.textContent = u.displayName || friends[fid].name || "Unknown";
 
-        // remove button
+        // Remove button
         const btn = document.createElement("button");
         btn.textContent = "❌";
         btn.dataset.id = fid;
@@ -1788,11 +1775,6 @@ friendsList?.addEventListener("click", (e) => {
     const uid = auth.currentUser.uid;
     remove(ref(db, `users/${uid}/friends/${fid}`));
   }
-});
-
-// --- Auto-load friends on login ---
-onAuthStateChanged(auth, (user) => {
-  if (user) loadFriends();
 });
 
 // --- Close Modal ---
