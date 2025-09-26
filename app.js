@@ -764,23 +764,12 @@ onAuthStateChanged(auth, async (user) => {
     }
 
     if (editProfileBtn) {
-  editProfileBtn.style.display = "block";
-  editProfileBtn.addEventListener("click", () => {
-    profileModal.showModal();
-    loadFriends(); // ✅ Φόρτωσε φίλους όταν ανοίγει το modal
-  });
-}
-
-    const fl = document.getElementById("friendsList");
-    const nm = document.getElementById("noFriendsMsg");
-    console.log("👉 Opening modal, friendsList element:", fl);
-    console.log("👉 Opening modal, noFriendsMsg element:", nm);
-
-    loadFriends();
-  });
-}
-
-
+      editProfileBtn.style.display = "block";
+      editProfileBtn.addEventListener("click", () => {
+        profileModal.showModal();
+        loadFriends(); // ✅ Φόρτωσε φίλους όταν ανοίγει το modal
+      });
+    }
 
   } else {
     // ❌ Δεν υπάρχει user → δείξε την οθόνη login
@@ -797,6 +786,7 @@ onAuthStateChanged(auth, async (user) => {
     if (presenceUnsub) presenceUnsub();
   }
 }); // 👈 Τέλος onAuthStateChanged
+
 
 // Utils
 function escapeHtml(str = '') {
