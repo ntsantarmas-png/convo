@@ -768,6 +768,15 @@ onAuthStateChanged(auth, async (user) => {
   editProfileBtn.addEventListener("click", () => {
     profileModal.showModal();
 
+    setTimeout(() => {
+  const fl = document.getElementById("friendsList");
+  fl.innerHTML = `
+    <li style="color:lime">Friend 1 (dummy)</li>
+    <li style="color:lime">Friend 2 (dummy)</li>
+  `;
+}, 200);
+
+
     // Περίμενε λίγο ώστε να είναι σίγουρα διαθέσιμο το friendsList
     setTimeout(() => {
       const fl = document.getElementById("friendsList");
