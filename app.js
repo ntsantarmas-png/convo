@@ -764,11 +764,13 @@ onAuthStateChanged(auth, async (user) => {
     }
 
     if (editProfileBtn) {
-      editProfileBtn.style.display = "block";
-      editProfileBtn.addEventListener("click", () => {
-        profileModal.showModal();
-      });
-    }
+  editProfileBtn.style.display = "block";
+  editProfileBtn.addEventListener("click", () => {
+    profileModal.showModal();
+    loadFriends(); // 👈 τρέχει όταν ανοίγεις το modal
+  });
+}
+
 
     // === Φόρτωσε φίλους ===
     loadFriends();
