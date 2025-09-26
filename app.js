@@ -1752,9 +1752,13 @@ if (deleteProfileBtn && deleteConfirmModal) {
       if (user) {
         await deleteUser(user);
         console.log("✅ Profile deleted");
-        deleteConfirmModal.close();
-        // Επιστροφή στην login σελίδα
-        window.location.href = "index.html";
+if (deleteConfirmModal.open) {
+  deleteConfirmModal.close();
+}
+setTimeout(() => {
+  window.location.href = "index.html";
+}, 100); // μικρή καθυστέρηση για σιγουριά
+
       }
     } catch (err) {
       console.error("❌ Error deleting profile:", err);
