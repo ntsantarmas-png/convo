@@ -700,10 +700,14 @@ setTimeout(() => {
   });
 };
 
-
 // ===================== AUTH STATE HANDLING =====================
 onAuthStateChanged(auth, async (user) => {
+  const authOnlyTopActions = document.getElementById("authOnlyTopActions");
+
   if (user) {
+    // ✅ Δείξε τα κουμπιά (header actions)
+    authOnlyTopActions.style.display = "flex";
+
     // === Avatar check ===
     if (!user.photoURL) {
       const avatarId = Math.abs(hashCode(user.uid)) % 70 + 1;
@@ -780,31 +784,18 @@ onAuthStateChanged(auth, async (user) => {
     }
 
     if (editProfileBtn) {
-  editProfileBtn.style.display = "block";
-  editProfileBtn.addEventListener("click", () => {
-    profileModal.showModal();
-
-    setTimeout(() => {
-  const fl = document.getElementById("friendsList");
-  fl.innerHTML = `
-    <li style="color:lime">Friend 1 (dummy)</li>
-    <li style="color:lime">Friend 2 (dummy)</li>
-  `;
-}, 200);
-
-
-    // Περίμενε λίγο ώστε να είναι σίγουρα διαθέσιμο το friendsList
-    setTimeout(() => {
-      const fl = document.getElementById("friendsList");
-      console.log("👉 friendsList element inside modal:", fl);
-      loadFriends();
-    }, 100);
-  });
-}
-
+      editProfileBtn.style.display = "block";
+      editProfileBtn.addEventListener("click", () => {
+        profileModal.showModal();
+        loadFriends();
+      });
+    }
 
   } else {
-    // ❌ Δεν υπάρχει user → δείξε την οθόνη login
+    // ❌ Δεν υπάρχει user → κρύψε τα κουμπιά
+    authOnlyTopActions.style.display = "none";
+
+    // Εμφάνισε login view
     appView.classList.add("hidden");
     authView.classList.remove("hidden");
     helloUser.textContent = "";
@@ -818,6 +809,7 @@ onAuthStateChanged(auth, async (user) => {
     if (presenceUnsub) presenceUnsub();
   }
 }); // 👈 Τέλος onAuthStateChanged
+
 
 
 // Utils
