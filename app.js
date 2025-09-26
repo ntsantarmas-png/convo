@@ -1610,7 +1610,6 @@ statusButtons.forEach(btn => {
 const profileModal = document.getElementById("profileModal");
 const closeProfileModal = document.getElementById("closeProfileModal");
 const saveProfileBtn = document.getElementById("saveProfileBtn");
-const deleteProfileBtn = document.getElementById("deleteProfileBtn");
 const friendsList = document.getElementById("friendsList");
 const noFriendsMsg = document.getElementById("noFriendsMsg");
 
