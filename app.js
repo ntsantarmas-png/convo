@@ -1729,5 +1729,39 @@ if (editProfileBtn) {
     loadFriends();
   });
 }
+// ===================== DELETE PROFILE HANDLER =====================
+const deleteProfileBtn = document.getElementById("deleteProfileBtn");
+const deleteConfirmModal = document.getElementById("deleteConfirmModal");
+const cancelDeleteBtn = document.getElementById("cancelDeleteBtn");
+const confirmDeleteBtn = document.getElementById("confirmDeleteBtn");
+
+if (deleteProfileBtn && deleteConfirmModal) {
+  // Όταν πατάει Delete Profile -> ανοίγει το confirm modal
+  deleteProfileBtn.addEventListener("click", () => {
+    deleteConfirmModal.showModal();
+  });
+
+  // Cancel -> κλείνει το modal
+  cancelDeleteBtn.addEventListener("click", () => {
+    deleteConfirmModal.close();
+  });
+
+  // Confirm -> διαγραφή χρήστη
+  confirmDeleteBtn.addEventListener("click", async () => {
+    try {
+      const user = auth.currentUser;
+      if (user) {
+        await deleteUser(user);
+        console.log("✅ Profile deleted");
+        deleteConfirmModal.close();
+        // Επιστροφή στην login σελίδα
+        window.location.href = "index.html";
+      }
+    } catch (err) {
+      console.error("❌ Error deleting profile:", err);
+      alert("Δεν ήταν δυνατή η διαγραφή του προφίλ. Δοκίμασε ξανά.");
+    }
+  });
+}
 
 
