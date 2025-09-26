@@ -1656,6 +1656,7 @@ const saveProfileBtn = document.getElementById("saveProfileBtn");
 const deleteProfileBtn = document.getElementById("deleteProfileBtn");
 const friendsList = document.getElementById("friendsList");
 const noFriendsMsg = document.getElementById("noFriendsMsg");
+const editProfileBtn = document.getElementById("editProfileBtn"); // 🔑 για να ανοίγει το modal
 
 // --- Save Profile ---
 if (saveProfileBtn) {
@@ -1722,6 +1723,7 @@ function loadFriends() {
   const friendsRef = ref(db, "users/" + uid + "/friends");
 
   onValue(friendsRef, async (snap) => {
+    console.log("📡 loadFriends snapshot:", snap.val()); // DEBUG
     friendsList.innerHTML = "";
 
     if (!snap.exists()) {
@@ -1776,7 +1778,6 @@ function loadFriends() {
   });
 }
 
-
 // --- Remove Friend ---
 friendsList?.addEventListener("click", (e) => {
   if (e.target.tagName === "BUTTON") {
@@ -1786,6 +1787,15 @@ friendsList?.addEventListener("click", (e) => {
     remove(ref(db, `users/${uid}/friends/${fid}`));
   }
 });
+
+// --- Open Modal + Load Friends ---
+if (editProfileBtn) {
+  editProfileBtn.addEventListener("click", () => {
+    profileModal.showModal();
+    console.log("🟢 Opening Edit Profile modal, calling loadFriends()");
+    loadFriends(); // 🔥 καλούμε εδώ σίγουρα τη function
+  });
+}
 
 // --- Close Modal ---
 if (closeProfileModal) {
