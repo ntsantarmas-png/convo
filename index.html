@@ -10,15 +10,15 @@
   <link href="data:image/svg+xml,&lt;svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'&gt;&lt;text y='.9em' font-size='90'&gt;💬&lt;/text&gt;&lt;/svg&gt;" rel="icon"/>
   <link rel="stylesheet" href="styles.css">
 </head>
-<body>
-<!-- ===================== HEADER / TOPBAR ===================== -->
+<body><!-- ===================== HEADER / TOPBAR ===================== -->
 <header class="topbar">
   <div class="brand">
     <span class="logo">💬</span>
     <h1>convo</h1>
   </div>
 
-  <div class="top-actions">
+  <!-- 🔹 Τα actions να φαίνονται μόνο όταν είναι logged in -->
+  <div id="authOnlyTopActions" class="top-actions">
     <span id="helloUser"></span>
 
     <!-- ✅ Profile Wrapper με avatar + dropdown -->
@@ -39,11 +39,10 @@
     <button id="gameBtn" class="top-btn">🎮 Play Game</button>
     <button id="editProfileBtn" class="top-btn">👤 My Profile</button>
     <!-- Logout button -->
-  <button id="logoutBtn" class="logout-btn" title="Έξοδος">
-  🚪➝
-</button>
+    <button id="logoutBtn" class="logout-btn" title="Έξοδος">🚪➝</button>
   </div>
 </header>
+
 
 <!-- ===================== PROFILE MODAL ===================== -->
 <!-- ===================== MY PROFILE MODAL ===================== -->
