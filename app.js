@@ -1772,4 +1772,3 @@ if (deleteProfileBtn && deleteConfirmModal) {
     }
   });
 }
-console.log("✅ app.js loaded successfully");
