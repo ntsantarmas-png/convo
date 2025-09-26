@@ -1055,6 +1055,7 @@ function renderStickerGrid(items){
 
 // Hook sticker tab
 stickerTabBtn && stickerTabBtn.addEventListener('click', ()=>{ setEmojiActiveTab('stickers'); loadTrendingStickers(); });
+
 // ===================== USER CONTEXT MENU =====================
 // Context menu για users
 const userContextMenu = document.getElementById("userContextMenu");
@@ -1104,10 +1105,11 @@ document.getElementById("ctxAddFriend").addEventListener("click", () => {
 
       // ✅ Σώζουμε μόνο το name (το key = uid υπάρχει ήδη)
       set(ref(db, `users/${auth.currentUser.uid}/friends/${friendUid}`), {
-        name: friendName
-      }).then(() => {
-        showToast(`✅ ${friendName} added as friend`);
-      }).catch(err => console.error("Error adding friend:", err));
+  name: friendName
+}).then(() => {
+  showToast(`✅ ${friendName} added as friend`);
+  loadFriends(); // 🔄 refresh Friends tab
+}).catch(err => console.error("Error adding friend:", err));
     } else {
       console.error("❌ Friend not found in DB");
     }
@@ -1122,9 +1124,13 @@ document.getElementById("ctxRemoveFriend").addEventListener("click", () => {
   const friendUid = contextTargetUser.dataset.uid;
   const friendName = contextTargetUser.querySelector("span")?.textContent;
 
-  remove(ref(db, `users/${auth.currentUser.uid}/friends/${friendUid}`))
-    .then(() => showToast(`❌ ${friendName} removed from friends`))
-    .catch(err => console.error("Error removing friend:", err));
+ remove(ref(db, `users/${auth.currentUser.uid}/friends/${friendUid}`))
+  .then(() => {
+    showToast(`❌ ${friendName} removed from friends`);
+    loadFriends(); // 🔄 refresh Friends tab
+  })
+  .catch(err => console.error("Error removing friend:", err));
+
 
   userContextMenu.style.display = "none";
 });
@@ -1696,7 +1702,7 @@ function loadFriends() {
   const uid = auth.currentUser.uid;
   const friendsRef = ref(db, "users/" + uid + "/friends");
 
-  onValue(friendsRef, (snap) => {
+  onValue(friendsRef, async (snap) => {
     friendsList.innerHTML = "";
     if (!snap.exists()) {
       noFriendsMsg.style.display = "block";
@@ -1704,15 +1710,47 @@ function loadFriends() {
     }
     noFriendsMsg.style.display = "none";
 
-    snap.forEach(child => {
-      const f = child.val();
-      const li = document.createElement("li");
-      li.innerHTML = `
-        <span>${f.name || "Unknown"}</span>
-        <button data-id="${child.key}">❌ Remove</button>
-      `;
-      friendsList.appendChild(li);
-    });
+    const friends = snap.val();
+
+    for (const fid in friends) {
+      try {
+        const uSnap = await get(ref(db, "users/" + fid));
+        const u = uSnap.exists() ? uSnap.val() : {};
+
+        const li = document.createElement("li");
+        li.style.display = "flex";
+        li.style.alignItems = "center";
+        li.style.gap = "8px";
+        li.style.margin = "6px 0";
+
+        // avatar
+        const avatar = document.createElement("img");
+        avatar.src = u.photoURL || "https://i.pravatar.cc/40";
+        avatar.alt = u.displayName || friends[fid].name || "U";
+        avatar.style.width = "28px";
+        avatar.style.height = "28px";
+        avatar.style.borderRadius = "50%";
+        avatar.style.objectFit = "cover";
+
+        // name
+        const span = document.createElement("span");
+        span.textContent = u.displayName || friends[fid].name || "Unknown";
+
+        // remove button
+        const btn = document.createElement("button");
+        btn.textContent = "❌";
+        btn.dataset.id = fid;
+        btn.style.marginLeft = "auto";
+
+        li.appendChild(avatar);
+        li.appendChild(span);
+        li.appendChild(btn);
+
+        friendsList.appendChild(li);
+      } catch (err) {
+        console.error("Error loading friend:", fid, err);
+      }
+    }
   });
 }
 
