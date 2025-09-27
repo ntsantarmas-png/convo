@@ -1,7 +1,6 @@
 // ===================== FIREBASE IMPORTS & CONFIG =====================
 const GIPHY_KEY='bCn5Jvx2ZOepneH6fMteNoX31hVfqX25';
 
-
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { 
   getAuth, onAuthStateChanged, createUserWithEmailAndPassword, 
@@ -13,34 +12,56 @@ import {
   serverTimestamp, set, onValue, update, onDisconnect, get, child, remove 
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
+const firebaseConfig = {
+  apiKey:"AIzaSyDii_FqpCDTRvvxjJGTyJPIdZmxfwQcO3s",
+  authDomain:"convo-ae17e.firebaseapp.com",
+  databaseURL:"https://convo-ae17e-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId:"convo-ae17e",
+  storageBucket:"convo-ae17e.firebasestorage.app",
+  messagingSenderId:"1074442682384",
+  appId:"1:1074442682384:web:9faa6a60b1b6848a968a95"
+};
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getDatabase(app);
 
-  const firebaseConfig = {apiKey:"AIzaSyDii_FqpCDTRvvxjJGTyJPIdZmxfwQcO3s",authDomain:"convo-ae17e.firebaseapp.com",databaseURL:"https://convo-ae17e-default-rtdb.europe-west1.firebasedatabase.app",projectId:"convo-ae17e",storageBucket:"convo-ae17e.firebasestorage.app",messagingSenderId:"1074442682384",appId:"1:1074442682384:web:9faa6a60b1b6848a968a95"};
-  const app = initializeApp(firebaseConfig); const auth = getAuth(app); const db = getDatabase(app);
-
-  // ===================== GLOBAL ELEMENT REFERENCES =====================
+// ===================== GLOBAL ELEMENT REFERENCES =====================
 const $ = (id) => document.getElementById(id);
-  const authView = $('authView'), appView = $('appView'), logoutBtn=$('logoutBtn'), helloUser=$('helloUser');
-  const loginForm=$('loginForm'), registerForm=$('registerForm'), anonForm=$('anonForm'), forgotLink=$('forgotLink');
-  const roomsList=$('roomsList'), newRoomBtn=$('newRoomBtn'), roomDialog=$('roomDialog'), roomForm=$('roomForm'), roomNameInput=$('roomNameInput');
-  const roomTitle=$('roomTitle'), messagesEl=$('messages'), messageForm=$('messageForm'), messageInput=$('messageInput'), usersList=$('usersList');
-  const emojiToggle=$('emojiToggle'), emojiPanel=$('emojiPanel'), emojiGrid=$('emojiGrid'), emojiSearch=$('emojiSearch');
-  const tabs = document.querySelectorAll('.tab'); const panels = document.querySelectorAll('.tab-panel'); const toastEl=$('toast');
+const authView = $('authView'),
+      appView = $('appView'),
+      logoutBtn=$('logoutBtn'),
+      helloUser=$('helloUser');
+const loginForm=$('loginForm'),
+      registerForm=$('registerForm'),
+      anonForm=$('anonForm'),
+      forgotLink=$('forgotLink');
+const roomsList=$('roomsList'),
+      newRoomBtn=$('newRoomBtn'),
+      roomDialog=$('roomDialog'),
+      roomForm=$('roomForm'),
+      roomNameInput=$('roomNameInput');
+const roomTitle=$('roomTitle'),
+      messagesEl=$('messages'),
+      messageForm=$('messageForm'),
+      messageInput=$('messageInput'),
+      usersList=$('usersList');
+const emojiToggle=$('emojiToggle'),
+      emojiPanel=$('emojiPanel'),
+      emojiGrid=$('emojiGrid'),
+      emojiSearch=$('emojiSearch');
+const toastEl=$('toast');
 
+let currentRoom='general', messagesUnsub=null, presenceUnsub=null;
+let currentUserRole = "user"; // default ρόλος
 
+// ===================== TOAST =====================
+const showToast=(msg)=>{
+  toastEl.textContent=msg;
+  toastEl.classList.add('show');
+  setTimeout(()=>toastEl.classList.remove('show'),2500);
+};
 
-
-  let currentRoom='general', messagesUnsub=null, presenceUnsub=null;
-  let currentUserRole = "user"; // default ρόλος
-
-
-  const showToast=(msg)=>{toastEl.textContent=msg;toastEl.classList.add('show');setTimeout(()=>toastEl.classList.remove('show'),2500)};
-  const switchTab=(name)=>{tabs.forEach(t=>t.classList.toggle('active',t.dataset.tab===name)); panels.forEach(p=>p.classList.toggle('active',p.id===`tab-${name}`))};
-  tabs.forEach(btn=>btn.addEventListener('click',()=>switchTab(btn.dataset.tab)));
-
-  
-// ===================== AUTH (Register / Login / Anon / Forgot / Logout) =====================
 // ===================== AUTH TABS (Login / Register / Anonymous) =====================
-
 // Βρίσκουμε μόνο τα tabs & panels του AUTH VIEW
 const authTabs = document.querySelectorAll("#authView .tab");
 const authPanels = document.querySelectorAll("#authView .tab-panel");
@@ -60,6 +81,8 @@ authTabs.forEach(btn => {
 
 // Default -> Login tab
 switchAuthTab("login");
+
+// ===================== AUTH (Register / Login / Anon / Forgot / Logout) =====================
 
 // ===================== REGISTER FORM =====================
 registerForm.addEventListener("submit", async (e) => {
@@ -163,6 +186,7 @@ forgotLink?.addEventListener("click", async () => {
     showToast("❌ " + err.message);
   }
 });
+
 
 // ===================== LOGOUT HANDLER =====================
 
