@@ -52,13 +52,7 @@ body {
   background: rgba(255,255,255,0.08);
   border-color: rgba(255,255,255,0.3);
 }
-/* ===================== AUTH ONLY TOP ACTIONS ===================== */
-#authOnlyTopActions {
-  display: none; /* κρυφό by default */
-}
-
-
-/* ===================== LOGOUT BUTTON SPECIAL ===================== */
+/* AUTH REMOVED *//* ===================== LOGOUT BUTTON SPECIAL ===================== */
 /* Logout Button */
 .logout-btn {
   width: 40px;
@@ -291,9 +285,7 @@ body {
 }
 
 /* ===================== BUTTONS ===================== */
-#logoutBtn {
-  display: none; /* Κρυφό από default */
-}
+/* LOGOUT BTN REMOVED */
 
 .status-options {
   display: flex;
@@ -454,98 +446,7 @@ body {
   }
 }
 
-/* ===================== AUTH FORMS ===================== */
-.auth {
-  display: grid;
-  place-items: center;
-  height: calc(100vh - 54px);
-  padding: 16px;
-}
-.auth-card {
-  width: min(560px, 96vw);
-  background: var(--panel);
-  border: 1px solid rgba(255,255,255,.08);
-  border-radius: 24px;
-  padding: 20px;
-  box-shadow: var(--shadow);
-}
-
-.tabs {
-  display: flex;
-  gap: 8px;
-  margin-bottom: 14px;
-  background: rgba(255,255,255,.04);
-  padding: 6px;
-  border-radius: 999px;
-}
-.tab {
-  flex: 1;
-  padding: 10px;
-  background: transparent;
-  border: 0;
-  border-radius: 999px;
-  cursor: pointer;
-  color: var(--muted);
-  font-weight: 600;
-}
-.tab.active {
-  background: linear-gradient(90deg, rgba(110,168,255,.25), rgba(139,107,255,.25));
-  color: var(--text);
-}
-.tab-panel {
-  display: none;
-}
-.tab-panel.active {
-  display: block;
-}
-
-label {
-  display: block;
-  font-size: 13px;
-  color: var(--muted);
-  margin: 10px 0 6px;
-}
-/* Global input style – αλλά ΟΧΙ για το #messageInput */
-.input:not(#messageInput) {
-  width: 100%;
-  padding: 12px 14px;
-  border-radius: 14px;
-  border: 1px solid rgba(255,255,255,.12);
-  background: rgba(8,12,30,.85);
-  color: var(--text);
-  outline: none;
-}
-
-.row {
-  display: flex;
-  gap: 10px;
-}
-.link {
-  background: none;
-  border: none;
-  color: var(--accent);
-  margin-top: 6px;
-  cursor: pointer;
-}
-.small {
-  font-size: 12px;
-}
-.muted {
-  color: var(--muted);
-}
-/* ===================== AUTH FORMS INPUTS ===================== */
-.input:not(#messageInput) {
-  width: 100%;
-  padding: 12px 14px;
-  border-radius: 14px;
-  border: 1px solid rgba(255,255,255,.12);
-  background: rgba(8,12,30,.85);
-  color: var(--text);
-  outline: none;
-}
-
-
-/* ===================== APP LAYOUT (Sidebar / Chat / Users) ===================== */
+/* AUTH FORMS REMOVED *//* AUTH FORMS REMOVED *//* ===================== APP LAYOUT (Sidebar / Chat / Users) ===================== */
 .app {
   display: grid;
   grid-template-columns: 280px 1fr 260px;
@@ -1965,6 +1866,15 @@ dialog{background:var(--panel-solid);color:var(--text);border:1px solid rgba(255
   color: #fff;
 }
 
+/* Panels */
+.tab-panel {
+  display: none;
+}
+
+.tab-panel.active {
+  display: block;
+}
+
 /* Friends List */
 .friends-list {
   list-style: none;
@@ -2049,7 +1959,4 @@ dialog{background:var(--panel-solid);color:var(--text);border:1px solid rgba(255
 .icon-btn:hover {
   background: rgba(255, 80, 80, 0.25);
   box-shadow: 0 0 8px rgba(255, 80, 80, 0.5);
-}
-#authView .tab-panel.active {
-  display: block !important;
 }
