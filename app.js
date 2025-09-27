@@ -3,7 +3,11 @@ const GIPHY_KEY='bCn5Jvx2ZOepneH6fMteNoX31hVfqX25';
 
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-// AUTH REMOVED IMPORT
+import { 
+  getAuth, onAuthStateChanged, createUserWithEmailAndPassword, 
+  signInWithEmailAndPassword, signInAnonymously, updateProfile, 
+  sendPasswordResetEmail, signOut, deleteUser
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { 
   getDatabase, ref, onChildAdded, onChildRemoved, push, 
   serverTimestamp, set, onValue, update, onDisconnect, get, child, remove 
@@ -11,7 +15,7 @@ import {
 
 
   const firebaseConfig = {apiKey:"AIzaSyDii_FqpCDTRvvxjJGTyJPIdZmxfwQcO3s",authDomain:"convo-ae17e.firebaseapp.com",databaseURL:"https://convo-ae17e-default-rtdb.europe-west1.firebasedatabase.app",projectId:"convo-ae17e",storageBucket:"convo-ae17e.firebasestorage.app",messagingSenderId:"1074442682384",appId:"1:1074442682384:web:9faa6a60b1b6848a968a95"};
-  const app = initializeApp(firebaseConfig); // AUTH REMOVED INIT const db = getDatabase(app);
+  const app = initializeApp(firebaseConfig); const auth = getAuth(app); const db = getDatabase(app);
 
   // ===================== GLOBAL ELEMENT REFERENCES =====================
 const $ = (id) => document.getElementById(id);
@@ -34,8 +38,116 @@ const $ = (id) => document.getElementById(id);
   tabs.forEach(btn=>btn.addEventListener('click',()=>switchTab(btn.dataset.tab)));
 
   
-// AUTH REMOVED BLOCK
+// ===================== AUTH (Register / Login / Anon / Forgot / Logout) =====================
 
+// ===================== REGISTER FORM =====================
+registerForm.addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const username = document.getElementById("regUsername").value.trim();
+  const email = document.getElementById("regEmail").value.trim();
+  const password = document.getElementById("regPassword").value;
+
+  try {
+    // Δημιουργία χρήστη στο Firebase Auth
+    const cred = await createUserWithEmailAndPassword(auth, email, password);
+    const user = cred.user;
+
+    // ✅ Ορίζουμε το displayName στο Auth
+    await updateProfile(user, { displayName: username });
+
+    // ✅ Αποθήκευση στο Realtime Database
+    await set(ref(db, "users/" + user.uid), {
+      uid: user.uid,
+      displayName: username,
+      photoURL: user.photoURL || "",
+      status: "online",
+      typing: false,
+      createdAt: Date.now()
+    });
+
+    showToast(`✅ Welcome ${username}!`);
+    console.log("User registered:", username, email);
+
+  } catch (err) {
+    console.error("Register error:", err);
+    showToast("❌ " + err.message);
+  }
+});
+
+// ===================== LOGIN FORM =====================
+loginForm?.addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const email = document.getElementById("loginEmail").value.trim();
+  const pass = document.getElementById("loginPassword").value;
+
+  try {
+    await signInWithEmailAndPassword(auth, email, pass);
+    showToast("✅ Welcome back!");
+  } catch (err) {
+    console.error("login error", err);
+    showToast("❌ " + err.message);
+  }
+});
+
+// ===================== ANONYMOUS LOGIN =====================
+anonForm?.addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const name = document.getElementById("anonUsername").value.trim() || "Anon";
+
+  try {
+    const cred = await signInAnonymously(auth);
+    const user = cred.user;
+
+    // ✅ Βάζουμε το όνομα στο Auth
+    await updateProfile(user, { displayName: name });
+
+    // ✅ Γράφουμε χρήστη στο DB
+    await set(ref(db, `users/${user.uid}`), {
+      uid: user.uid,
+      displayName: name,
+      email: null,
+      photoURL: "",
+      anonymous: true,
+      createdAt: Date.now(),
+      status: "online",
+      typing: false
+    });
+
+    showToast(`✅ Joined as ${name}`);
+    console.log("Anonymous user joined:", name);
+
+  } catch (err) {
+    console.error("anon error", err);
+    showToast("❌ " + err.message);
+  }
+});
+
+// ===================== FORGOT PASSWORD =====================
+forgotLink?.addEventListener("click", async () => {
+  const email = document.getElementById("loginEmail").value.trim();
+
+  if (!email) {
+    showToast("❌ Enter your email first.");
+    return;
+  }
+
+  try {
+    await sendPasswordResetEmail(auth, email);
+    showToast("✅ Reset email sent.");
+  } catch (err) {
+    console.error("reset error", err);
+    showToast("❌ " + err.message);
+  }
+});
+
+// ===================== LOGOUT HANDLER =====================
+
+
+
+  
 // ===================== PRESENCE =====================
 async function setupPresence(user) {
   const userRef = ref(db, "users/" + user.uid);
@@ -118,7 +230,7 @@ const switchRoom = (room) => {
   messagesUnsub = onChildAdded(roomRef, (snap) => { 
     const m = snap.val(); 
     m.id = snap.key;   
-    appendMessage(m, dummyUser?.uid); 
+    appendMessage(m, auth.currentUser?.uid); 
   });
 
   // 🗑 Διαγραμμένα μηνύματα
@@ -196,7 +308,7 @@ function playYouTube(url) {
 // ===================== MESSAGES =====================
 messageForm?.addEventListener("submit", async (e) => {
   e.preventDefault();
-  const user = dummyUser;
+  const user = auth.currentUser;
   if (!user) return;
 
 const text = messageInput.value.trim();
@@ -249,13 +361,13 @@ messageInput.addEventListener("input", () => {
   messageInput.style.height = messageInput.scrollHeight + "px";
 
   // Typing indicator
-  update(ref(db, "users/" + dummyUser.uid), {
+  update(ref(db, "users/" + auth.currentUser.uid), {
     typing: true
   });
 
   clearTimeout(typingTimeout);
   typingTimeout = setTimeout(() => {
-    update(ref(db, "users/" + dummyUser.uid), {
+    update(ref(db, "users/" + auth.currentUser.uid), {
       typing: false
     });
   }, 2000);
@@ -423,7 +535,7 @@ function renderReactions(container, data, msgId) {
       // tooltip με user names
       btn.title = Object.values(users).join(', ');
 
-      btn.onclick = () => toggleReaction(msgId, symbol, dummyUser?.uid);
+      btn.onclick = () => toggleReaction(msgId, symbol, auth.currentUser?.uid);
 
 
       // 🎉 animation pop σε κάθε αλλαγή
@@ -439,7 +551,7 @@ function renderReactions(container, data, msgId) {
 
 
 function toggleReaction(msgId, symbol) {
-  const user = dummyUser;
+  const user = auth.currentUser;
   if (!user) return;
   const userRef = ref(db, `messages/${currentRoom}/${msgId}/reactions/${symbol}/${user.uid}`);
   get(userRef).then(snap => {
@@ -573,7 +685,121 @@ setTimeout(() => {
   });
 };
 
-// AUTH REMOVED STATE HANDLER
+// ===================== AUTH STATE HANDLING =====================
+onAuthStateChanged(auth, async (user) => {
+  const authOnlyTopActions = document.getElementById("authOnlyTopActions");
+
+  if (user) {
+    // ✅ Δείξε τα κουμπιά (header actions)
+    authOnlyTopActions.style.display = "flex";
+
+    // === Avatar check ===
+    if (!user.photoURL) {
+      const avatarId = Math.abs(hashCode(user.uid)) % 70 + 1;
+      const stableAvatar = `https://i.pravatar.cc/150?img=${avatarId}`;
+
+      try {
+        await updateProfile(user, { photoURL: stableAvatar });
+        console.log("✅ Avatar set for user:", stableAvatar);
+      } catch (err) {
+        console.error("❌ Avatar update failed:", err);
+      }
+    }
+
+    // === Ενημέρωση Firebase DB με user info ===
+    await set(ref(db, "users/" + user.uid), {
+      uid: user.uid,
+      displayName: user.displayName || "Anonymous",
+      photoURL: user.photoURL || "",
+      status: "online",
+      typing: false
+    });
+
+    // === Clear Chat Button (μόνο για admin) ===
+    const clearChatBtn = document.getElementById("clearChatBtn");
+    if (user.displayName === "MysteryMan") {
+      currentUserRole = "admin";
+      clearChatBtn.style.display = "inline-block";
+
+      clearChatBtn.addEventListener("click", async () => {
+        if (!confirm("⚠️ Να διαγραφούν όλα τα μηνύματα από αυτό το room;")) return;
+        try {
+          const room = document.getElementById("roomTitle").textContent.replace("#", "");
+          await remove(ref(db, "messages/" + room));
+          document.getElementById("messages").innerHTML = "";
+          console.log("🗑 Chat cleared for room:", room);
+        } catch (err) {
+          console.error("clearChat error:", err);
+        }
+      });
+    } else {
+      currentUserRole = "user";
+      clearChatBtn.style.display = "none";
+    }
+
+    // === Header avatar από DB ===
+    const headerAvatar = document.getElementById("headerAvatar");
+    onValue(ref(db, "users/" + user.uid), (snap) => {
+      const u = snap.val() || {};
+      if (headerAvatar) {
+        headerAvatar.innerHTML = u.photoURL
+          ? `<img src="${u.photoURL}" alt="avatar">`
+          : `<span>${(u.displayName || "U")[0].toUpperCase()}</span>`;
+      }
+    });
+
+    // === Presence + rooms ===
+    await setupPresence(user);
+    await renderRooms();
+    switchRoom(currentRoom);
+    watchPresence();
+
+    // === Εμφάνιση εφαρμογής ===
+    authView.classList.add("hidden");
+    appView.classList.remove("hidden");
+    helloUser.textContent = `Hello, ${user.displayName || "User"}!`;
+
+    // === Dropdown buttons ===
+    const logoutBtn = document.getElementById("logoutBtn");
+    const editProfileBtn = document.getElementById("editProfileBtn");
+
+    if (logoutBtn) {
+      logoutBtn.style.display = "block";
+      logoutBtn.addEventListener("click", () => signOut(auth));
+    }
+
+    if (editProfileBtn) {
+      editProfileBtn.style.display = "block";
+      editProfileBtn.addEventListener("click", () => {
+        profileModal.showModal();
+        loadFriends();
+      });
+    }
+
+  } else {
+    // ❌ Δεν υπάρχει user → κρύψε τα κουμπιά
+    authOnlyTopActions.style.display = "none";
+
+    // Εμφάνισε login view
+    appView.classList.add("hidden");
+    authView.classList.remove("hidden");
+    helloUser.textContent = "";
+
+    const logoutBtn = document.getElementById("logoutBtn");
+    const editProfileBtn = document.getElementById("editProfileBtn");
+    if (logoutBtn) logoutBtn.style.display = "none";
+    if (editProfileBtn) editProfileBtn.style.display = "none";
+
+    if (messagesUnsub) messagesUnsub();
+    if (presenceUnsub) presenceUnsub();
+
+    // ✅ Reset πάντα στο Login tab για να φαίνονται τα πεδία
+    const loginTab = document.getElementById("loginTab");
+    if (loginTab) {
+      loginTab.click();
+    }
+  }
+}); // ✅ Κλείνει σωστά την onAuthStateChanged
 
 
 
@@ -588,8 +814,8 @@ function linkify(text = '') {
   return text.replace(urlRegex, '<a href="$&" target="_blank" rel="noopener noreferrer">$&</a>');
 }
 function updateStatus(newStatus) {
-  if (!dummyUser) return;
-  const userRef = ref(db, "users/" + dummyUser.uid);
+  if (!auth.currentUser) return;
+  const userRef = ref(db, "users/" + auth.currentUser.uid);
   update(userRef, {
     status: newStatus,
     online: newStatus === "online"
@@ -697,7 +923,7 @@ function renderGifGrid(items){
     item.appendChild(img);
 
     item.addEventListener('click', async () => {
-      const user = dummyUser; 
+      const user = auth.currentUser; 
       if (!user) return;
       const msg = {
         uid: user.uid,
@@ -820,7 +1046,7 @@ function renderStickerGrid(items){
     item.appendChild(img);
 
     item.addEventListener('click', async () => {
-      const user = dummyUser; 
+      const user = auth.currentUser; 
       if (!user) return;
       const msg = {
         uid: user.uid,
@@ -883,7 +1109,7 @@ document.addEventListener("contextmenu", (e) => {
 
 // ===== Handlers για τα menu items =====
 document.getElementById("ctxAddFriend").addEventListener("click", () => {
-  if (!contextTargetUser || !dummyUser) return;
+  if (!contextTargetUser || !auth.currentUser) return;
 
   const friendUid = contextTargetUser.dataset.uid;
 
@@ -894,7 +1120,7 @@ document.getElementById("ctxAddFriend").addEventListener("click", () => {
       const friendName = friendData.displayName || "Anonymous";
 
       // ✅ Σώζουμε μόνο το name (το key = uid υπάρχει ήδη)
-      set(ref(db, `users/${dummyUser.uid}/friends/${friendUid}`), {
+      set(ref(db, `users/${auth.currentUser.uid}/friends/${friendUid}`), {
   name: friendName
 }).then(() => {
   showToast(`✅ ${friendName} added as friend`);
@@ -911,11 +1137,11 @@ document.getElementById("ctxAddFriend").addEventListener("click", () => {
 
 
 document.getElementById("ctxRemoveFriend").addEventListener("click", () => {
-  if (!contextTargetUser || !dummyUser) return;
+  if (!contextTargetUser || !auth.currentUser) return;
   const friendUid = contextTargetUser.dataset.uid;
   const friendName = contextTargetUser.querySelector("span")?.textContent;
 
- remove(ref(db, `users/${dummyUser.uid}/friends/${friendUid}`))
+ remove(ref(db, `users/${auth.currentUser.uid}/friends/${friendUid}`))
   .then(() => {
     showToast(`❌ ${friendName} removed from friends`);
     loadFriends(); // 🔄 refresh Friends tab
@@ -927,11 +1153,11 @@ document.getElementById("ctxRemoveFriend").addEventListener("click", () => {
 });
 
 document.getElementById("ctxBlock").addEventListener("click", () => {
-  if (!contextTargetUser || !dummyUser) return;
+  if (!contextTargetUser || !auth.currentUser) return;
   const friendUid = contextTargetUser.dataset.uid;
   const friendName = contextTargetUser.querySelector("span")?.textContent;
 
-  set(ref(db, `users/${dummyUser.uid}/blocked/${friendUid}`), {
+  set(ref(db, `users/${auth.currentUser.uid}/blocked/${friendUid}`), {
     name: friendName
   }).then(() => {
     showToast(`⛔ ${friendName} blocked`);
@@ -941,11 +1167,11 @@ document.getElementById("ctxBlock").addEventListener("click", () => {
 });
 
 document.getElementById("ctxUnblock").addEventListener("click", () => {
-  if (!contextTargetUser || !dummyUser) return;
+  if (!contextTargetUser || !auth.currentUser) return;
   const friendUid = contextTargetUser.dataset.uid;
   const friendName = contextTargetUser.querySelector("span")?.textContent;
 
-  remove(ref(db, `users/${dummyUser.uid}/blocked/${friendUid}`))
+  remove(ref(db, `users/${auth.currentUser.uid}/blocked/${friendUid}`))
     .then(() => showToast(`✅ ${friendName} unblocked`))
     .catch(err => console.error("Error unblocking user:", err));
 
@@ -1373,7 +1599,7 @@ const statusButtons = document.querySelectorAll(".status-options button");
 statusButtons.forEach(btn => {
   btn.addEventListener("click", () => {
     const newStatus = btn.dataset.status;
-    const user = dummyUser;
+    const user = auth.currentUser;
     if (!user) return;
 
     // Update στο Firebase
@@ -1418,14 +1644,14 @@ if (saveProfileBtn) {
     const newName = nameInput?.value.trim();
     const newAvatar = avatarInput?.value.trim();
 
-    if (dummyUser) {
-      updateProfile(dummyUser, {
-        displayName: newName || dummyUser.displayName,
-        photoURL: newAvatar || dummyUser.photoURL
+    if (auth.currentUser) {
+      updateProfile(auth.currentUser, {
+        displayName: newName || auth.currentUser.displayName,
+        photoURL: newAvatar || auth.currentUser.photoURL
       }).then(() => {
-        update(ref(db, "users/" + dummyUser.uid), {
-          displayName: newName || dummyUser.displayName,
-          photoURL: newAvatar || dummyUser.photoURL
+        update(ref(db, "users/" + auth.currentUser.uid), {
+          displayName: newName || auth.currentUser.displayName,
+          photoURL: newAvatar || auth.currentUser.photoURL
         });
         showToast("✅ Profile updated!");
         profileModal.close();
@@ -1439,9 +1665,9 @@ if (saveProfileBtn) {
 
 // --- Load Friends ---
 function loadFriends() {
-  if (!dummyUser) return;
+  if (!auth.currentUser) return;
 
-  const uid = dummyUser.uid;
+  const uid = auth.currentUser.uid;
   const friendsRef = ref(db, "users/" + uid + "/friends");
 
   onValue(friendsRef, async (snap) => {
@@ -1491,8 +1717,8 @@ function loadFriends() {
 friendsList?.addEventListener("click", (e) => {
   if (e.target.tagName === "BUTTON") {
     const fid = e.target.dataset.id;
-    if (!dummyUser) return;
-    const uid = dummyUser.uid;
+    if (!auth.currentUser) return;
+    const uid = auth.currentUser.uid;
     remove(ref(db, `users/${uid}/friends/${fid}`));
   }
 });
@@ -1531,7 +1757,7 @@ if (deleteProfileBtn && deleteConfirmModal) {
   // Confirm -> διαγραφή χρήστη
   confirmDeleteBtn.addEventListener("click", async () => {
     try {
-      const user = dummyUser;
+      const user = auth.currentUser;
       if (user) {
         await deleteUser(user);
         console.log("✅ Profile deleted");
