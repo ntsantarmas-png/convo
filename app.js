@@ -39,6 +39,33 @@ const $ = (id) => document.getElementById(id);
 
   
 // ===================== AUTH (Register / Login / Anon / Forgot / Logout) =====================
+// LOGOUT
+if (logoutBtn) {
+  logoutBtn.addEventListener("click", async () => {
+    await signOut(auth);
+  });
+}
+
+// ===================== AUTH TABS =====================
+const loginTab    = document.getElementById("loginTab");
+const registerTab = document.getElementById("registerTab");
+const anonTab     = document.getElementById("anonTab");
+
+function showTab(tabId) {
+  document.querySelectorAll(".tab-panel").forEach(p => p.classList.remove("active"));
+  document.querySelectorAll(".tabs .tab").forEach(t => t.classList.remove("active"));
+
+  document.getElementById("tab-" + tabId).classList.add("active");
+  if (tabId === "login") loginTab.classList.add("active");
+  if (tabId === "register") registerTab.classList.add("active");
+  if (tabId === "anonymous") anonTab.classList.add("active");
+}
+
+if (loginTab) loginTab.addEventListener("click", () => showTab("login"));
+if (registerTab) registerTab.addEventListener("click", () => showTab("register"));
+if (anonTab) anonTab.addEventListener("click", () => showTab("anonymous"));
+
+// ===================== PRESENCE =====================
 
 // ===================== REGISTER FORM =====================
 registerForm.addEventListener("submit", async (e) => {
