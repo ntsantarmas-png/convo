@@ -113,7 +113,12 @@
 <!-- ===================== AUTH VIEW (Login / Register / Anonymous) ===================== -->
 <main class="auth" id="authView">
 <div class="auth-card">
-<div class="tabs"><button class="tab active" data-tab="login">Login</button><button class="tab" data-tab="register">Register</button><button class="tab" data-tab="anonymous">Anonymous</button></div>
+<div class="tabs">
+  <button id="loginTab" class="tab active" data-tab="login">Login</button>
+  <button id="registerTab" class="tab" data-tab="register">Register</button>
+  <button id="anonTab" class="tab" data-tab="anonymous">Anonymous</button>
+</div>
+
 <div class="tab-panel active" id="tab-login">
 <form id="loginForm">
 <label>Email</label><input class="input" id="loginEmail" required="" type="email" value="ntsantarmas@gmail.com"/>
