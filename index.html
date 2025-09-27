@@ -10,290 +10,336 @@
   <link href="data:image/svg+xml,&lt;svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'&gt;&lt;text y='.9em' font-size='90'&gt;💬&lt;/text&gt;&lt;/svg&gt;" rel="icon"/>
   <link rel="stylesheet" href="styles.css">
 </head>
-<body>
-  <!-- ===================== HEADER / TOPBAR ===================== -->
-  <header class="topbar">
-    <div class="brand">
-      <span class="logo">💬</span>
-      <h1>convo</h1>
-    </div>
+<body><!-- ===================== HEADER / TOPBAR ===================== -->
+<header class="topbar">
+  <div class="brand">
+    <span class="logo">💬</span>
+    <h1>convo</h1>
+  </div>
 
-    <!-- 🔹 Τα actions να φαίνονται μόνο όταν είναι logged in -->
-    <div id="authOnlyTopActions" class="top-actions">
-      <span id="helloUser"></span>
+  <!-- 🔹 Τα actions να φαίνονται μόνο όταν είναι logged in -->
+  <div id="authOnlyTopActions" class="top-actions">
+    <!-- AUTH REMOVED helloUser -->
 
-      <!-- ✅ Profile Wrapper με avatar + dropdown -->
-      <div class="profile-wrapper">
-        <img id="profileAvatar" src="https://i.pravatar.cc/40" alt="User Avatar" />
-        
-        <div id="profileMenu" class="profile-menu">
-          <!-- 🔹 Επιλογές Status -->
-          <div class="status-options">
-            <button data-status="online">🟢 Online</button>
-            <button data-status="away">☕ Away</button>
-            <button data-status="busy">🔴 Busy</button>
-          </div>
+    <!-- ✅ Profile Wrapper με avatar + dropdown -->
+    <div class="profile-wrapper">
+      <img id="profileAvatar" src="https://i.pravatar.cc/40" alt="User Avatar" />
+      
+      <div id="profileMenu" class="profile-menu">
+        <!-- 🔹 Επιλογές Status -->
+        <div class="status-options">
+          <button data-status="online">🟢 Online</button>
+          <button data-status="away">☕ Away</button>
+          <button data-status="busy">🔴 Busy</button>
         </div>
       </div>
-
-      <!-- 🔹 Κουμπιά εκτός dropdown -->
-      <button id="gameBtn" class="top-btn">🎮 Play Game</button>
-      <button id="editProfileBtn" class="top-btn">👤 My Profile</button>
-      <!-- Logout button -->
-      <button id="logoutBtn" class="logout-btn" title="Έξοδος">🚪➝</button>
     </div>
-  </header>
 
-  <!-- ===================== AUTH VIEW (Login / Register / Anonymous) ===================== -->
-  <main class="auth" id="authView">
-    <div class="auth-card">
-      <div class="tabs">
-        <button id="loginTab" class="tab active" data-tab="login">Login</button>
-        <button id="registerTab" class="tab" data-tab="register">Register</button>
-        <button id="anonTab" class="tab" data-tab="anonymous">Anonymous</button>
-      </div>
-
-      <!-- Login -->
-      <div class="tab-panel active" id="tab-login">
-        <form id="loginForm">
-          <label>Email</label>
-          <input class="input" id="loginEmail" type="email" required>
-          <label>Password</label>
-          <input class="input" id="loginPassword" type="password" required>
-          <div class="row" style="margin-top:10px">
-            <button class="btn primary" style="flex:1" type="submit">Login</button>
-            <button class="btn ghost" id="forgotLink" type="button">Forgot?</button>
-          </div>
-        </form>
-      </div>
-
-      <!-- Register -->
-      <div class="tab-panel" id="tab-register">
-        <form id="registerForm">
-          <label>Username</label>
-          <input class="input" id="regUsername" type="text" required>
-          <label>Email</label>
-          <input class="input" id="regEmail" type="email" required>
-          <label>Password</label>
-          <input class="input" id="regPassword" type="password" minlength="6" required>
-          <button class="btn primary" style="margin-top:10px;width:100%" type="submit">
-            Create account
-          </button>
-        </form>
-      </div>
-
-      <!-- Anonymous -->
-      <div class="tab-panel" id="tab-anonymous">
-        <form id="anonForm">
-          <label>Pick a username</label>
-          <input class="input" id="anonUsername" type="text" required>
-          <button class="btn" style="margin-top:10px;width:100%" type="submit">
-            Enter anonymously
-          </button>
-        </form>
-        <p class="muted small" style="margin-top:6px">
-          You can upgrade to a full account later from your profile.
-        </p>
-      </div>
-    </div>
-  </main>
-
-  <!-- ===================== APP VIEW (Sidebar / Chat / Users) ===================== -->
-  <main class="app hidden" id="appView">
-    <!-- ----- SIDEBAR: ROOMS LIST ----- -->
-    <aside class="sidebar">
-      <div class="rooms-header">
-        <span>Rooms</span>
-        <button id="newRoomBtn">+ New</button>
-      </div>
-      <nav class="rooms" id="roomsList"></nav>
-    </aside>
-
-    <!-- ----- MAIN CHAT SECTION ----- -->
-    <section class="chat">
-      <div class="room-title">
-        <!-- Mobile toggle buttons -->
-        <button id="toggleRooms" class="btn tiny mobile-only">☰ Rooms</button>
-        <span id="roomTitle">#general</span>
-        <button id="toggleUsers" class="btn tiny mobile-only">👥 Users</button>
-
-        <!-- Μόνο για admin -->
-        <button id="clearChatBtn" class="btn danger tiny" style="margin-left:auto; display:none;">
-          🗑 Clear Chat
-        </button>
-      </div>
-
-      <!-- 🎵 YouTube Player μέσα στο room -->
-      <div id="youtubePlayer" class="youtube-player">
-        <button id="closePlayerBtn" class="close-player">✖</button>
-        <button id="expandPlayerBtn" class="expand-player">⤢</button>
-      </div>
-
-      <div class="messages" id="messages"></div>
-      <form class="message-form" id="messageForm">
-        <div class="input-wrapper">
-          <button class="emoji-btn" id="emojiToggle" type="button">😊</button>
-          <textarea autocomplete="off" class="input" id="messageInput" placeholder="Type a message…" rows="1"></textarea>
-        </div>
-        <button class="btn primary" type="submit">Send</button>
-
-        <div aria-hidden="true" class="emoji-panel" id="emojiPanel">
-          <div class="emoji-header">
-            <div class="emoji-tabs">
-              <button class="emoji-tab" data-tab="gif" id="gifTabBtn" type="button">GIF</button>
-              <button class="emoji-tab" data-tab="stickers" id="stickerTabBtn" type="button">Αυτοκόλλητα</button>
-              <button class="emoji-tab active" data-tab="emoji" id="emojiTabBtn" type="button">Emoji</button>
-            </div>
-            <input class="input emoji-search" id="emojiSearch" placeholder="Βρες το τέλειο emoji" type="text"/>
-            <button class="btn" id="unifiedSearchBtn" type="button">Αναζήτηση</button>
-          </div>
-
-          <div class="emoji-body">
-            <div class="emoji-grid" id="emojiGrid"></div>
-          </div>
-          <div class="emoji-body" id="gifBody">
-            <div class="emoji-grid" id="gifGrid"></div>
-          </div>
-          <div class="emoji-body" id="stickerBody">
-            <div class="emoji-grid" id="stickerGrid"></div>
-          </div>
-          <div class="emoji-footer">Κλίκαρε ένα emoji για να το βάλεις στο μήνυμα</div>
-        </div>
-      </form>
-    </section>
-
-    <!-- ----- USERS LIST ----- -->
-    <aside class="users">
-      <div id="usersList">
-        <h3 class="user-category">Admins <span id="adminsCount" class="count">0</span></h3>
-        <ul id="adminsList" class="users-sublist"></ul>
-
-        <h3 class="user-category">Mods <span id="modsCount" class="count">0</span></h3>
-        <ul id="modsList" class="users-sublist"></ul>
-
-        <h3 class="user-category">Vip <span id="vipCount" class="count">0</span></h3>
-        <ul id="vipList" class="users-sublist"></ul>
-
-        <h3 class="user-category">Users <span id="usersCount" class="count">0</span></h3>
-        <ul id="normalList" class="users-sublist"></ul>
-      </div>
-    </aside>
-  </main>
-
-  <!-- ===================== PROFILE MODAL ===================== -->
-  <dialog id="profileModal" class="modal">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h2>My Profile</h2>
-        <button class="close-btn" id="closeProfileModal">✖</button>
-      </div>
-
-      <!-- Tabs -->
-      <div class="tabs">
-        <button class="tab active" data-tab="profileTab">Avatar</button>
-        <button class="tab" data-tab="friendsTab">Friends</button>
-        <button class="tab" data-tab="coinsTab">Coins</button>
-        <button class="tab" data-tab="giftsTab">Gifts</button>
-      </div>
-
-      <!-- Profile Tab -->
-      <div class="tab-panel active" id="profileTab">
-        <label>Display Name</label>
-        <input type="text" id="profileName" class="input" />
-
-        <label>Avatar URL</label>
-        <input type="text" id="profileAvatarInput" class="input" />
-
-        <button id="saveProfileBtn" class="btn primary">Save Changes</button>
-
-        <hr style="margin:16px 0; opacity:.2;" />
-        <button id="deleteProfileBtn" class="btn danger">Delete Profile</button>
-      </div>
-
-      <!-- Friends Tab -->
-      <div class="tab-panel" id="friendsTab">
-        <h3>Friends</h3>
-        <p class="muted small" id="noFriendsMsg" style="display:none;">No friends yet.</p>
-        <ul id="friendsList" class="friends-list"></ul>
-      </div>
-
-      <!-- Coins Tab -->
-      <div class="tab-panel" id="coinsTab">
-        <p class="muted small">Coins balance will appear here (placeholder).</p>
-      </div>
-
-      <!-- Gifts Tab -->
-      <div class="tab-panel" id="giftsTab">
-        <p class="muted small">Gifts received will appear here (placeholder).</p>
-      </div>
-    </div>
-  </dialog>
-
-  <!-- ===================== DELETE CONFIRM MODAL ===================== -->
-  <dialog id="deleteConfirmModal" class="modal">
-    <div class="modal-content">
-      <p>Are you sure you want to delete your profile? This action cannot be undone.</p>
-      <div style="margin-top:14px; display:flex; gap:10px; justify-content:flex-end;">
-        <button id="cancelDeleteBtn" class="btn ghost">Cancel</button>
-        <button id="confirmDeleteBtn" class="btn danger">Delete</button>
-      </div>
-    </div>
-  </dialog>
-
-  <!-- ===================== ROOM CONTEXT MENU ===================== -->
-  <div id="roomContextMenu" class="context-menu" style="display:none">
-    <ul>
-      <li id="joinRoom">Join</li>
-      <li id="leaveRoom">Leave</li>
-      <li id="renameRoom">Rename</li>
-      <li id="deleteRoom">Delete</li>
-    </ul>
+    <!-- 🔹 Κουμπιά εκτός dropdown -->
+    <button id="gameBtn" class="top-btn">🎮 Play Game</button>
+    <button id="editProfileBtn" class="top-btn">👤 My Profile</button>
+    <!-- Logout button -->
+    <!-- AUTH REMOVED LOGOUT BUTTON -->
   </div>
+</header>
 
-  <!-- ===================== ROOM DIALOG ===================== -->
-  <dialog id="roomDialog">
-    <form id="roomForm" method="dialog">
-      <h3>Create room</h3>
-      <input class="input" id="roomNameInput" placeholder="room-name" required type="text"/>
-      <menu>
-        <button class="btn" value="cancel">Cancel</button>
-        <button class="btn primary" id="roomCreateBtn" value="default">Create</button>
-      </menu>
-    </form>
-  </dialog>
 
-  <!-- ===================== TOAST NOTIFICATIONS ===================== -->
-  <div class="toast" id="toast"></div>
+<!-- ===================== PROFILE MODAL ===================== -->
+<!-- ===================== MY PROFILE MODAL ===================== -->
+<dialog id="profileModal" class="modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2>My Profile</h2>
+      <button class="close-btn" id="closeProfileModal">✖</button>
+    </div>
 
-  <!-- ===================== APP SCRIPTS ===================== -->
-  <script type="module" src="app.js"></script>
+    <!-- Tabs -->
+    <div class="tabs">
+      <button class="tab active" data-tab="profileTab">Avatar</button>
+      <button class="tab" data-tab="friendsTab">Friends</button>
+      <button class="tab" data-tab="coinsTab">Coins</button>
+      <button class="tab" data-tab="giftsTab">Gifts</button>
+    </div>
 
-  <!-- ===================== USER CONTEXT MENU ===================== -->
-  <div id="userContextMenu" class="context-menu">
-    <ul>
-      <li id="ctxAddFriend">➕ Add Friend</li>
-      <li id="ctxRemoveFriend">❌ Remove Friend</li>
-      <li id="ctxBlock">🚫 Block</li>
-      <li id="ctxUnblock">✅ Unblock</li>
-    </ul>
-  </div>
+    <!-- Profile Tab -->
+    <div class="tab-panel active" id="profileTab">
+      <label>Display Name</label>
+      <input type="text" id="profileName" class="input" />
 
-  <!-- ===================== MSG CONTEXT MENU (Admin) ===================== -->
-  <div id="msgMenu" class="context-menu">
-    <button id="deleteMsgBtn">🗑 Delete</button>
-  </div>
+      <label>Avatar URL</label>
+      <input type="text" id="profileAvatarInput" class="input" />
 
-  <!-- ===================== GAME: TIC TAC TOE ===================== -->
-  <div id="gameModal" class="game-modal hidden">
-    <div class="game-content">
-      <h2>🎮 Tic Tac Toe</h2>
-      <div id="ticTacToeBoard" class="board"></div>
-      <p id="gameStatus">Ξεκινάει ο παίκτης X</p>
-      <div class="game-actions">
-        <button id="restartGame" class="btn tiny">↻ Restart</button>
-        <button id="closeGame" class="btn tiny">Κλείσιμο</button>
-      </div>
+      <button id="saveProfileBtn" class="btn primary">Save Changes</button>
+
+      <hr style="margin:16px 0; opacity:.2;" />
+      <button id="deleteProfileBtn" class="btn danger">Delete Profile</button>
+    </div>
+
+    <!-- Friends Tab -->
+    <div class="tab-panel" id="friendsTab">
+      <h3>Friends</h3>
+      <p class="muted small" id="noFriendsMsg" style="display:none;">No friends yet.</p>
+      <ul id="friendsList" class="friends-list"></ul>
+    </div>
+
+    <!-- Coins Tab -->
+    <div class="tab-panel" id="coinsTab">
+      <p class="muted small">Coins balance will appear here (placeholder).</p>
+    </div>
+
+    <!-- Gifts Tab -->
+    <div class="tab-panel" id="giftsTab">
+      <p class="muted small">Gifts received will appear here (placeholder).</p>
     </div>
   </div>
+</dialog>
+
+<!-- ===================== DELETE CONFIRM MODAL ===================== -->
+<dialog id="deleteConfirmModal" class="modal">
+  <div class="modal-content">
+    <p>Are you sure you want to delete your profile? This action cannot be undone.</p>
+    <div style="margin-top:14px; display:flex; gap:10px; justify-content:flex-end;">
+      <button id="cancelDeleteBtn" class="btn ghost">Cancel</button>
+      <button id="confirmDeleteBtn" class="btn danger">Delete</button>
+    </div>
+  </div>
+</dialog>
+
 </body>
+</html>
+
+
+<!-- Auth -->
+<!-- AUTH REMOVED BLOCK -->
+<!-- App -->
+<!-- ===================== APP VIEW (Sidebar / Chat / Users) ===================== -->
+<main class="app hidden" id="appView">
+  <!-- ----- SIDEBAR: ROOMS LIST ----- -->
+
+  <aside class="sidebar">
+    <div class="rooms-header">
+      <span>Rooms</span>
+      <button id="newRoomBtn">+ New</button>
+    </div>
+    <nav class="rooms" id="roomsList"></nav>
+  </aside>
+
+<!-- ----- MAIN CHAT SECTION ----- -->
+<section class="chat">
+ <div class="room-title">
+  <!-- Mobile toggle buttons -->
+  <button id="toggleRooms" class="btn tiny mobile-only">☰ Rooms</button>
+  <span id="roomTitle">#general</span>
+  <button id="toggleUsers" class="btn tiny mobile-only">👥 Users</button>
+
+  <!-- Μόνο για admin -->
+  <button id="clearChatBtn" class="btn danger tiny" style="margin-left:auto; display:none;">
+    🗑 Clear Chat
+  </button>
+</div>
+
+  <!-- 🎵 YouTube Player μέσα στο room -->
+  <div id="youtubePlayer" class="youtube-player">
+  <button id="closePlayerBtn" class="close-player">✖</button>
+  <button id="expandPlayerBtn" class="expand-player">⤢</button>
+</div>
+
+  
+  <div class="messages" id="messages"></div>
+<form class="message-form" id="messageForm">
+  <div class="input-wrapper">
+    <button class="emoji-btn" id="emojiToggle" type="button">😊</button>
+    <textarea autocomplete="off" class="input" id="messageInput" placeholder="Type a message…" rows="1"></textarea>
+  </div>
+  <button class="btn primary" type="submit">Send</button>
+<div aria-hidden="true" class="emoji-panel" id="emojiPanel">
+<div class="emoji-header">
+<div class="emoji-tabs">
+<button class="emoji-tab" data-tab="gif" id="gifTabBtn" type="button">GIF</button>
+<button class="emoji-tab" data-tab="stickers" id="stickerTabBtn" type="button">Αυτοκόλλητα</button>
+<button class="emoji-tab active" data-tab="emoji" id="emojiTabBtn" type="button">Emoji</button>
+</div>
+<input class="input emoji-search" id="emojiSearch" placeholder="Βρες το τέλειο emoji" type="text"/><button class="btn" id="unifiedSearchBtn" type="button">Αναζήτηση</button>
+</div>
+
+
+<div class="emoji-body"><div class="emoji-grid" id="emojiGrid"></div></div><div class="emoji-body" id="gifBody"><div class="emoji-grid" id="gifGrid"></div></div><div class="emoji-body" id="stickerBody"><div class="emoji-grid" id="stickerGrid"></div></div>
+<div class="emoji-footer">Κλίκαρε ένα emoji για να το βάλεις στο μήνυμα</div>
+</div>
+</form>
+</section>
+<!-- ----- USERS LIST ----- -->
+<aside class="users">
+  
+
+  <div id="usersList">
+    <h3 class="user-category">Admins <span id="adminsCount" class="count">0</span></h3>
+    <ul id="adminsList" class="users-sublist"></ul>
+
+    <h3 class="user-category">Mods <span id="modsCount" class="count">0</span></h3>
+    <ul id="modsList" class="users-sublist"></ul>
+
+    <h3 class="user-category">Vip <span id="vipCount" class="count">0</span></h3>
+    <ul id="vipList" class="users-sublist"></ul>
+
+    <h3 class="user-category">Users <span id="usersCount" class="count">0</span></h3>
+    <ul id="normalList" class="users-sublist"></ul>
+  </div>
+</aside>
+
+</main>
+<!-- Room Context Menu -->
+<!-- ===================== ROOM CONTEXT MENU ===================== -->
+<div id="roomContextMenu" class="context-menu" style="display:none">
+  <ul>
+    <li id="joinRoom">Join</li>
+    <li id="leaveRoom">Leave</li>
+    <li id="renameRoom">Rename</li>
+    <li id="deleteRoom">Delete</li>
+  </ul>
+</div>
+
+
+<!-- ===================== ROOM DIALOG ===================== -->
+<dialog id="roomDialog">
+<form id="roomForm" method="dialog">
+<h3>Create room</h3>
+<input class="input" id="roomNameInput" placeholder="room-name" required="" type="text"/>
+<menu><button class="btn" value="cancel">Cancel</button><button class="btn primary" id="roomCreateBtn" value="default">Create</button></menu>
+</form>
+</dialog>
+<!-- ===================== TOAST NOTIFICATIONS ===================== -->
+<div class="toast" id="toast"></div>
+<!-- ===================== APP SCRIPTS ===================== -->
+<script type="module" src="app.js"></script>
+<script>
+/* ===================== GIF MODAL / GIPHY LOGIC ===================== */
+(() => {
+  const GIPHY_KEY = "bCn5Jvx2ZOepneH6fMteNoX31hVfqX25";
+  const modal = document.getElementById('gifModal');
+  const backdrop = document.getElementById('gifModalBackdrop');
+  const openBtn = document.getElementById('gifBtn');
+  const closeBtn = document.getElementById('gifClose');
+  const searchInput = document.getElementById('gifSearchInput');
+  const searchBtn = document.getElementById('gifSearchBtn');
+  const results = document.getElementById('gifResults');
+  const messageInput = document.getElementById('messageInput');
+
+  function openModal() {
+    modal.style.display = 'block';
+    results.innerHTML = '';
+    // Load trending by default
+    fetchTrending();
+    setTimeout(() => searchInput && searchInput.focus(), 0);
+  }
+  function closeModal() { modal.style.display = 'none'; }
+
+  async function fetchTrending() {
+    try {
+      const url = `https://api.giphy.com/v1/gifs/trending?api_key=${GIPHY_KEY}&limit=24&rating=g`;
+      const res = await fetch(url);
+      const data = await res.json();
+      renderResults(data.data || []);
+    } catch (e) {
+      results.innerHTML = '<div style="padding:16px;">Failed to load trending GIFs.</div>';
+    }
+  }
+
+  async function searchGifs(q) {
+    try {
+      const url = `https://api.giphy.com/v1/gifs/search?api_key=${GIPHY_KEY}&q=${encodeURIComponent(q)}&limit=24&rating=g`;
+      const res = await fetch(url);
+      const data = await res.json();
+      renderResults(data.data || []);
+    } catch (e) {
+      results.innerHTML = '<div style="padding:16px;">Search failed.</div>';
+    }
+  }
+
+  function renderResults(items) {
+    if (!items.length) { results.innerHTML = '<div style="padding:16px;">No GIFs found.</div>'; return; }
+    const frag = document.createDocumentFragment();
+    items.forEach(g => {
+      const fixed = g.images && (g.images.fixed_width || g.images.preview_gif || g.images.original);
+      const url = fixed ? fixed.url : (g.images?.original?.url || g.url);
+      const item = document.createElement('div');
+      item.className = 'gif-item';
+      const img = document.createElement('img');
+      img.loading = 'lazy';
+      img.src = url;
+      item.appendChild(img);
+      item.addEventListener('click', () => {
+        // Strategy: if app supports image URLs, place URL into input and trigger send
+        // Prefer to send immediately if there is a sendMessage function available.
+        const gifUrl = url;
+        // Try to call existing send flow if present
+        let sent = false;
+        try {
+          if (typeof sendMessage === 'function') {
+            sendMessage(gifUrl, /*options*/{isGif:true});
+            sent = true;
+          }
+        } catch(e) {}
+
+        if (!sent) {
+          // Fallback: insert into input and simulate form submit
+          if (messageInput) messageInput.value = gifUrl;
+          const form = messageInput?.closest('form');
+          if (form) form.dispatchEvent(new Event('submit', {bubbles: true, cancelable: true}));
+        }
+        closeModal();
+      });
+      frag.appendChild(item);
+    });
+    results.innerHTML = '';
+    results.appendChild(frag);
+  }
+
+  openBtn && openBtn.addEventListener('click', openModal);
+  closeBtn && closeBtn.addEventListener('click', closeModal);
+  backdrop && backdrop.addEventListener('click', closeModal);
+  searchBtn && searchBtn.addEventListener('click', () => {
+    const q = (searchInput && searchInput.value || '').trim();
+    if (q) searchGifs(q); else fetchTrending();
+  });
+  searchInput && searchInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      const q = (searchInput.value || '').trim();
+      if (q) searchGifs(q); else fetchTrending();
+    }
+  });
+})();
+
+
+</script>
+<!-- Context Menu για Users -->
+<!-- ===================== USER CONTEXT MENU ===================== -->
+<div id="userContextMenu" class="context-menu">
+  <ul>
+    <li id="ctxAddFriend">➕ Add Friend</li>
+    <li id="ctxRemoveFriend">❌ Remove Friend</li>
+    <li id="ctxBlock">🚫 Block</li>
+    <li id="ctxUnblock">✅ Unblock</li>
+  </ul>
+</div>
+<!-- Right-click Admin Menu -->
+<div id="msgMenu" class="context-menu">
+  <button id="deleteMsgBtn">🗑 Delete</button>
+</div>
+<!-- ===================== GAME: TIC TAC TOE ===================== -->
+<div id="gameModal" class="game-modal hidden">
+  <div class="game-content">
+    <h2>🎮 Tic Tac Toe</h2>
+    <div id="ticTacToeBoard" class="board"></div>
+    <p id="gameStatus">Ξεκινάει ο παίκτης X</p>
+    <div class="game-actions">
+      <button id="restartGame" class="btn tiny">↻ Restart</button>
+      <button id="closeGame" class="btn tiny">Κλείσιμο</button>
+    </div>
+  </div>
+</div>
+
+</div>
+
 </html>
