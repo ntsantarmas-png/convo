@@ -1965,15 +1965,6 @@ dialog{background:var(--panel-solid);color:var(--text);border:1px solid rgba(255
   color: #fff;
 }
 
-/* Panels */
-.tab-panel {
-  display: none;
-}
-
-.tab-panel.active {
-  display: block;
-}
-
 /* Friends List */
 .friends-list {
   list-style: none;
