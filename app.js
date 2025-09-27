@@ -39,6 +39,27 @@ const $ = (id) => document.getElementById(id);
 
   
 // ===================== AUTH (Register / Login / Anon / Forgot / Logout) =====================
+// ===================== AUTH TABS (Login / Register / Anonymous) =====================
+
+// Βρίσκουμε μόνο τα tabs & panels του AUTH VIEW
+const authTabs = document.querySelectorAll("#authView .tab");
+const authPanels = document.querySelectorAll("#authView .tab-panel");
+
+function switchAuthTab(name) {
+  // Ενεργοποιούμε μόνο το σωστό tab
+  authTabs.forEach(t => t.classList.toggle("active", t.dataset.tab === name));
+
+  // Δείχνουμε μόνο το σωστό panel
+  authPanels.forEach(p => p.classList.toggle("active", p.id === `tab-${name}`));
+}
+
+// Listeners για κάθε κουμπί tab
+authTabs.forEach(btn => {
+  btn.addEventListener("click", () => switchAuthTab(btn.dataset.tab));
+});
+
+// Default -> Login tab
+switchAuthTab("login");
 
 // ===================== REGISTER FORM =====================
 registerForm.addEventListener("submit", async (e) => {
