@@ -1956,6 +1956,7 @@ dialog{background:var(--panel-solid);color:var(--text);border:1px solid rgba(255
   color: #ff5555;
 }
 
+
 .icon-btn:hover {
   background: rgba(255, 80, 80, 0.25);
   box-shadow: 0 0 8px rgba(255, 80, 80, 0.5);
