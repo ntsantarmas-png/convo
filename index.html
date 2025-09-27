@@ -42,7 +42,41 @@
     <button id="logoutBtn" class="logout-btn" title="Έξοδος">🚪➝</button>
   </div>
 </header>
+<!-- Auth -->
+<!-- ===================== AUTH VIEW (Login / Register / Anonymous) ===================== -->
+<main class="auth" id="authView">
+<div class="auth-card">
+<div class="tabs">
+  <button id="loginTab" class="tab active" data-tab="login">Login</button>
+  <button id="registerTab" class="tab" data-tab="register">Register</button>
+  <button id="anonTab" class="tab" data-tab="anonymous">Anonymous</button>
+</div>
 
+<div class="tab-panel active" id="tab-login">
+<form id="loginForm">
+<label>Email</label><input class="input" id="loginEmail" required="" type="email" value="ntsantarmas@gmail.com"/>
+<label>Password</label><input class="input" id="loginPassword" placeholder="••••••••" required="" type="password"/>
+<div class="row" style="margin-top:10px"><button class="btn primary" style="flex:1" type="submit">Login</button><button class="btn ghost" id="forgotLink" type="button">Forgot?</button></div>
+</form>
+</div>
+<div class="tab-panel" id="tab-register">
+<form id="registerForm">
+<label>Username</label><input class="input" id="regUsername" required="" type="text" value="MysteryMan"/>
+<label>Email</label><input class="input" id="regEmail" required="" type="email" value="ntsantarmas@gmail.com"/>
+<label>Password</label><input class="input" id="regPassword" minlength="6" placeholder="at least 6 chars" required="" type="password"/>
+<button class="btn primary" style="margin-top:10px;width:100%" type="submit">Create account</button>
+</form>
+</div>
+<div class="tab-panel" id="tab-anonymous">
+<form id="anonForm">
+<label>Pick a username</label><input class="input" id="anonUsername" required="" type="text" value="MysteryMan"/>
+<button class="btn" style="margin-top:10px;width:100%" type="submit">Enter anonymously</button>
+</form>
+<p class="muted small" style="margin-top:6px">You can upgrade to a full account later from your profile.</p>
+</div>
+</div>
+</main>
+<!-- App -->
 
 <!-- ===================== PROFILE MODAL ===================== -->
 <!-- ===================== MY PROFILE MODAL ===================== -->
@@ -109,41 +143,7 @@
 </html>
 
 
-<!-- Auth -->
-<!-- ===================== AUTH VIEW (Login / Register / Anonymous) ===================== -->
-<main class="auth" id="authView">
-<div class="auth-card">
-<div class="tabs">
-  <button id="loginTab" class="tab active" data-tab="login">Login</button>
-  <button id="registerTab" class="tab" data-tab="register">Register</button>
-  <button id="anonTab" class="tab" data-tab="anonymous">Anonymous</button>
-</div>
 
-<div class="tab-panel active" id="tab-login">
-<form id="loginForm">
-<label>Email</label><input class="input" id="loginEmail" required="" type="email" value="ntsantarmas@gmail.com"/>
-<label>Password</label><input class="input" id="loginPassword" placeholder="••••••••" required="" type="password"/>
-<div class="row" style="margin-top:10px"><button class="btn primary" style="flex:1" type="submit">Login</button><button class="btn ghost" id="forgotLink" type="button">Forgot?</button></div>
-</form>
-</div>
-<div class="tab-panel" id="tab-register">
-<form id="registerForm">
-<label>Username</label><input class="input" id="regUsername" required="" type="text" value="MysteryMan"/>
-<label>Email</label><input class="input" id="regEmail" required="" type="email" value="ntsantarmas@gmail.com"/>
-<label>Password</label><input class="input" id="regPassword" minlength="6" placeholder="at least 6 chars" required="" type="password"/>
-<button class="btn primary" style="margin-top:10px;width:100%" type="submit">Create account</button>
-</form>
-</div>
-<div class="tab-panel" id="tab-anonymous">
-<form id="anonForm">
-<label>Pick a username</label><input class="input" id="anonUsername" required="" type="text" value="MysteryMan"/>
-<button class="btn" style="margin-top:10px;width:100%" type="submit">Enter anonymously</button>
-</form>
-<p class="muted small" style="margin-top:6px">You can upgrade to a full account later from your profile.</p>
-</div>
-</div>
-</main>
-<!-- App -->
 <!-- ===================== APP VIEW (Sidebar / Chat / Users) ===================== -->
 <main class="app hidden" id="appView">
   <!-- ----- SIDEBAR: ROOMS LIST ----- -->
