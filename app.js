@@ -817,9 +817,10 @@ onAuthStateChanged(auth, async (user) => {
     const loginTab = document.getElementById("loginTab");
     if (loginTab) loginTab.click();
 
-    helloUser.textContent = "";
-  }
-});
+if (typeof helloUser !== "undefined" && helloUser) {
+  helloUser.textContent = "";
+}
+  });
 
 
 
