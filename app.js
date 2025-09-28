@@ -820,7 +820,7 @@ onAuthStateChanged(auth, async (user) => {
 if (typeof helloUser !== "undefined" && helloUser) {
   helloUser.textContent = "";
 }
-  });
+  
 
 
 
