@@ -717,18 +717,20 @@ onAuthStateChanged(auth, async (user) => {
   const appView = document.getElementById("appView");
   const authOnlyTopActions = document.getElementById("authOnlyTopActions");
 
+  // Δηλώνουμε ΜΙΑ φορά τα κουμπιά εδώ
+  const logoutBtn = document.getElementById("logoutBtn");
+  const editProfileBtn = document.getElementById("editProfileBtn");
+
   console.log("🔥 AUTH STATE CHANGED:", user);
 
   if (user) {
     console.log("✅ User logged in, showing appView");
 
-    // Δείξε κουμπιά
+    // Δείξε top actions
     if (authOnlyTopActions) authOnlyTopActions.style.display = "flex";
 
-    // Απόκρυψε το login/register/anon
+    // Απόκρυψε auth view / δείξε app view
     if (authView) authView.style.display = "none";
-
-    // Δείξε το chat
     if (appView) appView.style.display = "block";
 
     // === Avatar check ===
@@ -742,24 +744,6 @@ onAuthStateChanged(auth, async (user) => {
         console.error("❌ Avatar update failed:", err);
       }
     }
-
-  } else {
-    console.log("❌ No user, showing authView");
-
-    // Απόκρυψε chat
-    if (appView) appView.style.display = "none";
-
-    // Δείξε login/register/anon
-    if (authView) authView.style.display = "block";
-
-    // Ενεργοποίησε Login tab
-    showTab("login");
-
-    // Κρύψε κουμπιά top actions
-    if (authOnlyTopActions) authOnlyTopActions.style.display = "none";
-  }
-});
-
 
     // === Clear Chat Button (μόνο για admin) ===
     const clearChatBtn = document.getElementById("clearChatBtn");
@@ -805,46 +789,37 @@ onAuthStateChanged(auth, async (user) => {
     appView.classList.remove("hidden");
     helloUser.textContent = `Hello, ${user.displayName || "User"}!`;
 
-    // === Dropdown buttons ===
-    const logoutBtn = document.getElementById("logoutBtn");
-    const editProfileBtn = document.getElementById("editProfileBtn");
-
-if (logoutBtn) {
-  logoutBtn.style.display = "block"; // μόνο εμφάνιση, ΟΧΙ νέο addEventListener
-}
-
-
-    if (editProfileBtn) {
-      editProfileBtn.style.display = "block";
-    
-    }
+    // === Δείξε κουμπιά dropdown ===
+    if (logoutBtn) logoutBtn.style.display = "block";
+    if (editProfileBtn) editProfileBtn.style.display = "block";
 
   } else {
-    // ❌ Δεν υπάρχει user → κρύψε τα κουμπιά
-    authOnlyTopActions.style.display = "none";
+    console.log("❌ No user, showing authView");
 
-    // Εμφάνισε login view
-    appView.classList.add("hidden");
-    authView.classList.remove("hidden");
-    helloUser.textContent = "";
+    // Απόκρυψε app view
+    if (appView) appView.style.display = "none";
 
-    const logoutBtn = document.getElementById("logoutBtn");
-    const editProfileBtn = document.getElementById("editProfileBtn");
+    // Δείξε auth view
+    if (authView) authView.style.display = "block";
+
+    // Κρύψε top actions
+    if (authOnlyTopActions) authOnlyTopActions.style.display = "none";
+
+    // Κρύψε κουμπιά dropdown
     if (logoutBtn) logoutBtn.style.display = "none";
     if (editProfileBtn) editProfileBtn.style.display = "none";
 
+    // Unsub
     if (messagesUnsub) messagesUnsub();
     if (presenceUnsub) presenceUnsub();
 
-    // ✅ Reset πάντα στο Login tab για να φαίνονται τα πεδία
+    // Reset στο login tab
     const loginTab = document.getElementById("loginTab");
-    if (loginTab) {
-      loginTab.click();
-    }
+    if (loginTab) loginTab.click();
+
+    helloUser.textContent = "";
   }
-}); // ✅ Κλείνει σωστά την onAuthStateChanged
-
-
+});
 
 
 
