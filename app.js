@@ -713,25 +713,19 @@ setTimeout(() => {
 
 // ===================== AUTH STATE HANDLING =====================
 onAuthStateChanged(auth, async (user) => {
-  const authView = document.getElementById("authView");
-  const appView = document.getElementById("appView");
-  const authOnlyTopActions = document.getElementById("authOnlyTopActions");
-
-  // Δηλώνουμε ΜΙΑ φορά τα κουμπιά εδώ
-  const logoutBtn = document.getElementById("logoutBtn");
-  const editProfileBtn = document.getElementById("editProfileBtn");
-
   console.log("🔥 AUTH STATE CHANGED:", user);
 
   if (user) {
-    console.log("✅ User logged in, showing appView");
+    // === Εμφάνιση εφαρμογής ===
+    if (authView) authView.classList.add("hidden");
+    if (appView) appView.classList.remove("hidden");
 
-    // Δείξε top actions
+    // === Εμφάνιση κουμπιών dropdown ===
+    if (logoutBtn) logoutBtn.style.display = "block";
+    if (editProfileBtn) editProfileBtn.style.display = "block";
+
+    // === Εμφάνιση top actions ===
     if (authOnlyTopActions) authOnlyTopActions.style.display = "flex";
-
-    // Απόκρυψε auth view / δείξε app view
-    if (authView) authView.style.display = "none";
-    if (appView) appView.style.display = "block";
 
     // === Avatar check ===
     if (!user.photoURL) {
@@ -745,29 +739,16 @@ onAuthStateChanged(auth, async (user) => {
       }
     }
 
-    // === Clear Chat Button (μόνο για admin) ===
-    const clearChatBtn = document.getElementById("clearChatBtn");
-    if (user.displayName === "MysteryMan") {
-      currentUserRole = "admin";
-      clearChatBtn.style.display = "inline-block";
+    // === Ενημέρωση Firebase DB με user info ===
+    await set(ref(db, "users/" + user.uid), {
+      uid: user.uid,
+      displayName: user.displayName || "Anonymous",
+      photoURL: user.photoURL || "",
+      status: "online",
+      typing: false
+    });
 
-      clearChatBtn.addEventListener("click", async () => {
-        if (!confirm("⚠️ Να διαγραφούν όλα τα μηνύματα από αυτό το room;")) return;
-        try {
-          const room = document.getElementById("roomTitle").textContent.replace("#", "");
-          await remove(ref(db, "messages/" + room));
-          document.getElementById("messages").innerHTML = "";
-          console.log("🗑 Chat cleared for room:", room);
-        } catch (err) {
-          console.error("clearChat error:", err);
-        }
-      });
-    } else {
-      currentUserRole = "user";
-      clearChatBtn.style.display = "none";
-    }
-
-    // === Header avatar από DB ===
+    // === Header avatar ===
     const headerAvatar = document.getElementById("headerAvatar");
     onValue(ref(db, "users/" + user.uid), (snap) => {
       const u = snap.val() || {};
@@ -783,44 +764,30 @@ onAuthStateChanged(auth, async (user) => {
     await renderRooms();
     switchRoom(currentRoom);
     watchPresence();
-
-    // === Εμφάνιση εφαρμογής ===
-    authView.classList.add("hidden");
-    appView.classList.remove("hidden");
-    helloUser.textContent = `Hello, ${user.displayName || "User"}!`;
-
-    // === Δείξε κουμπιά dropdown ===
-    if (logoutBtn) logoutBtn.style.display = "block";
-    if (editProfileBtn) editProfileBtn.style.display = "block";
+    renderUserList();
 
   } else {
     console.log("❌ No user, showing authView");
 
-    // Απόκρυψε app view
+    // Απόκρυψη app view
     if (appView) appView.style.display = "none";
 
-    // Δείξε auth view
+    // Εμφάνιση auth view
     if (authView) authView.style.display = "block";
 
-    // Κρύψε top actions
+    // Απόκρυψη top actions
     if (authOnlyTopActions) authOnlyTopActions.style.display = "none";
 
-    // Κρύψε κουμπιά dropdown
+    // Απόκρυψη κουμπιών dropdown
     if (logoutBtn) logoutBtn.style.display = "none";
     if (editProfileBtn) editProfileBtn.style.display = "none";
-
-    // Unsub
-    if (messagesUnsub) messagesUnsub();
-    if (presenceUnsub) presenceUnsub();
 
     // Reset στο login tab
     const loginTab = document.getElementById("loginTab");
     if (loginTab) loginTab.click();
+  }
+});
 
-if (typeof helloUser !== "undefined" && helloUser) {
-  helloUser.textContent = "";
-}
-  
 
 
 
