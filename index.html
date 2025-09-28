@@ -59,18 +59,43 @@
 
 <!-- Login -->
 <div class="tab-panel active" id="tab-login">
-  <form id="loginForm" class="auth-form"> … </form>
+  <form id="loginForm" class="auth-form">
+    <label for="loginEmail">Email</label>
+    <input type="email" id="loginEmail" class="input" required>
+
+    <label for="loginPassword">Password</label>
+    <input type="password" id="loginPassword" class="input" required>
+
+    <button type="submit">Login</button>
+  </form>
 </div>
 
 <!-- Register -->
 <div class="tab-panel" id="tab-register">
-  <form id="registerForm" class="auth-form"> … </form>
+  <form id="registerForm" class="auth-form">
+    <label for="registerName">Username</label>
+    <input type="text" id="registerName" class="input" required>
+
+    <label for="registerEmail">Email</label>
+    <input type="email" id="registerEmail" class="input" required>
+
+    <label for="registerPassword">Password</label>
+    <input type="password" id="registerPassword" class="input" required>
+
+    <button type="submit">Register</button>
+  </form>
 </div>
 
 <!-- Anonymous -->
 <div class="tab-panel" id="tab-anonymous">
-  <form id="anonForm" class="auth-form"> … </form>
+  <form id="anonForm" class="auth-form">
+    <label for="anonName">Username</label>
+    <input type="text" id="anonName" class="input" required>
+
+    <button type="submit">Enter Chat</button>
+  </form>
 </div>
+
 
 
 
