@@ -816,6 +816,61 @@ function hashCode(str) {
   }
   return hash;
 }
+// ===================== AUTH FORMS =====================
+
+// Login
+const loginForm = document.getElementById("loginForm");
+if (loginForm) {
+  loginForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const email = document.getElementById("loginEmail").value;
+    const password = document.getElementById("loginPassword").value;
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+      console.log("✅ Logged in:", email);
+    } catch (err) {
+      console.error("❌ Login failed:", err);
+      alert("Login failed: " + err.message);
+    }
+  });
+}
+
+// Register
+const registerForm = document.getElementById("registerForm");
+if (registerForm) {
+  registerForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const username = document.getElementById("registerUsername").value;
+    const email = document.getElementById("registerEmail").value;
+    const password = document.getElementById("registerPassword").value;
+    try {
+      const cred = await createUserWithEmailAndPassword(auth, email, password);
+      await updateProfile(cred.user, { displayName: username });
+      console.log("✅ Registered:", username);
+    } catch (err) {
+      console.error("❌ Register failed:", err);
+      alert("Register failed: " + err.message);
+    }
+  });
+}
+
+// Anonymous
+const anonForm = document.getElementById("anonForm");
+if (anonForm) {
+  anonForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const username = document.getElementById("anonUsername").value || "Guest";
+    try {
+      const cred = await signInAnonymously(auth);
+      await updateProfile(cred.user, { displayName: username });
+      console.log("✅ Entered anonymously as:", username);
+    } catch (err) {
+      console.error("❌ Anonymous login failed:", err);
+      alert("Anonymous login failed: " + err.message);
+    }
+  });
+}
+
 
 // ===================== EMOJI / GIF / STICKERS PICKER =====================
 // Emoji Picker
