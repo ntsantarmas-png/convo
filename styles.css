@@ -52,7 +52,8 @@ body {
   background: rgba(255,255,255,0.08);
   border-color: rgba(255,255,255,0.3);
 }
-/* AUTH REMOVED *//* ===================== LOGOUT BUTTON SPECIAL ===================== */
+
+/* ===================== LOGOUT BUTTON SPECIAL ===================== */
 /* Logout Button */
 .logout-btn {
   width: 40px;
@@ -444,58 +445,6 @@ body {
     max-width: 100%;
     height: 200px;     /* expanded ύψος σε mobile */
   }
-}
-
-/* ===================== AUTH FORMS ===================== */
-.auth {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: calc(100vh - 54px);
-  padding: 20px;
-}
-
-.auth .auth-form {
-  background: var(--panel);
-  padding: 24px;
-  border-radius: 12px;
-  box-shadow: var(--shadow);
-  width: 100%;
-  max-width: 360px;
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-}
-
-.auth .auth-form h2 {
-  margin: 0;
-  font-size: 18px;
-  text-align: center;
-  color: var(--text);
-}
-
-.auth .auth-form input {
-  padding: 10px 14px;
-  border-radius: 8px;
-  border: 1px solid rgba(255,255,255,.12);
-  background: rgba(255,255,255,.08);
-  color: var(--text);
-  font-size: 14px;
-}
-
-.auth .auth-form button {
-  padding: 10px;
-  border-radius: 8px;
-  border: none;
-  background: linear-gradient(90deg, var(--accent), var(--accent-2));
-  color: #fff;
-  font-size: 14px;
-  cursor: pointer;
-  font-weight: 600;
-}
-
-.auth .auth-form button:hover {
-  opacity: 0.9;
 }
 
 
@@ -2013,4 +1962,82 @@ dialog{background:var(--panel-solid);color:var(--text);border:1px solid rgba(255
 .icon-btn:hover {
   background: rgba(255, 80, 80, 0.25);
   box-shadow: 0 0 8px rgba(255, 80, 80, 0.5);
+}
+/* ===================== AUTH FORMS ===================== */
+.auth {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background: var(--panel, #1e1e1e);
+}
+
+.auth-card {
+  background: #2a2a2a;
+  padding: 24px;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0,0,0,.4);
+  width: 100%;
+  max-width: 360px;
+  color: #fff;
+}
+
+.tabs {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.tab {
+  flex: 1;
+  padding: 10px;
+  cursor: pointer;
+  background: none;
+  border: none;
+  font-weight: 600;
+  color: #bbb;
+}
+
+.tab.active {
+  color: #fff;
+  border-bottom: 2px solid var(--accent, #4dabf7);
+}
+
+.tab-panel {
+  display: none;
+}
+
+.tab-panel.active {
+  display: block;
+}
+
+.auth-form label {
+  display: block;
+  margin: 8px 0 4px;
+  font-size: 14px;
+}
+
+.auth-form .input {
+  width: 100%;
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid #444;
+  background: #1a1a1a;
+  color: #fff;
+}
+
+.auth-form button {
+  margin-top: 12px;
+  width: 100%;
+  padding: 10px;
+  border-radius: 6px;
+  border: none;
+  font-weight: bold;
+  background: var(--accent, #4dabf7);
+  color: #fff;
+  cursor: pointer;
+}
+
+.auth-form button:hover {
+  background: #339af0;
 }
