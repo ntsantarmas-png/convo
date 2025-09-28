@@ -713,17 +713,28 @@ setTimeout(() => {
 
 // ===================== AUTH STATE HANDLING =====================
 onAuthStateChanged(auth, async (user) => {
+  const authView = document.getElementById("authView");
+  const appView = document.getElementById("appView");
   const authOnlyTopActions = document.getElementById("authOnlyTopActions");
 
+  console.log("🔥 AUTH STATE CHANGED:", user);
+
   if (user) {
-    // ✅ Δείξε τα κουμπιά (header actions)
-    authOnlyTopActions.style.display = "flex";
+    console.log("✅ User logged in, showing appView");
+
+    // Δείξε κουμπιά
+    if (authOnlyTopActions) authOnlyTopActions.style.display = "flex";
+
+    // Απόκρυψε το login/register/anon
+    if (authView) authView.style.display = "none";
+
+    // Δείξε το chat
+    if (appView) appView.style.display = "block";
 
     // === Avatar check ===
     if (!user.photoURL) {
       const avatarId = Math.abs(hashCode(user.uid)) % 70 + 1;
       const stableAvatar = `https://i.pravatar.cc/150?img=${avatarId}`;
-
       try {
         await updateProfile(user, { photoURL: stableAvatar });
         console.log("✅ Avatar set for user:", stableAvatar);
@@ -731,6 +742,23 @@ onAuthStateChanged(auth, async (user) => {
         console.error("❌ Avatar update failed:", err);
       }
     }
+
+  } else {
+    console.log("❌ No user, showing authView");
+
+    // Απόκρυψε chat
+    if (appView) appView.style.display = "none";
+
+    // Δείξε login/register/anon
+    if (authView) authView.style.display = "block";
+
+    // Ενεργοποίησε Login tab
+    showTab("login");
+
+    // Κρύψε κουμπιά top actions
+    if (authOnlyTopActions) authOnlyTopActions.style.display = "none";
+  }
+});
 
 
     // === Clear Chat Button (μόνο για admin) ===
