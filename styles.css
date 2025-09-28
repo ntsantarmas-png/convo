@@ -2034,9 +2034,4 @@ dialog{background:var(--panel-solid);color:var(--text);border:1px solid rgba(255
 .auth-form button:hover {
   background: #339af0;
 }
-#tab-login,
-#tab-register,
-#tab-anonymous {
-  display: block !important;
-  color: white !important;
-}
+
