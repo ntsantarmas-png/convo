@@ -819,7 +819,7 @@ function hashCode(str) {
 // ===================== AUTH FORMS =====================
 
 // Login
-const loginForm = document.getElementById("loginForm");
+
 if (loginForm) {
   loginForm.addEventListener("submit", async (e) => {
     e.preventDefault();
@@ -836,7 +836,7 @@ if (loginForm) {
 }
 
 // Register
-const registerForm = document.getElementById("registerForm");
+
 if (registerForm) {
   registerForm.addEventListener("submit", async (e) => {
     e.preventDefault();
@@ -855,7 +855,7 @@ if (registerForm) {
 }
 
 // Anonymous
-const anonForm = document.getElementById("anonForm");
+
 if (anonForm) {
   anonForm.addEventListener("submit", async (e) => {
     e.preventDefault();
