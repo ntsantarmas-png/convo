@@ -19,23 +19,22 @@ import {
 
   // ===================== GLOBAL ELEMENT REFERENCES =====================
 const $ = (id) => document.getElementById(id);
-  const authView = $('authView'), appView = $('appView'), logoutBtn=$('logoutBtn'), helloUser=$('helloUser');
-  const loginForm=$('loginForm'), registerForm=$('registerForm'), anonForm=$('anonForm'), forgotLink=$('forgotLink');
-  const roomsList=$('roomsList'), newRoomBtn=$('newRoomBtn'), roomDialog=$('roomDialog'), roomForm=$('roomForm'), roomNameInput=$('roomNameInput');
-  const roomTitle=$('roomTitle'), messagesEl=$('messages'), messageForm=$('messageForm'), messageInput=$('messageInput'), usersList=$('usersList');
-  const emojiToggle=$('emojiToggle'), emojiPanel=$('emojiPanel'), emojiGrid=$('emojiGrid'), emojiSearch=$('emojiSearch');
-  const tabs = document.querySelectorAll('.tab'); const panels = document.querySelectorAll('.tab-panel'); const toastEl=$('toast');
+const authView = $('authView'), appView = $('appView'), logoutBtn=$('logoutBtn'), helloUser=$('helloUser');
+const loginForm=$('loginForm'), registerForm=$('registerForm'), anonForm=$('anonForm'), forgotLink=$('forgotLink');
+const roomsList=$('roomsList'), newRoomBtn=$('newRoomBtn'), roomDialog=$('roomDialog'), roomForm=$('roomForm'), roomNameInput=$('roomNameInput');
+const roomTitle=$('roomTitle'), messagesEl=$('messages'), messageForm=$('messageForm'), messageInput=$('messageInput'), usersList=$('usersList');
+const emojiToggle=$('emojiToggle'), emojiPanel=$('emojiPanel'), emojiGrid=$('emojiGrid'), emojiSearch=$('emojiSearch');
+const toastEl=$('toast');
 
+let currentRoom='general', messagesUnsub=null, presenceUnsub=null;
+let currentUserRole = "user"; // default ρόλος
 
+const showToast = (msg) => {
+  toastEl.textContent = msg;
+  toastEl.classList.add('show');
+  setTimeout(() => toastEl.classList.remove('show'), 2500);
+};
 
-
-  let currentRoom='general', messagesUnsub=null, presenceUnsub=null;
-  let currentUserRole = "user"; // default ρόλος
-
-
-  const showToast=(msg)=>{toastEl.textContent=msg;toastEl.classList.add('show');setTimeout(()=>toastEl.classList.remove('show'),2500)};
-  const switchTab=(name)=>{tabs.forEach(t=>t.classList.toggle('active',t.dataset.tab===name)); panels.forEach(p=>p.classList.toggle('active',p.id===`tab-${name}`))};
-  tabs.forEach(btn=>btn.addEventListener('click',()=>switchTab(btn.dataset.tab)));
 
   
 // ===================== AUTH (Register / Login / Anon / Forgot / Logout) =====================
@@ -733,14 +732,6 @@ onAuthStateChanged(auth, async (user) => {
       }
     }
 
-    // === Ενημέρωση Firebase DB με user info ===
-    await set(ref(db, "users/" + user.uid), {
-      uid: user.uid,
-      displayName: user.displayName || "Anonymous",
-      photoURL: user.photoURL || "",
-      status: "online",
-      typing: false
-    });
 
     // === Clear Chat Button (μόνο για admin) ===
     const clearChatBtn = document.getElementById("clearChatBtn");
@@ -790,17 +781,14 @@ onAuthStateChanged(auth, async (user) => {
     const logoutBtn = document.getElementById("logoutBtn");
     const editProfileBtn = document.getElementById("editProfileBtn");
 
-    if (logoutBtn) {
-      logoutBtn.style.display = "block";
-      logoutBtn.addEventListener("click", () => signOut(auth));
-    }
+if (logoutBtn) {
+  logoutBtn.style.display = "block"; // μόνο εμφάνιση, ΟΧΙ νέο addEventListener
+}
+
 
     if (editProfileBtn) {
       editProfileBtn.style.display = "block";
-      editProfileBtn.addEventListener("click", () => {
-        profileModal.showModal();
-        loadFriends();
-      });
+    
     }
 
   } else {
@@ -1307,46 +1295,34 @@ leaveRoomBtn.addEventListener("click", () => {
 });
 
 
-// ===================== ROOM MENU CLOSE HANDLERS =====================
+// ===================== GLOBAL MENU CLOSE HANDLERS =====================
 document.addEventListener("click", (e) => {
+  // Room menu
   if (roomMenu && roomMenu.style.display === "block" && !roomMenu.contains(e.target)) {
     roomMenu.style.display = "none";
   }
-});
-
-document.addEventListener("keydown", (e) => {
-  if (e.key === "Escape" && roomMenu && roomMenu.style.display === "block") {
-    roomMenu.style.display = "none";
-  }
-});
-
-// ===================== USER MENU CLOSE HANDLERS =====================
-document.addEventListener("click", (e) => {
+  // User context menu
   if (userContextMenu && userContextMenu.style.display === "block" && !userContextMenu.contains(e.target)) {
     userContextMenu.style.display = "none";
   }
-});
-
-document.addEventListener("keydown", (e) => {
-  if (e.key === "Escape" && userContextMenu && userContextMenu.style.display === "block") {
-    userContextMenu.style.display = "none";
-  }
-});
-// ===================== REACTIONS MENU CLOSE HANDLERS =====================
-document.addEventListener("click", (e) => {
+  // Reaction menus
   document.querySelectorAll(".reaction-menu").forEach(menu => {
     if (!menu.parentElement.contains(e.target)) {
       menu.style.display = "none";
     }
   });
 });
+
 document.addEventListener("keydown", (e) => {
   if (e.key === "Escape") {
+    if (roomMenu) roomMenu.style.display = "none";
+    if (userContextMenu) userContextMenu.style.display = "none";
     document.querySelectorAll(".reaction-menu").forEach(menu => {
       menu.style.display = "none";
     });
   }
 });
+
 // ===================== ADMIN DELETE (Right-Click on Message) =====================
 const msgMenu = document.getElementById("msgMenu");
 const deleteMsgBtn = document.getElementById("deleteMsgBtn");
@@ -1617,25 +1593,6 @@ document.querySelectorAll(".status-options button").forEach(btn => {
     updateStatus(status);   // 🔹 η helper function που έχεις
     showToast(`✅ Status set to: ${status}`);
     profileMenu.style.display = "none";
-  });
-});
-
-// ===================== STATUS HANDLING =====================
-const statusButtons = document.querySelectorAll(".status-options button");
-
-statusButtons.forEach(btn => {
-  btn.addEventListener("click", () => {
-    const newStatus = btn.dataset.status;
-    const user = auth.currentUser;
-    if (!user) return;
-
-    // Update στο Firebase
-    update(ref(db, "users/" + user.uid), {
-      status: newStatus
-    });
-
-    console.log("✅ Status updated:", newStatus);
-    profileMenu.style.display = "none"; // κλείνει το menu μετά την επιλογή
   });
 });
 
