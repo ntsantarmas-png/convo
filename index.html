@@ -18,15 +18,9 @@
     <span class="logo">💬</span>
     <h1>convo</h1>
   </div>
-<div id="authOnlyTopActions" class="top-actions">
-  <span id="helloUser"></span>
-  <button id="logoutBtn" class="logout-btn" title="Έξοδος">🚪➝</button>
-</div>
 
-  <!-- 🔹 Τα actions να φαίνονται μόνο όταν είναι logged in -->
+  <!-- 🔹 Actions μόνο όταν είναι logged in -->
   <div id="authOnlyTopActions" class="top-actions">
-    <!-- AUTH REMOVED helloUser -->
-
     <!-- ✅ Profile Wrapper με avatar + dropdown -->
     <div class="profile-wrapper">
       <img id="profileAvatar" src="https://i.pravatar.cc/40" alt="User Avatar" />
@@ -44,10 +38,10 @@
     <!-- 🔹 Κουμπιά εκτός dropdown -->
     <button id="gameBtn" class="top-btn">🎮 Play Game</button>
     <button id="editProfileBtn" class="top-btn">👤 My Profile</button>
-    <!-- Logout button -->
-    <!-- AUTH REMOVED LOGOUT BUTTON -->
+    <button id="logoutBtn" class="logout-btn" title="Έξοδος">🚪➝</button>
   </div>
 </header>
+
 <!-- ===================== AUTH VIEW (Login / Register / Anonymous) ===================== -->
 <main class="auth" id="authView">
   <div class="auth-card">
@@ -57,47 +51,46 @@
       <button id="anonTab" class="tab" data-tab="anonymous">Anonymous</button>
     </div>
 
-<!-- Login -->
-<div class="tab-panel active" id="tab-login">
-  <form id="loginForm" class="auth-form">
-    <label for="loginEmail">Email</label>
-    <input type="email" id="loginEmail" class="input" required>
+    <!-- Login -->
+    <div class="tab-panel active" id="tab-login">
+      <form id="loginForm" class="auth-form">
+        <label for="loginEmail">Email</label>
+        <input type="email" id="loginEmail" class="input" required>
 
-    <label for="loginPassword">Password</label>
-    <input type="password" id="loginPassword" class="input" required>
+        <label for="loginPassword">Password</label>
+        <input type="password" id="loginPassword" class="input" required>
 
-    <button type="submit">Login</button>
-  </form>
-</div>
+        <button type="submit">Login</button>
+      </form>
+    </div>
 
-<!-- Register -->
-<div class="tab-panel" id="tab-register">
-  <form id="registerForm" class="auth-form">
-    <label for="registerName">Username</label>
-    <input type="text" id="registerName" class="input" required>
+    <!-- Register -->
+    <div class="tab-panel" id="tab-register">
+      <form id="registerForm" class="auth-form">
+        <label for="registerName">Username</label>
+        <input type="text" id="registerName" class="input" required>
 
-    <label for="registerEmail">Email</label>
-    <input type="email" id="registerEmail" class="input" required>
+        <label for="registerEmail">Email</label>
+        <input type="email" id="registerEmail" class="input" required>
 
-    <label for="registerPassword">Password</label>
-    <input type="password" id="registerPassword" class="input" required>
+        <label for="registerPassword">Password</label>
+        <input type="password" id="registerPassword" class="input" required>
 
-    <button type="submit">Register</button>
-  </form>
-</div>
+        <button type="submit">Register</button>
+      </form>
+    </div>
 
-<!-- Anonymous -->
-<div class="tab-panel" id="tab-anonymous">
-  <form id="anonForm" class="auth-form">
-    <label for="anonName">Username</label>
-    <input type="text" id="anonName" class="input" required>
+    <!-- Anonymous -->
+    <div class="tab-panel" id="tab-anonymous">
+      <form id="anonForm" class="auth-form">
+        <label for="anonName">Username</label>
+        <input type="text" id="anonName" class="input" required>
 
-    <button type="submit">Enter Chat</button>
-  </form>
-</div>
-
-
-
+        <button type="submit">Enter Chat</button>
+      </form>
+    </div>
+  </div>
+</main>
 
 <!-- ===================== PROFILE MODAL ===================== -->
 <!-- ===================== MY PROFILE MODAL ===================== -->
