@@ -10,7 +10,9 @@
   <link href="data:image/svg+xml,&lt;svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'&gt;&lt;text y='.9em' font-size='90'&gt;💬&lt;/text&gt;&lt;/svg&gt;" rel="icon"/>
   <link rel="stylesheet" href="styles.css">
 </head>
-<body><!-- ===================== HEADER / TOPBAR ===================== -->
+<body>
+  
+<!-- ===================== HEADER / TOPBAR ===================== -->
 <header class="topbar">
   <div class="brand">
     <span class="logo">💬</span>
@@ -55,44 +57,21 @@
       <button id="anonTab" class="tab" data-tab="anonymous">Anonymous</button>
     </div>
 
-    <!-- Login -->
-    <div class="tab-panel active" id="tab-login">
-      <form id="loginForm">
-        <label>Email</label>
-        <input class="input" id="loginEmail" type="email" required />
-        <label>Password</label>
-        <input class="input" id="loginPassword" type="password" required />
-        <div class="row" style="margin-top:10px">
-          <button class="btn primary" type="submit">Login</button>
-          <button class="btn ghost" id="forgotLink" type="button">Forgot?</button>
-        </div>
-      </form>
-    </div>
+<!-- Login -->
+<div class="tab-panel active" id="tab-login">
+  <form id="loginForm" class="auth-form"> … </form>
+</div>
 
-    <!-- Register -->
-    <div class="tab-panel" id="tab-register">
-      <form id="registerForm">
-        <label>Username</label>
-        <input class="input" id="regUsername" type="text" required />
-        <label>Email</label>
-        <input class="input" id="regEmail" type="email" required />
-        <label>Password</label>
-        <input class="input" id="regPassword" type="password" minlength="6" required />
-        <button class="btn primary" style="margin-top:10px;width:100%" type="submit">Create Account</button>
-      </form>
-    </div>
+<!-- Register -->
+<div class="tab-panel" id="tab-register">
+  <form id="registerForm" class="auth-form"> … </form>
+</div>
 
-    <!-- Anonymous -->
-    <div class="tab-panel" id="tab-anonymous">
-      <form id="anonForm">
-        <label>Pick a username</label>
-        <input class="input" id="anonUsername" type="text" required />
-        <button class="btn" style="margin-top:10px;width:100%" type="submit">Enter Anonymously</button>
-      </form>
-      <p class="muted small" style="margin-top:6px">You can upgrade later from your profile.</p>
-    </div>
-  </div>
-</main>
+<!-- Anonymous -->
+<div class="tab-panel" id="tab-anonymous">
+  <form id="anonForm" class="auth-form"> … </form>
+</div>
+
 
 
 <!-- ===================== PROFILE MODAL ===================== -->
