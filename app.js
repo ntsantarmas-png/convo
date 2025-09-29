@@ -1788,3 +1788,8 @@ if (deleteProfileBtn && deleteConfirmModal) {
 }
 
 console.log("✅ app.js loaded successfully");
+// ===================== TEMP FIX =====================
+// Placeholder function για να μη σκάει το renderUserList undefined
+function renderUserList() {
+  console.log("renderUserList placeholder called");
+}
