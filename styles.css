@@ -52,6 +52,22 @@ body {
   background: rgba(255,255,255,0.08);
   border-color: rgba(255,255,255,0.3);
 }
+/* === Center Auth Box === */
+body {
+  display: flex;
+  justify-content: center;  /* οριζόντια στο κέντρο */
+  align-items: center;      /* κάθετα στο κέντρο */
+  min-height: 100vh;        /* γεμίζει όλο το ύψος */
+  margin: 0;
+}
+
+.auth {
+  background: #222;  /* ή το δικό σου χρώμα */
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+}
+
 
 /* ===================== LOGOUT BUTTON SPECIAL ===================== */
 /* Logout Button */
